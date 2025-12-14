@@ -17,6 +17,10 @@ async function initApp() {
     // Initialize progress chart
     initProgressChart();
     
+    // Initialize user progress system
+    UserProgress.init();
+    updateProgressDisplay();
+    
     // Setup event listeners
     setupEventListeners();
     
@@ -157,9 +161,18 @@ async function loadAbilities() {
     
     container.innerHTML = '';
     
-    abilitiesData[activeTab].forEach(ability => {
-        const progress = Math.floor(Math.random() * 30) + 40; // Simulated progress
-        const completed = Math.floor(Math.random() * (ability.exercises - 1)) + 1;
+    const abilities = abilitiesData[activeTab];
+    
+    if (!abilities || abilities.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-brain"></i><p>Loading abilities data...</p></div>';
+        return;
+    }
+    
+    abilities.forEach(ability => {
+        // Get user progress for this ability
+        const userProgress = UserProgress.getProgress();
+        const progress = userProgress.abilitiesProgress[ability.id] || 0;
+        const completed = Math.floor((progress / 100) * ability.exercises);
         
         const card = document.createElement('div');
         card.className = 'ability-card';
@@ -179,7 +192,7 @@ async function loadAbilities() {
             <div class="ability-footer">
                 <div class="ability-progress">
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${(completed / ability.exercises) * 100}%"></div>
+                        <div class="progress-fill" style="width: ${progress}%"></div>
                     </div>
                     <span>Completed ${completed}/${ability.exercises} exercises</span>
                 </div>
@@ -286,12 +299,25 @@ async function loadSignatures() {
 function initProgressChart() {
     const ctx = document.getElementById('progress-chart').getContext('2d');
     
-    // Sample progress data
+    // Get user progress data
+    const userProgress = UserProgress.getProgress();
+    
+    // Prepare data for the radar chart
     const progressData = {
         labels: ['Empathy', 'Meaning', 'Love', 'Intuition', 'Choice', 'Consciousness', 'History', 'Reverence', 'Dialogue'],
         datasets: [{
             label: 'Your Development',
-            data: [65, 40, 30, 75, 50, 35, 60, 45, 55],
+            data: [
+                userProgress.abilitiesProgress[1] || 0,
+                userProgress.abilitiesProgress[2] || 0,
+                userProgress.abilitiesProgress[3] || 0,
+                userProgress.abilitiesProgress[4] || 0,
+                userProgress.abilitiesProgress[5] || 0,
+                userProgress.abilitiesProgress[6] || 0,
+                userProgress.abilitiesProgress[7] || 0,
+                userProgress.abilitiesProgress[8] || 0,
+                userProgress.abilitiesProgress[9] || 0
+            ],
             backgroundColor: [
                 'rgba(76, 201, 240, 0.7)',
                 'rgba(67, 97, 238, 0.7)',
@@ -308,7 +334,12 @@ function initProgressChart() {
         }]
     };
     
-    new Chart(ctx, {
+    // Destroy existing chart if it exists
+    if (window.progressChart) {
+        window.progressChart.destroy();
+    }
+    
+    window.progressChart = new Chart(ctx, {
         type: 'radar',
         data: progressData,
         options: {
@@ -317,7 +348,22 @@ function initProgressChart() {
             scales: {
                 r: {
                     angleLines: {
-                        display: true
+                        display: true,
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    pointLabels: {
+                        color: '#333',
+                        font: {
+                            size: 12,
+                            family: 'Inter, sans-serif'
+                        }
+                    },
+                    ticks: {
+                        display: false,
+                        maxTicksLimit: 5
                     },
                     suggestedMin: 0,
                     suggestedMax: 100
@@ -329,26 +375,6 @@ function initProgressChart() {
                 }
             }
         }
-    });
-    
-    // Initialize badges
-    const badgeContainer = document.getElementById('badge-container');
-    const badges = [
-        { id: 'sprout', name: 'Sprout', icon: 'fas fa-seedling', earned: true },
-        { id: 'cultivator', name: 'Cultivator', icon: 'fas fa-leaf', earned: false },
-        { id: 'guardian', name: 'Guardian', icon: 'fas fa-shield-alt', earned: false },
-        { id: 'beacon', name: 'Beacon', icon: 'fas fa-star', earned: false }
-    ];
-    
-    badgeContainer.innerHTML = '';
-    badges.forEach(badge => {
-        const badgeEl = document.createElement('div');
-        badgeEl.className = `badge ${badge.earned ? 'earned' : ''}`;
-        badgeEl.innerHTML = `
-            <i class="${badge.icon}"></i>
-            <span>${badge.name}</span>
-        `;
-        badgeContainer.appendChild(badgeEl);
     });
 }
 
@@ -386,7 +412,11 @@ const UserProgress = {
     
     // Get progress
     getProgress: function() {
-        return JSON.parse(localStorage.getItem('userProgress'));
+        const progress = localStorage.getItem('userProgress');
+        if (!progress) {
+            return this.resetProgress();
+        }
+        return JSON.parse(progress);
     },
     
     // Update progress
@@ -397,7 +427,7 @@ const UserProgress = {
         if (!progress.completedExercises.includes(exerciseId)) {
             progress.completedExercises.push(exerciseId);
             progress.abilitiesProgress[abilityId] = 
-                Math.min(100, progress.abilitiesProgress[abilityId] + 15);
+                Math.min(100, (progress.abilitiesProgress[abilityId] || 0) + 15);
         }
         
         // Add total time
@@ -461,166 +491,192 @@ function setupEventListeners() {
     let timerInterval;
     let timeLeft = 300; // 5 minutes in seconds
     
-    startBtn.addEventListener('click', function() {
-        this.style.display = 'none';
-        skipBtn.style.display = 'none';
-        timerDisplay.style.display = 'block';
-        
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('timer-display').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    if (startBtn) {
+        startBtn.addEventListener('click', function() {
+            this.style.display = 'none';
+            if (skipBtn) skipBtn.style.display = 'none';
+            timerDisplay.style.display = 'block';
             
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                document.getElementById('timer-display').textContent = "Time's up!";
-                completeBtn.disabled = false;
-            }
-        }, 1000);
-    });
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer-display').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timer-display').textContent = "Time's up!";
+                    if (completeBtn) completeBtn.disabled = false;
+                }
+            }, 1000);
+        });
+    }
     
-    completeBtn.addEventListener('click', function() {
-        clearInterval(timerInterval);
-        const timeSpent = 300 - timeLeft;
-        
-        // Store exercise completion info
-        window.exerciseCompletion = {
-            abilityId: window.currentExercise.abilityId,
-            exerciseId: Math.floor(Math.random() * 1000),
-            timeSpent: timeSpent,
-            abilityName: window.currentExercise.category.split(' ')[0] + ' ' + window.currentExercise.category.split(' ')[1]
-        };
-        
-        // Show feedback form
-        timerDisplay.style.display = 'none';
-        feedbackSection.style.display = 'block';
-    });
+    if (completeBtn) {
+        completeBtn.addEventListener('click', function() {
+            clearInterval(timerInterval);
+            const timeSpent = 300 - timeLeft;
+            
+            // Store exercise completion info
+            window.exerciseCompletion = {
+                abilityId: window.currentExercise?.abilityId || 1,
+                exerciseId: Math.floor(Math.random() * 1000),
+                timeSpent: timeSpent,
+                abilityName: window.currentExercise?.category?.split(' ')[0] + ' ' + window.currentExercise?.category?.split(' ')[1] || 'Embodied Empathy'
+            };
+            
+            // Show feedback form
+            timerDisplay.style.display = 'none';
+            if (feedbackSection) feedbackSection.style.display = 'block';
+        });
+    }
     
-    skipBtn.addEventListener('click', function() {
-        loadExercises(); // Load a new random exercise
-    });
+    if (skipBtn) {
+        skipBtn.addEventListener('click', function() {
+            loadExercises(); // Load a new random exercise
+        });
+    }
     
     // Save reflection
-    saveReflectionBtn.addEventListener('click', function() {
-        const reflection = document.getElementById('reflection-text').value.trim();
-        
-        if (reflection) {
-            // Update user progress
+    if (saveReflectionBtn) {
+        saveReflectionBtn.addEventListener('click', function() {
+            const reflection = document.getElementById('reflection-text')?.value.trim();
+            
+            if (reflection && reflection.length > 10) {
+                // Update user progress
+                UserProgress.updateProgress(
+                    window.exerciseCompletion.abilityId,
+                    window.exerciseCompletion.exerciseId,
+                    window.exerciseCompletion.timeSpent,
+                    reflection
+                );
+                
+                // Show success message
+                document.getElementById('ability-name').textContent = window.exerciseCompletion.abilityName;
+                document.getElementById('total-completed').textContent = 
+                    UserProgress.getProgress().completedExercises.length;
+                
+                if (feedbackSection) feedbackSection.style.display = 'none';
+                if (feedbackResult) feedbackResult.style.display = 'block';
+                
+                // Update progress display
+                updateProgressDisplay();
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    if (feedbackResult) feedbackResult.style.display = 'none';
+                    if (startBtn) startBtn.style.display = 'inline-block';
+                    if (skipBtn) skipBtn.style.display = 'inline-block';
+                    timeLeft = 300;
+                    document.getElementById('timer-display').textContent = "05:00";
+                    if (document.getElementById('reflection-text')) {
+                        document.getElementById('reflection-text').value = '';
+                    }
+                    
+                    // Load new exercise
+                    loadExercises();
+                }, 3000);
+            } else {
+                alert("Please write a meaningful reflection (at least 10 characters) before saving.");
+            }
+        });
+    }
+    
+    // Skip reflection
+    if (skipReflectionBtn) {
+        skipReflectionBtn.addEventListener('click', function() {
+            // Still update progress without reflection
             UserProgress.updateProgress(
                 window.exerciseCompletion.abilityId,
                 window.exerciseCompletion.exerciseId,
                 window.exerciseCompletion.timeSpent,
-                reflection
+                null
             );
             
-            // Show success message
-            document.getElementById('ability-name').textContent = window.exerciseCompletion.abilityName;
-            document.getElementById('total-completed').textContent = 
-                UserProgress.getProgress().completedExercises.length;
+            // Show minimal success message
+            if (feedbackSection) feedbackSection.style.display = 'none';
             
-            feedbackSection.style.display = 'none';
-            feedbackResult.style.display = 'block';
+            // Reset UI
+            if (startBtn) startBtn.style.display = 'inline-block';
+            if (skipBtn) skipBtn.style.display = 'inline-block';
+            timeLeft = 300;
+            document.getElementById('timer-display').textContent = "05:00";
+            if (document.getElementById('reflection-text')) {
+                document.getElementById('reflection-text').value = '';
+            }
             
             // Update progress display
             updateProgressDisplay();
             
-            // Reset after 3 seconds
-            setTimeout(() => {
-                feedbackResult.style.display = 'none';
-                startBtn.style.display = 'inline-block';
-                skipBtn.style.display = 'inline-block';
-                timeLeft = 300;
-                document.getElementById('timer-display').textContent = "05:00";
-                document.getElementById('reflection-text').value = '';
-                
-                // Load new exercise
-                loadExercises();
-            }, 3000);
-        } else {
-            alert("Please write your reflection before saving.");
-        }
-    });
-    
-    // Skip reflection
-    skipReflectionBtn.addEventListener('click', function() {
-        // Still update progress without reflection
-        UserProgress.updateProgress(
-            window.exerciseCompletion.abilityId,
-            window.exerciseCompletion.exerciseId,
-            window.exerciseCompletion.timeSpent,
-            null
-        );
-        
-        // Show minimal success message
-        feedbackSection.style.display = 'none';
-        
-        // Reset UI
-        startBtn.style.display = 'inline-block';
-        skipBtn.style.display = 'inline-block';
-        timeLeft = 300;
-        document.getElementById('timer-display').textContent = "05:00";
-        document.getElementById('reflection-text').value = '';
-        
-        // Update progress display
-        updateProgressDisplay();
-        
-        // Load new exercise
-        loadExercises();
-    });
+            // Load new exercise
+            loadExercises();
+        });
+    }
     
     // Signature submission
-    document.getElementById('submit-signature').addEventListener('click', function() {
-        const name = document.getElementById('user-name').value.trim();
-        const location = document.getElementById('user-location').value.trim();
-        const commitment = document.getElementById('user-commitment').value.trim();
-        
-        if (!name) {
-            alert("Please enter your name or pseudonym.");
-            return;
-        }
-        
-        // Create signature element
-        const container = document.getElementById('signatures-container');
-        const item = document.createElement('div');
-        item.className = 'signature-item';
-        item.innerHTML = `
-            <div class="signature-name">${name}</div>
-            <div class="signature-location">${location || 'Anonymous location'}</div>
-            <div class="signature-commitment">"${commitment || 'Committed to human empowerment'}"</div>
-        `;
-        
-        // Add to beginning
-        container.insertBefore(item, container.firstChild);
-        
-        // Clear form
-        document.getElementById('user-name').value = '';
-        document.getElementById('user-location').value = '';
-        document.getElementById('user-commitment').value = '';
-        
-        // Update stats
-        updateStats(0, 0, 1);
-        
-        alert("Thank you for joining our community of cultivators!");
-    });
+    const submitSignatureBtn = document.getElementById('submit-signature');
+    if (submitSignatureBtn) {
+        submitSignatureBtn.addEventListener('click', function() {
+            const name = document.getElementById('user-name')?.value.trim();
+            const location = document.getElementById('user-location')?.value.trim();
+            const commitment = document.getElementById('user-commitment')?.value.trim();
+            
+            if (!name) {
+                alert("Please enter your name or pseudonym.");
+                return;
+            }
+            
+            // Create signature element
+            const container = document.getElementById('signatures-container');
+            if (container) {
+                const item = document.createElement('div');
+                item.className = 'signature-item';
+                item.innerHTML = `
+                    <div class="signature-name">${name}</div>
+                    <div class="signature-location">${location || 'Anonymous location'}</div>
+                    <div class="signature-commitment">"${commitment || 'Committed to human empowerment'}"</div>
+                `;
+                
+                // Add to beginning
+                container.insertBefore(item, container.firstChild);
+                
+                // Clear form
+                if (document.getElementById('user-name')) document.getElementById('user-name').value = '';
+                if (document.getElementById('user-location')) document.getElementById('user-location').value = '';
+                if (document.getElementById('user-commitment')) document.getElementById('user-commitment').value = '';
+                
+                // Update stats
+                updateStats(0, 0, 1);
+                
+                alert("Thank you for joining our community of cultivators!");
+            }
+        });
+    }
     
     // Save reflection in progress section
-    document.getElementById('save-reflection-btn').addEventListener('click', function() {
-        const reflection = document.getElementById('reflection-input').value.trim();
-        
-        if (!reflection) {
-            alert("Please write a reflection before saving.");
-            return;
-        }
-        
-        // In a real implementation, would save to user's progress
-        alert("Reflection saved to your personal journal!");
-        document.getElementById('reflection-input').value = '';
-        
-        // Update stats
-        updateStats(0, 1, 0);
-    });
+    const saveReflectionBtn2 = document.getElementById('save-reflection-btn');
+    if (saveReflectionBtn2) {
+        saveReflectionBtn2.addEventListener('click', function() {
+            const reflection = document.getElementById('reflection-input')?.value.trim();
+            
+            if (!reflection || reflection.length < 10) {
+                alert("Please write a meaningful reflection (at least 10 characters) before saving.");
+                return;
+            }
+            
+            // In a real implementation, would save to user's progress
+            UserProgress.updateProgress(0, 0, 0, reflection);
+            alert("Reflection saved to your personal journal!");
+            document.getElementById('reflection-input').value = '';
+            
+            // Update stats
+            updateStats(0, 1, 0);
+            
+            // Update progress display
+            updateProgressDisplay();
+        });
+    }
     
     // Pilot project buttons
     document.getElementById('start-data-cleansing')?.addEventListener('click', function() {
@@ -631,7 +687,7 @@ function setupEventListeners() {
         alert("Algorithm Transparency Tool demo coming soon! You'll be able to adjust algorithm parameters and see how they affect your information environment.");
     });
     
-    document.getElementById('join-dialogue')?.addEventListener('click', function() {
+    document.getElementById('join-dialog')?.addEventListener('click', function() {
         alert("Public Dialogue Experiment coming soon! Participate in structured rational conversations about important topics with other community members.");
     });
 }
@@ -650,7 +706,7 @@ function startAbilityExercise(abilityId) {
     
     if (ability) {
         // Scroll to exercise section
-        document.getElementById('daily-exercise').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('daily-exercise')?.scrollIntoView({ behavior: 'smooth' });
         
         // Update exercise to match this ability
         document.getElementById('exercise-category').textContent = ability.category;
@@ -760,6 +816,18 @@ function learnMore(abilityId) {
                 .modal-body {
                     padding: 1.5rem;
                 }
+                .modal-body h3 {
+                    margin-bottom: 1rem;
+                    color: var(--dark-color);
+                }
+                .modal-body p {
+                    margin-bottom: 1rem;
+                    color: var(--text-dark);
+                    line-height: 1.6;
+                }
+                .modal-body strong {
+                    color: var(--dark-color);
+                }
                 .modal-footer {
                     padding: 1.5rem;
                     border-top: 1px solid #eee;
@@ -792,11 +860,20 @@ function updateStats(exercises = 0, reflections = 0, signatures = 0) {
     const signaturesEl = document.getElementById('total-signatures');
     
     // Parse current values and update
-    let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, ''));
-    let currentSignatures = parseInt(signaturesEl.textContent.replace(/,/g, ''));
+    if (cultivatorsEl) {
+        let currentCultivators = parseInt(cultivatorsEl.textContent.replace(/,/g, ''));
+        cultivatorsEl.textContent = (currentCultivators + 1).toLocaleString();
+    }
     
-    exercisesEl.textContent = (currentExercises + exercises).toLocaleString();
-    signaturesEl.textContent = (currentSignatures + signatures).toLocaleString();
+    if (exercisesEl) {
+        let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, ''));
+        exercisesEl.textContent = (currentExercises + exercises).toLocaleString();
+    }
+    
+    if (signaturesEl) {
+        let currentSignatures = parseInt(signaturesEl.textContent.replace(/,/g, ''));
+        signaturesEl.textContent = (currentSignatures + signatures).toLocaleString();
+    }
 }
 
 function updateLiveStats() {
@@ -804,15 +881,17 @@ function updateLiveStats() {
     const exercisesEl = document.getElementById('total-exercises');
     const signaturesEl = document.getElementById('total-signatures');
     
-    let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, ''));
-    let currentSignatures = parseInt(signaturesEl.textContent.replace(/,/g, ''));
+    if (exercisesEl) {
+        let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, ''));
+        const exerciseIncrease = Math.floor(Math.random() * 3);
+        exercisesEl.textContent = (currentExercises + exerciseIncrease).toLocaleString();
+    }
     
-    // Random small increases to simulate community activity
-    const exerciseIncrease = Math.floor(Math.random() * 3);
-    const signatureIncrease = Math.floor(Math.random() * 2);
-    
-    exercisesEl.textContent = (currentExercises + exerciseIncrease).toLocaleString();
-    signaturesEl.textContent = (currentSignatures + signatureIncrease).toLocaleString();
+    if (signaturesEl) {
+        let currentSignatures = parseInt(signaturesEl.textContent.replace(/,/g, ''));
+        const signatureIncrease = Math.floor(Math.random() * 2);
+        signaturesEl.textContent = (currentSignatures + signatureIncrease).toLocaleString();
+    }
 }
 
 function updateProgressDisplay() {
@@ -840,23 +919,6 @@ function updateProgressDisplay() {
         });
     }
     
-    // Update stats
-    const cultivatorsEl = document.getElementById('total-cultivators');
-    const exercisesEl = document.getElementById('total-exercises');
-    
-    if (cultivatorsEl && progress.completedExercises.length > 0) {
-        // Increment the number of cultivators if this user completed their first exercise
-        let currentCultivators = parseInt(cultivatorsEl.textContent.replace(/,/g, ''));
-        if (progress.completedExercises.length === 1) {
-            cultivatorsEl.textContent = (currentCultivators + 1).toLocaleString();
-        }
-    }
-    
-    if (exercisesEl) {
-        let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, ''));
-        exercisesEl.textContent = (currentExercises + progress.completedExercises.length).toLocaleString();
-    }
+    // Update the progress chart with new data
+    initProgressChart();
 }
-
-// Initialize user progress on load
-UserProgress.init();
