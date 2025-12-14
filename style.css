@@ -449,6 +449,12 @@ h1, h2, h3, h4 {
 .ability-actions {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.ability-actions .btn-secondary {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
 }
 
 .btn-secondary {
@@ -685,6 +691,33 @@ h1, h2, h3, h4 {
     margin-bottom: 1rem;
     background-color: white;
     color: var(--text-dark);
+}
+
+/* Cross-Cultural Examples Styles */
+.culture-example {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-left: 4px solid var(--primary-color);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.culture-example h4 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.culture-example p {
+    color: var(--text-dark);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.modal-intro {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-style: italic;
 }
 
 /* Pilot Projects */
@@ -1059,6 +1092,16 @@ h1, h2, h3, h4 {
     
     .exercise-card {
         padding: 1.5rem;
+    }
+    
+    .ability-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .ability-actions .btn-secondary, .ability-actions .btn-text {
+        width: 100%;
+        text-align: center;
     }
 }
 
