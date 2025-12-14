@@ -1,1 +1,114 @@
-
+{
+  "exercises": [
+    {
+      "id": 1,
+      "abilityId": 1,
+      "category": "Embodied Empathy",
+      "title": "The Mirror of Another's Pain",
+      "description": "Recall a moment of witnessing someone's genuine pain. Instead of analyzing it, try to feel where in your own body you sense their suffering. Sit with that sensation for 5 minutes without judgment.",
+      "duration": "10 min",
+      "steps": [
+        "Find a quiet space where you won't be disturbed",
+        "Recall a specific moment when you witnessed someone's pain",
+        "Close your eyes and try to locate where in your body you feel their suffering",
+        "Observe that sensation without trying to change or analyze it",
+        "After 5 minutes, gently release the sensation and return to the present"
+      ],
+      "reflectionQuestions": [
+        "Where in your body did you feel the other's pain?",
+        "How did simply observing (rather than analyzing) change your relationship to that sensation?",
+        "What might this embodied understanding teach you about empathy?"
+      ],
+      "difficulty": "Intermediate",
+      "tags": ["empathy", "embodiment", "compassion"]
+    },
+    {
+      "id": 2,
+      "abilityId": 4,
+      "category": "Intuitive Leap from Ambiguity",
+      "title": "Embracing Contradiction",
+      "description": "Write down two conflicting beliefs you hold. Spend 15 minutes exploring how both might be true simultaneously, without forcing resolution.",
+      "duration": "15 min",
+      "steps": [
+        "Identify two beliefs you hold that seem to contradict each other",
+        "Write each belief at the top of separate pages",
+        "For each belief, list all the evidence and reasons you have for holding it",
+        "Now try to write a narrative where both beliefs are true",
+        "Notice any new insights that emerge from holding the tension"
+      ],
+      "reflectionQuestions": [
+        "What discomfort did you feel holding contradictory beliefs?",
+        "Did any new understanding emerge from this exercise?",
+        "How might this ability to hold ambiguity serve you in creative work?"
+      ],
+      "difficulty": "Beginner",
+      "tags": ["creativity", "ambiguity", "thinking"]
+    },
+    {
+      "id": 3,
+      "abilityId": 9,
+      "category": "Soul-Transforming Dialogue",
+      "title": "Listening for Transformation",
+      "description": "Have a conversation where your only goal is to understand the other person's worldview. Resist the urge to persuade or correct. Afterwards, write one way your perspective has shifted.",
+      "duration": "20 min",
+      "steps": [
+        "Find a conversation partner willing to engage deeply",
+        "Set the intention: 'My only goal is to understand your perspective'",
+        "When they speak, listen fully without planning your response",
+        "Ask open-ended questions to deepen your understanding",
+        "Notice when you want to correct or persuade, and gently return to listening"
+      ],
+      "reflectionQuestions": [
+        "What was challenging about listening without agenda?",
+        "What did you learn about the other person that surprised you?",
+        "How did your understanding of the topic shift?"
+      ],
+      "difficulty": "Advanced",
+      "tags": ["dialogue", "listening", "transformation"]
+    },
+    {
+      "id": 4,
+      "abilityId": 2,
+      "category": "Meaning-Giving in Absurdity",
+      "title": "Finding Beauty in the Broken",
+      "description": "Find something broken or discarded (a fallen leaf, a cracked cup). Spend 10 minutes contemplating what beauty or meaning it holds despite (or because of) its imperfection.",
+      "duration": "10 min",
+      "steps": [
+        "Find an object that is broken, discarded, or imperfect",
+        "Sit with it quietly for 2 minutes, just observing",
+        "Ask yourself: What story does this object tell?",
+        "What beauty exists in its current state?",
+        "What might this teach you about finding meaning in difficulty?"
+      ],
+      "reflectionQuestions": [
+        "How did your perception of the object change over time?",
+        "What meaning did you find in what was initially seen as worthless?",
+        "How might this practice apply to finding meaning in life's difficulties?"
+      ],
+      "difficulty": "Beginner",
+      "tags": ["meaning", "beauty", "imperfection"]
+    },
+    {
+      "id": 5,
+      "abilityId": 5,
+      "category": "Tragic Choice Bearing",
+      "title": "The Unresolvable Dilemma",
+      "description": "Imagine you must choose between saving a masterpiece of human art or saving a stranger's life. Sit with the dilemma for 15 minutes without trying to solve it.",
+      "duration": "15 min",
+      "steps": [
+        "Set a timer for 15 minutes",
+        "Imagine the dilemma fully: the masterpiece, the stranger, the irreversible choice",
+        "Allow yourself to feel the weight of the choice without rushing to a decision",
+        "Notice where in your body you feel the tension",
+        "When the timer ends, simply acknowledge: 'This is a choice I would have to live with'"
+      ],
+      "reflectionQuestions": [
+        "What values were in conflict for you?",
+        "How did it feel to sit with an unresolvable dilemma?",
+        "What does this exercise reveal about human moral experience versus algorithmic decision-making?"
+      ],
+      "difficulty": "Advanced",
+      "tags": ["ethics", "dilemma", "values"]
+    }
+  ]
+}
