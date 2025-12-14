@@ -262,30 +262,33 @@
             <h2 class="section-title">Community of Cultivators</h2>
             <p class="section-subtitle">Join others in committing to human empowerment</p>
             
-            <div class="signature-box">
-                <h3><i class="fas fa-signature"></i> Sign the Empowerment Manifesto</h3>
-                <p>"I commit to cultivating my uniquely human abilities, recognizing that in the AI era, my embodied empathy, creative intuition, and historical consciousness define my contribution to our collective future."</p>
-                
-                <div class="signature-form">
-                    <input type="text" id="user-name" placeholder="Your Name or Pseudonym" maxlength="50">
-                    <input type="text" id="user-location" placeholder="Your Location (optional)">
-                    <textarea id="user-commitment" placeholder="Personal commitment statement (optional)" rows="2"></textarea>
-                    <button class="btn-primary" id="submit-signature">
-                        <i class="fas fa-feather-alt"></i> Add My Signature
-                    </button>
-                </div>
-                
-                <div class="signatures-display" id="signatures-container">
-                     <!-- 永久签名 - 元始天尊 -->
-                     <div class="signature-item permanent-signature">
-                         <div class="signature-name">元始天尊 Yuan Shi Tian Zun / Primeval Lord of Heaven</div>
-                         <div class="signature-location">昆仑山玉虚宫 Jade Void Palace on Kunlun Mountains</div>
-                         <div class="signature-commitment">"Disciples of my Chan Jiao, assemble at once!"</div>
-                         <div class="signature-special">✨ 永久签名 ✨</div>
-                     </div>
-                    <!-- Signatures will be loaded here -->
-                </div>
-            </div>
+            <!-- 社区签名部分 -->
+<div class="signature-box">
+    <h3><i class="fas fa-signature"></i> Sign the Empowerment Manifesto</h3>
+    <p>"I commit to cultivating my uniquely human abilities, recognizing that in the AI era, my embodied empathy, creative intuition, and historical consciousness define my contribution to our collective future."</p>
+    
+    <div class="signature-form">
+        <input type="text" id="user-name" placeholder="Your Name or Pseudonym" maxlength="50">
+        <input type="text" id="user-location" placeholder="Your Location (optional)">
+        <textarea id="user-commitment" placeholder="Personal commitment statement (optional)" rows="2"></textarea>
+        <button class="btn-primary" id="submit-signature">
+            <i class="fas fa-feather-alt"></i> Add My Signature
+        </button>
+    </div>
+    
+    <div class="signatures-display" id="signatures-container">
+        <!-- =========== 永久签名开始 =========== -->
+        <div class="signature-item permanent-signature">
+            <div class="signature-name">元始天尊 Yuan Shi Tian Zun / Primeval Lord of Heaven</div>
+            <div class="signature-location">昆仑山玉虚宫 Jade Void Palace on Kunlun Mountains</div>
+            <div class="signature-commitment">"Disciples of my Chan Jiao, assemble at once!"</div>
+            <div class="signature-special">✨ 永久签名 ✨</div>
+        </div>
+        <!-- =========== 永久签名结束 =========== -->
+        
+        <!-- 其他签名将通过JavaScript动态加载 -->
+    </div>
+</div>
         </div>
     </section>
 
