@@ -42,7 +42,21 @@ const abilitiesData = {
             color: "#4cc9f0",
             exercises: 5,
             philosophicalBasis: "Rooted in our biological existence, this ability emerges from the interplay of mirror neurons, hormonal responses, and lived experience that cannot be algorithmically reproduced.",
-            example: "When you see a friend lose a loved one, you not only understand their sadness, but your body also feels a similar heaviness."
+            example: "When you see a friend lose a loved one, you not only understand their sadness, but your body also feels a similar heaviness.",
+            crossCulturalExamples: [
+                {
+                    culture: "Japanese",
+                    example: "In Japanese culture, 'omoiyari' (思いやり) refers to anticipating others' needs and feelings, demonstrated through subtle actions like adjusting one's behavior to maintain group harmony without explicit communication."
+                },
+                {
+                    culture: "Ubuntu Philosophy (African)",
+                    example: "'Umuntu ngumuntu ngabantu' - 'I am because we are.' This philosophy emphasizes interconnectedness where one's humanity is tied to others' humanity, creating deep communal empathy."
+                },
+                {
+                    culture: "Native American",
+                    example: "Many tribes practice 'two-legged, four-legged, winged, and rooted relatives' consciousness, feeling kinship with all beings, not just humans."
+                }
+            ]
         },
         {
             id: 2,
@@ -55,7 +69,21 @@ const abilitiesData = {
             color: "#4361ee",
             exercises: 4,
             philosophicalBasis: "Emerges from our confrontation with mortality and the human condition. The awareness of death gives birth to the need for meaning, a uniquely human existential project.",
-            example: "After losing a job, you redefine the meaning of life and find a new direction in volunteer work."
+            example: "After losing a job, you redefine the meaning of life and find a new direction in volunteer work.",
+            crossCulturalExamples: [
+                {
+                    culture: "Japanese (Kintsugi)",
+                    example: "The art of repairing broken pottery with gold lacquer, treating breakage as part of the object's history rather than something to hide. This transforms damage into beauty and meaning."
+                },
+                {
+                    culture: "Jewish Tradition",
+                    example: "The Passover Seder ritual transforms historical suffering into a story of liberation, creating meaning from oppression through collective memory and hope for redemption."
+                },
+                {
+                    culture: "Stoicism (Greco-Roman)",
+                    example: "Finding meaning not in avoiding suffering but in developing resilience and virtue through adversity, as exemplified by Marcus Aurelius writing 'Meditations' during military campaigns."
+                }
+            ]
         },
         {
             id: 3,
@@ -68,7 +96,21 @@ const abilitiesData = {
             color: "#3a0ca3",
             exercises: 6,
             philosophicalBasis: "Transcends evolutionary programming through free will and moral imagination. The choice to sacrifice for another without expected return defines human ethical capacity.",
-            example: "Donating an organ anonymously to a stranger, or risking one's life to save someone unrelated."
+            example: "Donating an organ anonymously to a stranger, or risking one's life to save someone unrelated.",
+            crossCulturalExamples: [
+                {
+                    culture: "Christianity",
+                    example: "The concept of 'agape' love - unconditional, self-sacrificing love exemplified by Jesus' crucifixion, which Christians believe was done for humanity's salvation without expectation of return."
+                },
+                {
+                    culture: "Sikhism",
+                    example: "The practice of 'langar' - serving free meals to all visitors regardless of religion, caste, gender, or economic status, embodying selfless service (seva) without expectation."
+                },
+                {
+                    culture: "Confucian Ethics",
+                    example: "'Ren' (仁) or humaneness, expressed through acts of righteousness and sacrifice that maintain social harmony, even when personally disadvantageous."
+                }
+            ]
         }
     ],
     "cognitive": [
@@ -83,7 +125,21 @@ const abilitiesData = {
             color: "#f72585",
             exercises: 5,
             philosophicalBasis: "Arises from the subconscious mind's ability to process information holistically, making connections that exceed logical deduction. This 'aha!' moment is a mystery of human consciousness.",
-            example: "Archimedes suddenly understanding the principle of buoyancy in a bathtub, or a scientist solving a research problem in a dream."
+            example: "Archimedes suddenly understanding the principle of buoyancy in a bathtub, or a scientist solving a research problem in a dream.",
+            crossCulturalExamples: [
+                {
+                    culture: "Chinese Philosophy",
+                    example: "The concept of 'wu wei' (effortless action) in Daoism, where insight emerges from alignment with the natural flow rather than forced analytical thinking."
+                },
+                {
+                    culture: "Ancient Greek",
+                    example: "Archimedes' 'Eureka!' moment - the sudden intuitive understanding of displacement while bathing, demonstrating how insight emerges from subconscious processing."
+                },
+                {
+                    culture: "Indigenous Australian",
+                    example: "'Dadirri' - deep listening and quiet stillness that allows understanding to emerge from country and ancestors, rather than through analytical deduction."
+                }
+            ]
         },
         {
             id: 5,
@@ -96,7 +152,21 @@ const abilitiesData = {
             color: "#b5179e",
             exercises: 4,
             philosophicalBasis: "Rooted in the human condition of moral ambiguity. Unlike AI's cost-benefit analysis, humans must live with the irreconcilable consequences of their choices.",
-            example: "Choosing whom to save when medical resources are limited, or making an irreversible choice between family and career."
+            example: "Choosing whom to save when medical resources are limited, or making an irreversible choice between family and career.",
+            crossCulturalExamples: [
+                {
+                    culture: "Japanese (Bushido)",
+                    example: "The samurai's dilemma between 'giri' (duty) and 'ninjo' (human feeling), as dramatized in Chikamatsu's puppet plays where characters face impossible choices between love and honor."
+                },
+                {
+                    culture: "Ancient Greek Tragedy",
+                    example: "Sophocles' 'Antigone' - the conflict between divine law (burying her brother) and state law (the king's decree), where both choices carry unbearable consequences."
+                },
+                {
+                    culture: "Jewish Ethics",
+                    example: "The Talmudic discussion of two people in the desert with one flask of water - does one drink it all or share it knowing both may die? This explores irreducible moral conflicts."
+                }
+            ]
         },
         {
             id: 6,
@@ -109,7 +179,21 @@ const abilitiesData = {
             color: "#7209b7",
             exercises: 3,
             philosophicalBasis: "The 'hard problem' of consciousness - the qualitative, subjective experience of being. This phenomenal consciousness is the foundation of all human experience and value.",
-            example: "The inner emotion when seeing a sunset, or the pleasure of tasting delicious food, which cannot be fully described in words."
+            example: "The inner emotion when seeing a sunset, or the pleasure of tasting delicious food, which cannot be fully described in words.",
+            crossCulturalExamples: [
+                {
+                    culture: "Indian Philosophy (Advaita Vedanta)",
+                    example: "The concept of 'Atman' - pure consciousness as the ultimate reality, experienced through direct intuition rather than intellectual understanding."
+                },
+                {
+                    culture: "Phenomenology (European)",
+                    example: "Edmund Husserl's focus on 'lived experience' - how consciousness constitutes the world, emphasizing the subjective first-person perspective as foundational."
+                },
+                {
+                    culture: "Indigenous Amazonian",
+                    example: "Ayahuasca rituals that alter consciousness to experience different realities, demonstrating the primacy and malleability of subjective experience."
+                }
+            ]
         }
     ],
     "practical": [
@@ -124,7 +208,21 @@ const abilitiesData = {
             color: "#560bad",
             exercises: 5,
             philosophicalBasis: "Humans exist in hermeneutical circles with history - we reinterpret our past, which in turn redefines our present and future. This is a dialogical, not analytical, relationship.",
-            example: "Re-examining family history, understanding the choices of ancestors, and finding direction and meaning for one's own life."
+            example: "Re-examining family history, understanding the choices of ancestors, and finding direction and meaning for one's own life.",
+            crossCulturalExamples: [
+                {
+                    culture: "Jewish Tradition",
+                    example: "The Passover commandment 'to see oneself as if one personally came out of Egypt' - each generation re-experiencing and reinterpreting historical liberation to shape contemporary identity."
+                },
+                {
+                    culture: "Maori (New Zealand)",
+                    example: "Whakapapa - genealogical narratives that connect living people to ancestors, land, and events, constantly reinterpreted to guide present actions and future directions."
+                },
+                {
+                    culture: "American Civil Rights Movement",
+                    example: "Reclaiming the Exodus narrative from slavery to freedom to frame the struggle for civil rights, transforming historical memory into present empowerment."
+                }
+            ]
         },
         {
             id: 8,
@@ -137,7 +235,21 @@ const abilitiesData = {
             color: "#480ca8",
             exercises: 4,
             philosophicalBasis: "Emerges from the phenomenological experience of being-in-the-world. We don't just analyze the environment; we dwell within it, forming affective bonds that motivate care.",
-            example: "Living in harmony with nature like indigenous peoples, or seeing others as beings with intrinsic value rather than tools."
+            example: "Living in harmony with nature like indigenous peoples, or seeing others as beings with intrinsic value rather than tools.",
+            crossCulturalExamples: [
+                {
+                    culture: "Japanese (Shinto)",
+                    example: "The concept of 'kami' - sacred spirits residing in natural phenomena (trees, rocks, waterfalls), fostering respectful interaction with all aspects of nature."
+                },
+                {
+                    culture: "Bhutanese",
+                    example: "Gross National Happiness philosophy that measures development through environmental conservation, cultural preservation, and spiritual well-being rather than mere economic growth."
+                },
+                {
+                    culture: "Buddhist Ecology",
+                    example: "The belief in interconnectedness of all beings, leading to practices like releasing captive animals and protecting forests as acts of compassion."
+                }
+            ]
         },
         {
             id: 9,
@@ -150,7 +262,21 @@ const abilitiesData = {
             color: "#3a0ca3",
             exercises: 6,
             philosophicalBasis: "Requires mutual recognition and vulnerability. In authentic dialogue, we risk our own worldview and can be transformed through encounter with the other's irreducible subjectivity.",
-            example: "After deep communication with someone of different political views, truly understanding their position and adjusting one's own views."
+            example: "After deep communication with someone of different political views, truly understanding their position and adjusting one's own views.",
+            crossCulturalExamples: [
+                {
+                    culture: "Socratic Method (Ancient Greek)",
+                    example: "Dialogue as a cooperative search for truth where both participants risk their assumptions, exemplified by Socrates' conversations that transformed Athenian youth."
+                },
+                {
+                    culture: "Jewish Talmudic Debate",
+                    example: "'Makhloket l'shem shamayim' - disagreement for the sake of heaven, where opposing views are preserved in the text, honoring the truth that emerges through dialogue."
+                },
+                {
+                    culture: "Ubuntu Dialogue (African)",
+                    example: "'Indaba' - a meeting where participants speak until consensus emerges naturally, focusing on shared humanity rather than winning arguments."
+                }
+            ]
         }
     ]
 };
@@ -199,6 +325,9 @@ async function loadAbilities() {
                 <div class="ability-actions">
                     <button class="btn-secondary" onclick="startAbilityExercise(${ability.id})">
                         <i class="${ability.icon}"></i> Practice
+                    </button>
+                    <button class="btn-secondary" onclick="showCrossCulturalExamples(${ability.id})">
+                        <i class="fas fa-globe-americas"></i> Cross-Cultural
                     </button>
                     <button class="btn-text" onclick="learnMore(${ability.id})">Learn More</button>
                 </div>
@@ -722,6 +851,69 @@ function startAbilityExercise(abilityId) {
             duration: "10 min",
             abilityId: ability.id
         };
+    }
+}
+
+function showCrossCulturalExamples(abilityId) {
+    // Find the ability
+    let ability;
+    for (const dimension in abilitiesData) {
+        const found = abilitiesData[dimension].find(a => a.id === abilityId);
+        if (found) {
+            ability = found;
+            break;
+        }
+    }
+    
+    if (ability && ability.crossCulturalExamples) {
+        // Create HTML for cross-cultural examples
+        let examplesHTML = '';
+        ability.crossCulturalExamples.forEach(example => {
+            examplesHTML += `
+                <div class="culture-example">
+                    <h4>${example.culture}</h4>
+                    <p>${example.example}</p>
+                </div>
+            `;
+        });
+        
+        // Create modal
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Cross-Cultural Examples: ${ability.title}</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-intro">This ability manifests differently across cultures:</p>
+                    ${examplesHTML}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary close-modal">Close</button>
+                </div>
+            </div>
+        `;
+        
+        // Add to page
+        document.body.appendChild(modal);
+        
+        // Add close functionality
+        modal.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+        });
+        
+        // Close on overlay click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+    } else {
+        alert("Cross-cultural examples are not available for this ability yet.");
     }
 }
 
