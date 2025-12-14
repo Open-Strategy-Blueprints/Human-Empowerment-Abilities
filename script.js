@@ -1187,3 +1187,9 @@ function showWeChatQR() {
 }
     initProgressChart();
 }
+// 在页面加载完成后初始化分享功能
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSocialSharing);
+} else {
+    initSocialSharing();
+}
