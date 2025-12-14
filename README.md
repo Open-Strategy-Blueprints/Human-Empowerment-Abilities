@@ -1,5 +1,17 @@
 # Human Empowerment Abilities Project
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![GitHub stars](https://img.shields.io/github/stars/Open-Strategy-Blueprints/Human-Empowerment-Abilities)
+![GitHub forks](https://img.shields.io/github/forks/Open-Strategy-Blueprints/Human-Empowerment-Abilities)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fopen-strategy-blueprints.github.io%2FHuman-Empowerment-Abilities%2F)
+![GitHub contributors](https://img.shields.io/github/contributors/Open-Strategy-Blueprints/Human-Empowerment-Abilities)
+
+**Tags**: #HumanEmpowerment #AIEthics #Philosophy #Psychology #OpenSource #DigitalHumanities #Consciousness #SelfDevelopment
+
+## 🌐 Live Demo
+[访问网站](https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/) | [讨论区](链接) | [贡献指南](CONTRIBUTING.md)
+# Human Empowerment Abilities Project
+
 ![Human Empowerment Banner](assets/images/banner.png)
 
 ## 🧠 Project Vision
