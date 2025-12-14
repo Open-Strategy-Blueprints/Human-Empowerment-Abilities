@@ -111,18 +111,60 @@ function showError(message) {
 }
 
 // 加载能力数据
+// 在 loadAbilities 函数中，修改为以下内容：
 async function loadAbilities() {
-    try {
-        const response = await fetch('data/abilities.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        globalAbilitiesData = await response.json();
-        displayAbilities();
-    } catch (error) {
-        console.error('加载能力数据失败:', error);
-        // 使用备用数据
-        globalAbilitiesData = getFallbackAbilitiesData();
-        displayAbilities();
+    const container = document.getElementById('abilities-container');
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.dimension || 'emotional';
+    
+    container.innerHTML = '';
+    
+    // 从 abilitiesData 中获取数据（已包含完整9项能力）
+    const abilities = abilitiesData[activeTab];
+    
+    if (!abilities || abilities.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-brain"></i><p>正在加载能力数据...</p></div>';
+        return;
     }
+    
+    abilities.forEach(ability => {
+        const progress = Math.floor(Math.random() * 30) + 40; // 模拟进度，实际应从用户数据获取
+        const completed = Math.floor(Math.random() * (ability.exercises - 1)) + 1;
+        
+        const card = document.createElement('div');
+        card.className = 'ability-card';
+        card.innerHTML = `
+            <div class="ability-header">
+                <div class="ability-number">${ability.number}</div>
+                <span class="ability-category">${ability.category}</span>
+            </div>
+            <h3 class="ability-title">${ability.title}</h3>
+            <p class="ability-description">${ability.description}</p>
+            <div class="ability-details">
+                <div class="ai-limitation">
+                    <strong>AI局限：</strong> ${ability.aiLimitation}
+                </div>
+                ${ability.example ? `<div class="ability-example"><strong>示例：</strong> ${ability.example}</div>` : ''}
+            </div>
+            <div class="ability-footer">
+                <div class="ability-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(completed / ability.exercises) * 100}%"></div>
+                    </div>
+                    <span>已完成 ${completed}/${ability.exercises} 项练习</span>
+                </div>
+                <div class="ability-actions">
+                    <button class="btn-secondary" onclick="startAbilityExercise(${ability.id})">
+                        <i class="${ability.icon}"></i> 开始练习
+                    </button>
+                    <button class="btn-text" onclick="learnMore(${ability.id})">了解更多</button>
+                </div>
+            </div>
+        `;
+        
+        // 设置边框颜色
+        card.style.borderTopColor = ability.color;
+        container.appendChild(card);
+    });
 }
 
 // 加载练习数据
