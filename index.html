@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Empowerment Abilities | Cultivating Our Core in AI Era</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-brain"></i>
+                <span>Human Empowerment</span>
+            </a>
+            <div class="nav-links">
+                <a href="#abilities">Abilities</a>
+                <a href="#exercises">Exercises</a>
+                <a href="#progress">My Progress</a>
+                <a href="#community">Community</a>
+                <a href="#sign" class="btn-sign">Sign Manifesto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Cultivate Your <span class="highlight">Human Empowerment</span> Abilities</h1>
+                <p class="hero-subtitle">In the AI era, these 9 core abilities define our civilizational subjectivity. They cannot be outsourced, automated, or surrendered.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="total-cultivators">1,247</span>
+                        <span class="stat-label">Active Cultivators</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-exercises">5,892</span>
+                        <span class="stat-label">Exercises Completed</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-signatures">893</span>
+                        <span class="stat-label">Community Signatures</span>
+                    </div>
+                </div>
+                <a href="#abilities" class="btn-primary">Begin Your Journey</a>
+            </div>
+            <div class="hero-visual">
+                <div class="visual-circle">
+                    <div class="circle-segment" data-ability="empathy"></div>
+                    <div class="circle-segment" data-ability="meaning"></div>
+                    <div class="circle-segment" data-ability="love"></div>
+                    <div class="circle-segment" data-ability="intuition"></div>
+                    <div class="circle-segment" data-ability="choice"></div>
+                    <div class="circle-segment" data-ability="consciousness"></div>
+                    <div class="circle-segment" data-ability="history"></div>
+                    <div class="circle-segment" data-ability="reverence"></div>
+                    <div class="circle-segment" data-ability="dialogue"></div>
+                    <div class="circle-center">
+                        <span>We<br>Think</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Abilities Section -->
+    <section id="abilities" class="section">
+        <div class="container">
+            <h2 class="section-title">The 9 Core Empowerment Abilities</h2>
+            <p class="section-subtitle">Rooted in our finitude, embodiment, and relationality</p>
+            
+            <div class="dimension-tabs">
+                <button class="tab-btn active" data-dimension="emotional">Emotional & Meaning</button>
+                <button class="tab-btn" data-dimension="cognitive">Cognitive & Creative</button>
+                <button class="tab-btn" data-dimension="practical">Practical & Historical</button>
+            </div>
+            
+            <div class="abilities-grid" id="abilities-container">
+                <!-- Abilities will be loaded dynamically from abilities.json -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Exercise -->
+    <section id="daily-exercise" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Today's Empowerment Exercise</h2>
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-category" id="exercise-category">Embodied Empathy</span>
+                    <span class="exercise-duration" id="exercise-duration">10 min</span>
+                </div>
+                <h3 class="exercise-title" id="exercise-title">The Mirror of Another's Pain</h3>
+                <p class="exercise-description" id="exercise-description">Recall a moment of witnessing someone's genuine pain. Instead of analyzing it, try to feel where in your own body you sense their suffering. Sit with that sensation for 5 minutes without judgment.</p>
+                <div class="exercise-actions">
+                    <button class="btn-secondary" id="start-exercise">
+                        <i class="fas fa-play"></i> Start Exercise
+                    </button>
+                    <button class="btn-text" id="skip-exercise">
+                        Skip to Another
+                    </button>
+                </div>
+                <div class="exercise-timer" id="exercise-timer" style="display: none;">
+                    <div class="timer-circle">
+                        <span id="timer-display">05:00</span>
+                    </div>
+                    <button class="btn-secondary" id="complete-exercise">Complete & Reflect</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Tracker -->
+    <section id="progress" class="section">
+        <div class="container">
+            <h2 class="section-title">Your Empowerment Journey</h2>
+            <div class="progress-container">
+                <div class="progress-visual">
+                    <canvas id="progress-chart" width="400" height="400"></canvas>
+                </div>
+                <div class="progress-details">
+                    <h3>My Development Profile</h3>
+                    <div class="progress-badges" id="badge-container">
+                        <!-- Badges will be loaded here -->
+                    </div>
+                    <div class="progress-form">
+                        <h4>Add Your Reflection</h4>
+                        <textarea id="reflection-input" placeholder="What did you discover about your human abilities today?..." rows="4"></textarea>
+                        <button class="btn-primary" id="save-reflection">Save Reflection</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Signatures -->
+    <section id="community" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Community of Cultivators</h2>
+            <p class="section-subtitle">Join others in committing to human empowerment</p>
+            
+            <div class="signature-box">
+                <h3><i class="fas fa-signature"></i> Sign the Empowerment Manifesto</h3>
+                <p>"I commit to cultivating my uniquely human abilities, recognizing that in the AI era, my embodied empathy, creative intuition, and historical consciousness define my contribution to our collective future."</p>
+                
+                <div class="signature-form">
+                    <input type="text" id="user-name" placeholder="Your Name or Pseudonym" maxlength="50">
+                    <input type="text" id="user-location" placeholder="Your Location (optional)">
+                    <textarea id="user-commitment" placeholder="Personal commitment statement (optional)" rows="2"></textarea>
+                    <button class="btn-primary" id="submit-signature">
+                        <i class="fas fa-feather-alt"></i> Add My Signature
+                    </button>
+                </div>
+                
+                <div class="signatures-display" id="signatures-container">
+                    <!-- Signatures will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-brain"></i>
+                        <span>Human Empowerment</span>
+                    </div>
+                    <p>An open-source project dedicated to cultivating what makes us uniquely human.</p>
+                    <p class="footer-note">Completely open, only initial authorship rights reserved.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Dimensions</h4>
+                    <a href="pages/emotional-meaning.html">Emotional & Meaning</a>
+                    <a href="pages/cognitive-creativity.html">Cognitive & Creative</a>
+                    <a href="pages/practical-history.html">Practical & Historical</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Contribute</h4>
+                    <a href="CONTRIBUTING.md">Add Exercises</a>
+                    <a href="https://github.com/yourusername/Human-Empowerment-Abilities">GitHub Repo</a>
+                    <a href="community/signatures.md">View All Signatures</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <a href="#">Discussion Forum</a>
+                    <a href="#">Research Collaboration</a>
+                    <a href="#">Share Your Story</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Initiated by: [Your Name] | Inspired by: "我们思"的异化与捍卫：论AI时代文明主体性的免疫工程</p>
+                <p>This project is licensed under MIT License. All content is open for sharing, adaptation, and extension.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
