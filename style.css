@@ -1217,27 +1217,32 @@ h1, h2, h3, h4 {
     border-left: 5px solid #f72585;
     position: relative;
     animation: glow 3s infinite alternate;
+    margin-bottom: 15px;
 }
 
 .permanent-signature::before {
     content: "🌟";
     position: absolute;
-    left: -30px;
+    left: -25px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.5rem;
 }
 
-.permanent-signature::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%234361ee" stroke-width="1" opacity="0.3"/></svg>') repeat;
-    border-radius: var(--border-radius);
-    z-index: -1;
+.permanent-signature .signature-name {
+    color: #4361ee;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.permanent-signature .signature-location {
+    color: #3a0ca3;
+    font-style: italic;
+}
+
+.permanent-signature .signature-commitment {
+    color: #f72585;
+    font-weight: 600;
 }
 
 .signature-special {
