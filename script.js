@@ -1,3 +1,45 @@
+// 检查浏览器是否支持 localStorage
+function checkStorageSupport() {
+    try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        return true;
+    } catch (e) {
+        console.warn('LocalStorage 不可用（可能因隐私设置被阻止）。进度保存功能将受限。');
+        return false;
+    }
+}
+
+// 使用安全的存储方式
+function safeStorage() {
+    const storageAvailable = checkStorageSupport();
+    
+    return {
+        set: function(key, value) {
+            if (storageAvailable) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (e) {
+                    // 如果失败，使用 sessionStorage 作为备选
+                    sessionStorage.setItem(key, JSON.stringify(value));
+                }
+            }
+        },
+        get: function(key) {
+            if (storageAvailable) {
+                try {
+                    return JSON.parse(localStorage.getItem(key));
+                } catch (e) {
+                    return JSON.parse(sessionStorage.getItem(key));
+                }
+            }
+            return null;
+        }
+    };
+}
+
+// 使用示例
+const storage = safeStorage();
 // Human Empowerment Abilities - Interactive Script
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the application
