@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Sitemap: https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/sitemap.xml
+
+# 禁止搜索引擎爬取data目录（如果不想让数据被索引）
+User-agent: *
+Disallow: /data/
+
+# 允许社交媒体爬虫
+User-agent: FacebookExternalHit
+Allow: /
+User-agent: Twitterbot
+Allow: /
+User-agent: LinkedInBot
+Allow: /
