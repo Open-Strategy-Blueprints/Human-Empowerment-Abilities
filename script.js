@@ -1193,3 +1193,93 @@ if (document.readyState === 'loading') {
 } else {
     initSocialSharing();
 }
+// 定义分享功能函数
+function initSocialSharing() {
+    console.log('初始化分享功能...');
+    
+    // 创建分享按钮容器
+    const shareButtons = `
+        <div class="social-share-container" style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.05); border-radius: 10px;">
+            <h4 style="margin-bottom: 10px;">分享这个项目：</h4>
+            <div class="share-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="share-btn twitter" onclick="shareToTwitter()" style="padding: 8px 15px; background: #1DA1F2; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <i class="fab fa-twitter"></i> Twitter
+                </button>
+                <button class="share-btn linkedin" onclick="shareToLinkedIn()" style="padding: 8px 15px; background: #0077B5; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </button>
+                <button class="share-btn facebook" onclick="shareToFacebook()" style="padding: 8px 15px; background: #4267B2; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <i class="fab fa-facebook"></i> Facebook
+                </button>
+                <button class="share-btn wechat" onclick="showWeChatQR()" style="padding: 8px 15px; background: #09B83E; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <i class="fab fa-weixin"></i> 微信
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // 添加到页脚
+    const footer = document.querySelector('.footer-content');
+    if (footer) {
+        footer.insertAdjacentHTML('beforeend', shareButtons);
+        console.log('分享按钮已添加到页面');
+    } else {
+        console.warn('未找到 .footer-content 元素');
+    }
+}
+
+// 分享平台函数
+function shareToTwitter() {
+    const text = encodeURIComponent('发现这个超棒的人类赋能能力项目！在AI时代培养不可替代的人类核心能力。');
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+}
+
+function shareToLinkedIn() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+}
+
+function shareToFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+
+function showWeChatQR() {
+    const url = window.location.href;
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:10000;';
+    modal.innerHTML = `
+        <div style="background:white; padding:20px; border-radius:10px; text-align:center; max-width:400px;">
+            <h3>微信分享</h3>
+            <p>请复制链接分享：</p>
+            <p style="background:#f5f5f5; padding:10px; border-radius:5px; word-break:break-all;">${url}</p>
+            <button onclick="this.parentElement.parentElement.remove()" style="margin-top:15px; padding:8px 20px; background:#4361ee; color:white; border:none; border-radius:5px; cursor:pointer;">关闭</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// 确保页面加载后初始化分享功能
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM已加载，初始化分享功能');
+        if (typeof initSocialSharing === 'function') {
+            initSocialSharing();
+        }
+    });
+} else {
+    console.log('DOM已就绪，立即初始化分享功能');
+    if (typeof initSocialSharing === 'function') {
+        initSocialSharing();
+    }
+}
+
+// 确保函数在全局作用域可用
+window.initSocialSharing = initSocialSharing;
+window.shareToTwitter = shareToTwitter;
+window.shareToLinkedIn = shareToLinkedIn;
+window.shareToFacebook = shareToFacebook;
+window.showWeChatQR = showWeChatQR;
+
+console.log('分享功能脚本已加载');
