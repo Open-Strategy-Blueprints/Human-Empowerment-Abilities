@@ -4,26 +4,15 @@ document.addEventListener('DOMContentLoaded', function() {
     initApp();
 });
 
-// 全局数据存储
-let globalAbilitiesData = {};
-let globalExercisesData = [];
-let globalUsersData = {};
-let userProgress = {
-    abilitiesProgress: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0},
-    completedExercises: [],
-    badges: ['sprout'],
-    reflections: []
-};
-
 async function initApp() {
-    // Check storage support first
-    checkStorageSupport();
+    // Load abilities data
+    await loadAbilities();
     
-    // Load user progress from localStorage
-    loadUserProgress();
+    // Load exercises
+    await loadExercises();
     
-    // Load all data
-    await loadAllData();
+    // Load community signatures
+    await loadSignatures();
     
     // Initialize progress chart
     initProgressChart();
@@ -33,101 +22,143 @@ async function initApp() {
     
     // Update stats periodically
     setInterval(updateLiveStats, 30000);
-    
-    // Initial UI update
-    updateLiveStats();
 }
 
-// 检查存储支持
-function checkStorageSupport() {
-    try {
-        localStorage.setItem('test', 'test');
-        localStorage.removeItem('test');
-        return true;
-    } catch (e) {
-        console.warn('LocalStorage 不可用（可能因隐私设置被阻止）。进度保存功能将受限。');
-        return false;
-    }
-}
-
-// 安全的本地存储操作
-const storage = {
-    set: function(key, value) {
-        try {
-            localStorage.setItem(key, JSON.stringify(value));
-        } catch (e) {
-            console.warn('无法保存到LocalStorage，使用sessionStorage作为备选');
-            sessionStorage.setItem(key, JSON.stringify(value));
+// Abilities Data (Now complete with all 9 abilities in English)
+const abilitiesData = {
+    "emotional": [
+        {
+            id: 1,
+            number: "01",
+            category: "Emotional & Meaning",
+            title: "Embodied Empathy",
+            description: "The capacity for compassion rooted in biological neurochemistry, sensory experience, and life journey.",
+            aiLimitation: "Can simulate response patterns but lacks the weight of understanding from embodied pain and ecstasy.",
+            icon: "fas fa-heart",
+            color: "#4cc9f0",
+            exercises: 5,
+            philosophicalBasis: "Rooted in our biological existence, this ability emerges from the interplay of mirror neurons, hormonal responses, and lived experience that cannot be algorithmically reproduced.",
+            example: "When you see a friend lose a loved one, you not only understand their sadness, but your body also feels a similar heaviness."
+        },
+        {
+            id: 2,
+            number: "02",
+            category: "Emotional & Meaning",
+            title: "Meaning-Giving in Absurdity",
+            description: "Creating hope, narrative, and faith in the face of suffering, meaninglessness, and finitude.",
+            aiLimitation: "Can combine texts about meaning but lacks existential urgency driven by death awareness.",
+            icon: "fas fa-seedling",
+            color: "#4361ee",
+            exercises: 4,
+            philosophicalBasis: "Emerges from our confrontation with mortality and the human condition. The awareness of death gives birth to the need for meaning, a uniquely human existential project.",
+            example: "After losing a job, you redefine the meaning of life and find a new direction in volunteer work."
+        },
+        {
+            id: 3,
+            number: "03",
+            category: "Emotional & Meaning",
+            title: "Non-Utilitarian Love & Sacrifice",
+            description: "Pure altruism beyond genetic calculation and interest exchange, where value lies in the act of sacrifice itself.",
+            aiLimitation: "Its 'altruism' is a preset program goal, unable to understand the paradoxical beauty of sacrifice as meaning-completion.",
+            icon: "fas fa-hands-helping",
+            color: "#3a0ca3",
+            exercises: 6,
+            philosophicalBasis: "Transcends evolutionary programming through free will and moral imagination. The choice to sacrifice for another without expected return defines human ethical capacity.",
+            example: "Donating an organ anonymously to a stranger, or risking one's life to save someone unrelated."
         }
-    },
-    get: function(key) {
-        try {
-            const item = localStorage.getItem(key) || sessionStorage.getItem(key);
-            return item ? JSON.parse(item) : null;
-        } catch (e) {
-            return null;
+    ],
+    "cognitive": [
+        {
+            id: 4,
+            number: "04",
+            category: "Cognitive & Creative",
+            title: "Intuitive Leap from Ambiguity",
+            description: "Creative breakthroughs from contradictory and incomplete information through subconscious integration.",
+            aiLimitation: "Innovation is recombination and optimization of existing data patterns, not emergence from consciousness edges.",
+            icon: "fas fa-lightbulb",
+            color: "#f72585",
+            exercises: 5,
+            philosophicalBasis: "Arises from the subconscious mind's ability to process information holistically, making connections that exceed logical deduction. This 'aha!' moment is a mystery of human consciousness.",
+            example: "Archimedes suddenly understanding the principle of buoyancy in a bathtub, or a scientist solving a research problem in a dream."
+        },
+        {
+            id: 5,
+            number: "05",
+            category: "Cognitive & Creative",
+            title: "Tragic Choice Bearing",
+            description: "Making and carrying the ethical burden of choices between incommensurable values.",
+            aiLimitation: "Its choices are optimal solutions based on weight calculations, unable to experience the eternal regret and life texture.",
+            icon: "fas fa-balance-scale",
+            color: "#b5179e",
+            exercises: 4,
+            philosophicalBasis: "Rooted in the human condition of moral ambiguity. Unlike AI's cost-benefit analysis, humans must live with the irreconcilable consequences of their choices.",
+            example: "Choosing whom to save when medical resources are limited, or making an irreversible choice between family and career."
+        },
+        {
+            id: 6,
+            number: "06",
+            category: "Cognitive & Creative",
+            title: "First-Person Consciousness",
+            description: "Subjective experiences like 'redness' or 'pain' as the absolute origin of all understanding and value.",
+            aiLimitation: "Can process 'red' wavelength data but has no experience of 'redness'. This is the core of the 'hard problem' of consciousness.",
+            icon: "fas fa-eye",
+            color: "#7209b7",
+            exercises: 3,
+            philosophicalBasis: "The 'hard problem' of consciousness - the qualitative, subjective experience of being. This phenomenal consciousness is the foundation of all human experience and value.",
+            example: "The inner emotion when seeing a sunset, or the pleasure of tasting delicious food, which cannot be fully described in words."
         }
-    }
+    ],
+    "practical": [
+        {
+            id: 7,
+            number: "07",
+            category: "Practical & Historical",
+            title: "Historical Self-Reinvention",
+            description: "Reinterpreting the past to gain new identity and future direction. History as a 'living textbook'.",
+            aiLimitation: "History for it is a closed dataset for analysis, unable to engage in self-changing 'horizon fusion'.",
+            icon: "fas fa-history",
+            color: "#560bad",
+            exercises: 5,
+            philosophicalBasis: "Humans exist in hermeneutical circles with history - we reinterpret our past, which in turn redefines our present and future. This is a dialogical, not analytical, relationship.",
+            example: "Re-examining family history, understanding the choices of ancestors, and finding direction and meaning for one's own life."
+        },
+        {
+            id: 8,
+            number: "08",
+            category: "Practical & Historical",
+            title: "Reverence-Based Coexistence",
+            description: "Interacting with nature and others as partners rather than objects, with emotional connection fostering sustainable wisdom.",
+            aiLimitation: "Its environmental strategy is a cold optimization model, lacking emotional drivers like 'unity with nature' or 'reverence for life'.",
+            icon: "fas fa-mountain",
+            color: "#480ca8",
+            exercises: 4,
+            philosophicalBasis: "Emerges from the phenomenological experience of being-in-the-world. We don't just analyze the environment; we dwell within it, forming affective bonds that motivate care.",
+            example: "Living in harmony with nature like indigenous peoples, or seeing others as beings with intrinsic value rather than tools."
+        },
+        {
+            id: 9,
+            number: "09",
+            category: "Practical & Historical",
+            title: "Soul-Transforming Dialogue",
+            description: "Changing core beliefs through being genuinely moved by another's reasoning and character in sincere dialogue.",
+            aiLimitation: "Its debate aims at logical victory or goal optimization, not belief transformation based on trust and recognition.",
+            icon: "fas fa-comments",
+            color: "#3a0ca3",
+            exercises: 6,
+            philosophicalBasis: "Requires mutual recognition and vulnerability. In authentic dialogue, we risk our own worldview and can be transformed through encounter with the other's irreducible subjectivity.",
+            example: "After deep communication with someone of different political views, truly understanding their position and adjusting one's own views."
+        }
+    ]
 };
 
-// 加载用户进度
-function loadUserProgress() {
-    const savedProgress = storage.get('humanEmpowermentProgress');
-    if (savedProgress) {
-        userProgress = savedProgress;
-        console.log('用户进度已加载');
-    }
-}
-
-// 保存用户进度
-function saveUserProgress() {
-    storage.set('humanEmpowermentProgress', userProgress);
-}
-
-// 加载所有数据
-async function loadAllData() {
-    try {
-        await Promise.all([
-            loadAbilities(),
-            loadExercises(),
-            loadUsers()
-        ]);
-    } catch (error) {
-        console.error('加载数据时出错:', error);
-        showError('无法加载数据，请检查网络连接或刷新页面。');
-    }
-}
-
-// 显示错误
-function showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.innerHTML = `
-        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <strong>错误:</strong> ${message}
-        </div>
-    `;
-    document.querySelector('.container').prepend(errorDiv);
-}
-
-// 加载能力数据
-// 在 loadAbilities 函数中，修改为以下内容：
 async function loadAbilities() {
     const container = document.getElementById('abilities-container');
     const activeTab = document.querySelector('.tab-btn.active')?.dataset.dimension || 'emotional';
     
     container.innerHTML = '';
     
-    // 从 abilitiesData 中获取数据（已包含完整9项能力）
-    const abilities = abilitiesData[activeTab];
-    
-    if (!abilities || abilities.length === 0) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-brain"></i><p>正在加载能力数据...</p></div>';
-        return;
-    }
-    
-    abilities.forEach(ability => {
-        const progress = Math.floor(Math.random() * 30) + 40; // 模拟进度，实际应从用户数据获取
+    abilitiesData[activeTab].forEach(ability => {
+        const progress = Math.floor(Math.random() * 30) + 40; // Simulated progress
         const completed = Math.floor(Math.random() * (ability.exercises - 1)) + 1;
         
         const card = document.createElement('div');
@@ -141,104 +172,22 @@ async function loadAbilities() {
             <p class="ability-description">${ability.description}</p>
             <div class="ability-details">
                 <div class="ai-limitation">
-                    <strong>AI局限：</strong> ${ability.aiLimitation}
+                    <strong>AI Limitation:</strong> ${ability.aiLimitation}
                 </div>
-                ${ability.example ? `<div class="ability-example"><strong>示例：</strong> ${ability.example}</div>` : ''}
+                ${ability.example ? `<div class="ability-example"><strong>Example:</strong> ${ability.example}</div>` : ''}
             </div>
             <div class="ability-footer">
                 <div class="ability-progress">
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${(completed / ability.exercises) * 100}%"></div>
                     </div>
-                    <span>已完成 ${completed}/${ability.exercises} 项练习</span>
+                    <span>Completed ${completed}/${ability.exercises} exercises</span>
                 </div>
                 <div class="ability-actions">
                     <button class="btn-secondary" onclick="startAbilityExercise(${ability.id})">
-                        <i class="${ability.icon}"></i> 开始练习
+                        <i class="${ability.icon}"></i> Practice
                     </button>
-                    <button class="btn-text" onclick="learnMore(${ability.id})">了解更多</button>
-                </div>
-            </div>
-        `;
-        
-        // 设置边框颜色
-        card.style.borderTopColor = ability.color;
-        container.appendChild(card);
-    });
-}
-
-// 加载练习数据
-async function loadExercises() {
-    try {
-        const response = await fetch('data/exercises.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        globalExercisesData = data.exercises || [];
-        displayRandomExercise();
-    } catch (error) {
-        console.error('加载练习数据失败:', error);
-        globalExercisesData = getFallbackExercisesData();
-        displayRandomExercise();
-    }
-}
-
-// 加载用户数据
-async function loadUsers() {
-    try {
-        const response = await fetch('data/users.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        globalUsersData = await response.json();
-        updateCommunityStats();
-        displaySignatures();
-    } catch (error) {
-        console.error('加载用户数据失败:', error);
-        globalUsersData = getFallbackUsersData();
-        updateCommunityStats();
-        displaySignatures();
-    }
-}
-
-// 显示能力卡片
-function displayAbilities() {
-    const container = document.getElementById('abilities-container');
-    const activeTab = document.querySelector('.tab-btn.active')?.dataset.dimension || 'emotional';
-    
-    if (!container || !globalAbilitiesData[activeTab]) {
-        console.error('无法找到容器或能力数据');
-        return;
-    }
-    
-    container.innerHTML = '';
-    
-    globalAbilitiesData[activeTab].forEach(ability => {
-        const completed = userProgress.abilitiesProgress[ability.id] || 0;
-        const totalExercises = ability.exercises || 3;
-        const progressPercent = (completed / totalExercises) * 100;
-        
-        const card = document.createElement('div');
-        card.className = 'ability-card';
-        card.innerHTML = `
-            <div class="ability-header">
-                <div class="ability-number">${ability.number}</div>
-                <span class="ability-category">${ability.category}</span>
-            </div>
-            <h3 class="ability-title">${ability.title}</h3>
-            <p class="ability-description">${ability.description}</p>
-            <div class="ability-meta">
-                <p><strong>AI Limitation:</strong> ${ability.aiLimitation}</p>
-            </div>
-            <div class="ability-footer">
-                <div class="ability-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progressPercent}%"></div>
-                    </div>
-                    <span>${completed}/${totalExercises} 练习完成</span>
-                </div>
-                <div class="ability-actions">
-                    <button class="btn-secondary practice-btn" data-ability-id="${ability.id}">
-                        <i class="${ability.icon}"></i> 练习
-                    </button>
-                    <button class="btn-text learn-btn" data-ability-id="${ability.id}">了解更多</button>
+                    <button class="btn-text" onclick="learnMore(${ability.id})">Learn More</button>
                 </div>
             </div>
         `;
@@ -247,153 +196,119 @@ function displayAbilities() {
         card.style.borderTopColor = ability.color;
         container.appendChild(card);
     });
-    
-    // Add event listeners to the new buttons
-    document.querySelectorAll('.practice-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const abilityId = parseInt(this.dataset.abilityId);
-            startAbilityExercise(abilityId);
-        });
-    });
-    
-    document.querySelectorAll('.learn-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const abilityId = parseInt(this.dataset.abilityId);
-            learnMore(abilityId);
-        });
-    });
 }
 
-// 显示随机练习
-function displayRandomExercise() {
-    if (!globalExercisesData.length) {
-        console.error('没有可用的练习数据');
-        return;
-    }
+async function loadExercises() {
+    // In a real implementation, this would fetch from exercises.json
+    const exercises = [
+        {
+            id: 1,
+            category: "Embodied Empathy",
+            title: "The Mirror of Another's Pain",
+            description: "Recall a moment of witnessing someone's genuine pain. Instead of analyzing it, try to feel where in your own body you sense their suffering. Sit with that sensation for 5 minutes without judgment.",
+            duration: "10 min",
+            abilityId: 1
+        },
+        {
+            id: 2,
+            category: "Intuitive Leap from Ambiguity",
+            title: "Embracing Contradiction",
+            description: "Write down two conflicting beliefs you hold. Spend 15 minutes exploring how both might be true simultaneously, without forcing resolution.",
+            duration: "15 min",
+            abilityId: 4
+        },
+        {
+            id: 3,
+            category: "Soul-Transforming Dialogue",
+            title: "Listening for Transformation",
+            description: "Have a conversation where your only goal is to understand the other person's worldview. Resist the urge to persuade or correct. Afterwards, write one way your perspective has shifted.",
+            duration: "20 min",
+            abilityId: 9
+        },
+        {
+            id: 4,
+            category: "Meaning-Giving in Absurdity",
+            title: "Finding Beauty in the Broken",
+            description: "Find something broken or discarded (a fallen leaf, a cracked cup). Spend 10 minutes contemplating what beauty or meaning it holds despite (or because of) its imperfection.",
+            duration: "10 min",
+            abilityId: 2
+        },
+        {
+            id: 5,
+            category: "Tragic Choice Bearing",
+            title: "The Unresolvable Dilemma",
+            description: "Imagine you must choose between saving a masterpiece of human art or saving a stranger's life. Sit with the dilemma for 15 minutes without trying to solve it.",
+            duration: "15 min",
+            abilityId: 5
+        }
+    ];
     
     // Randomly select today's exercise
-    const randomIndex = Math.floor(Math.random() * globalExercisesData.length);
-    const exercise = globalExercisesData[randomIndex];
+    const todayExercise = exercises[Math.floor(Math.random() * exercises.length)];
     
-    // Update UI
-    const categoryEl = document.getElementById('exercise-category');
-    const titleEl = document.getElementById('exercise-title');
-    const descEl = document.getElementById('exercise-description');
-    const durationEl = document.getElementById('exercise-duration');
+    document.getElementById('exercise-category').textContent = todayExercise.category;
+    document.getElementById('exercise-title').textContent = todayExercise.title;
+    document.getElementById('exercise-description').textContent = todayExercise.description;
+    document.getElementById('exercise-duration').textContent = todayExercise.duration;
     
-    if (categoryEl) categoryEl.textContent = exercise.category;
-    if (titleEl) titleEl.textContent = exercise.title;
-    if (descEl) descEl.textContent = exercise.description;
-    if (durationEl) durationEl.textContent = exercise.duration;
-    
-    // Store current exercise for completion tracking
-    if (window.currentExercise) {
-        window.currentExercise = exercise;
-    } else {
-        window.currentExercise = exercise;
-    }
+    // Store the current exercise for feedback
+    window.currentExercise = todayExercise;
 }
 
-// 显示社区签名
-function displaySignatures() {
+async function loadSignatures() {
     const container = document.getElementById('signatures-container');
-    if (!container || !globalUsersData.users) return;
+    
+    // Sample signatures
+    const signatures = [
+        { name: "Alex Chen", location: "Taipei", commitment: "Committing to daily embodied empathy practice." },
+        { name: "Maria Rodriguez", location: "Barcelona", commitment: "Protecting human creativity in an algorithmic world." },
+        { name: "Kofi Mensah", location: "Accra", commitment: "Teaching the next generation to value tragic choice bearing." },
+        { name: "Sakura Tanaka", location: "Kyoto", commitment: "Cultivating reverence for nature in all interactions." },
+        { name: "Liam O'Connor", location: "Dublin", commitment: "Preserving soul-transforming dialogue in digital spaces." },
+        { name: "Elena Petrova", location: "Moscow", commitment: "Rediscovering meaning in everyday absurdities." },
+        { name: "David Kim", location: "Seoul", commitment: "Defending first-person consciousness in an age of data." }
+    ];
     
     container.innerHTML = '';
     
-    // Display sample signatures from users data
-    globalUsersData.users.slice(0, 5).forEach(user => {
-        if (user.reflections && user.reflections.length > 0) {
-            const reflection = user.reflections[0];
-            const item = document.createElement('div');
-            item.className = 'signature-item';
-            item.innerHTML = `
-                <div class="signature-name">${user.username}</div>
-                <div class="signature-location">${user.location}</div>
-                <div class="signature-commitment">"${reflection.text.substring(0, 100)}${reflection.text.length > 100 ? '...' : ''}"</div>
-            `;
-            container.appendChild(item);
-        }
+    signatures.forEach(sig => {
+        const item = document.createElement('div');
+        item.className = 'signature-item';
+        item.innerHTML = `
+            <div class="signature-name">${sig.name}</div>
+            <div class="signature-location">${sig.location}</div>
+            <div class="signature-commitment">"${sig.commitment}"</div>
+        `;
+        container.appendChild(item);
     });
 }
 
-// 更新社区统计
-function updateCommunityStats() {
-    const cultivatorsEl = document.getElementById('total-cultivators');
-    const exercisesEl = document.getElementById('total-exercises');
-    const signaturesEl = document.getElementById('total-signatures');
-    
-    if (cultivatorsEl && globalUsersData.activeUsers) {
-        cultivatorsEl.textContent = globalUsersData.activeUsers.toLocaleString();
-    }
-    
-    if (exercisesEl && globalUsersData.totalExercisesCompleted) {
-        exercisesEl.textContent = globalUsersData.totalExercisesCompleted.toLocaleString();
-    }
-    
-    if (signaturesEl && globalUsersData.totalSignatures) {
-        signaturesEl.textContent = globalUsersData.totalSignatures.toLocaleString();
-    }
-}
-
-// 初始化进度图表
 function initProgressChart() {
-    const ctx = document.getElementById('progress-chart');
-    if (!ctx) return;
+    const ctx = document.getElementById('progress-chart').getContext('2d');
     
-    const ctx2d = ctx.getContext('2d');
-    
-    // Prepare data from user progress
-    const labels = [];
-    const dataValues = [];
-    const backgroundColors = [
-        'rgba(76, 201, 240, 0.7)',
-        'rgba(67, 97, 238, 0.7)',
-        'rgba(58, 12, 163, 0.7)',
-        'rgba(247, 37, 133, 0.7)',
-        'rgba(181, 23, 158, 0.7)',
-        'rgba(114, 9, 183, 0.7)',
-        'rgba(86, 11, 173, 0.7)',
-        'rgba(72, 12, 168, 0.7)',
-        'rgba(58, 12, 163, 0.7)'
-    ];
-    
-    // Get ability names and progress values
-    for (let i = 1; i <= 9; i++) {
-        let abilityName = '';
-        let progressValue = userProgress.abilitiesProgress[i] || 0;
-        
-        // Find ability name
-        for (const dimension in globalAbilitiesData) {
-            const ability = globalAbilitiesData[dimension].find(a => a.id === i);
-            if (ability) {
-                // Extract first word or short name
-                abilityName = ability.title.split(' ')[0];
-                break;
-            }
-        }
-        
-        labels.push(abilityName || `能力 ${i}`);
-        dataValues.push(progressValue);
-    }
-    
+    // Sample progress data
     const progressData = {
-        labels: labels,
+        labels: ['Empathy', 'Meaning', 'Love', 'Intuition', 'Choice', 'Consciousness', 'History', 'Reverence', 'Dialogue'],
         datasets: [{
-            label: '你的发展',
-            data: dataValues,
-            backgroundColor: backgroundColors.slice(0, labels.length),
+            label: 'Your Development',
+            data: [65, 40, 30, 75, 50, 35, 60, 45, 55],
+            backgroundColor: [
+                'rgba(76, 201, 240, 0.7)',
+                'rgba(67, 97, 238, 0.7)',
+                'rgba(58, 12, 163, 0.7)',
+                'rgba(247, 37, 133, 0.7)',
+                'rgba(181, 23, 158, 0.7)',
+                'rgba(114, 9, 183, 0.7)',
+                'rgba(86, 11, 173, 0.7)',
+                'rgba(72, 12, 168, 0.7)',
+                'rgba(58, 12, 163, 0.7)'
+            ],
             borderColor: '#ffffff',
             borderWidth: 2
         }]
     };
     
-    // Destroy existing chart if it exists
-    if (window.progressChart) {
-        window.progressChart.destroy();
-    }
-    
-    window.progressChart = new Chart(ctx2d, {
+    new Chart(ctx, {
         type: 'radar',
         data: progressData,
         options: {
@@ -405,10 +320,7 @@ function initProgressChart() {
                         display: true
                     },
                     suggestedMin: 0,
-                    suggestedMax: 100,
-                    ticks: {
-                        stepSize: 20
-                    }
+                    suggestedMax: 100
                 }
             },
             plugins: {
@@ -421,12 +333,499 @@ function initProgressChart() {
     
     // Initialize badges
     const badgeContainer = document.getElementById('badge-container');
+    const badges = [
+        { id: 'sprout', name: 'Sprout', icon: 'fas fa-seedling', earned: true },
+        { id: 'cultivator', name: 'Cultivator', icon: 'fas fa-leaf', earned: false },
+        { id: 'guardian', name: 'Guardian', icon: 'fas fa-shield-alt', earned: false },
+        { id: 'beacon', name: 'Beacon', icon: 'fas fa-star', earned: false }
+    ];
+    
+    badgeContainer.innerHTML = '';
+    badges.forEach(badge => {
+        const badgeEl = document.createElement('div');
+        badgeEl.className = `badge ${badge.earned ? 'earned' : ''}`;
+        badgeEl.innerHTML = `
+            <i class="${badge.icon}"></i>
+            <span>${badge.name}</span>
+        `;
+        badgeContainer.appendChild(badgeEl);
+    });
+}
+
+// User Progress Management System
+const UserProgress = {
+    // Initialize user progress
+    init: function() {
+        if (!localStorage.getItem('userProgress')) {
+            this.resetProgress();
+        }
+        return this.getProgress();
+    },
+    
+    // Reset progress
+    resetProgress: function() {
+        const progress = {
+            userId: 'user_' + Date.now(),
+            username: 'Anonymous User',
+            joinDate: new Date().toISOString().split('T')[0],
+            abilitiesProgress: {},
+            completedExercises: [],
+            badges: ['sprout'],
+            reflections: [],
+            totalTimeSpent: 0
+        };
+        
+        // Initialize all ability progress to 0
+        for (let i = 1; i <= 9; i++) {
+            progress.abilitiesProgress[i] = 0;
+        }
+        
+        localStorage.setItem('userProgress', JSON.stringify(progress));
+        return progress;
+    },
+    
+    // Get progress
+    getProgress: function() {
+        return JSON.parse(localStorage.getItem('userProgress'));
+    },
+    
+    // Update progress
+    updateProgress: function(abilityId, exerciseId, timeSpent, reflection) {
+        const progress = this.getProgress();
+        
+        // Update ability progress
+        if (!progress.completedExercises.includes(exerciseId)) {
+            progress.completedExercises.push(exerciseId);
+            progress.abilitiesProgress[abilityId] = 
+                Math.min(100, progress.abilitiesProgress[abilityId] + 15);
+        }
+        
+        // Add total time
+        progress.totalTimeSpent += timeSpent;
+        
+        // Add reflection
+        if (reflection) {
+            progress.reflections.push({
+                date: new Date().toISOString().split('T')[0],
+                abilityId: abilityId,
+                text: reflection
+            });
+        }
+        
+        // Check badges
+        this.checkBadges(progress);
+        
+        // Save
+        localStorage.setItem('userProgress', JSON.stringify(progress));
+        return progress;
+    },
+    
+    // Check badges
+    checkBadges: function(progress) {
+        const completedCount = progress.completedExercises.length;
+        
+        if (completedCount >= 3 && !progress.badges.includes('cultivator')) {
+            progress.badges.push('cultivator');
+        }
+        
+        if (completedCount >= 5 && !progress.badges.includes('guardian')) {
+            progress.badges.push('guardian');
+        }
+        
+        if (completedCount >= 8 && !progress.badges.includes('beacon')) {
+            progress.badges.push('beacon');
+        }
+    }
+};
+
+function setupEventListeners() {
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            loadAbilities();
+        });
+    });
+    
+    // Exercise timer
+    const startBtn = document.getElementById('start-exercise');
+    const timerDisplay = document.getElementById('exercise-timer');
+    const skipBtn = document.getElementById('skip-exercise');
+    const completeBtn = document.getElementById('complete-exercise');
+    const feedbackSection = document.getElementById('exercise-feedback');
+    const feedbackResult = document.getElementById('feedback-result');
+    const saveReflectionBtn = document.getElementById('save-reflection');
+    const skipReflectionBtn = document.getElementById('skip-reflection');
+    
+    let timerInterval;
+    let timeLeft = 300; // 5 minutes in seconds
+    
+    startBtn.addEventListener('click', function() {
+        this.style.display = 'none';
+        skipBtn.style.display = 'none';
+        timerDisplay.style.display = 'block';
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('timer-display').textContent = "Time's up!";
+                completeBtn.disabled = false;
+            }
+        }, 1000);
+    });
+    
+    completeBtn.addEventListener('click', function() {
+        clearInterval(timerInterval);
+        const timeSpent = 300 - timeLeft;
+        
+        // Store exercise completion info
+        window.exerciseCompletion = {
+            abilityId: window.currentExercise.abilityId,
+            exerciseId: Math.floor(Math.random() * 1000),
+            timeSpent: timeSpent,
+            abilityName: window.currentExercise.category.split(' ')[0] + ' ' + window.currentExercise.category.split(' ')[1]
+        };
+        
+        // Show feedback form
+        timerDisplay.style.display = 'none';
+        feedbackSection.style.display = 'block';
+    });
+    
+    skipBtn.addEventListener('click', function() {
+        loadExercises(); // Load a new random exercise
+    });
+    
+    // Save reflection
+    saveReflectionBtn.addEventListener('click', function() {
+        const reflection = document.getElementById('reflection-text').value.trim();
+        
+        if (reflection) {
+            // Update user progress
+            UserProgress.updateProgress(
+                window.exerciseCompletion.abilityId,
+                window.exerciseCompletion.exerciseId,
+                window.exerciseCompletion.timeSpent,
+                reflection
+            );
+            
+            // Show success message
+            document.getElementById('ability-name').textContent = window.exerciseCompletion.abilityName;
+            document.getElementById('total-completed').textContent = 
+                UserProgress.getProgress().completedExercises.length;
+            
+            feedbackSection.style.display = 'none';
+            feedbackResult.style.display = 'block';
+            
+            // Update progress display
+            updateProgressDisplay();
+            
+            // Reset after 3 seconds
+            setTimeout(() => {
+                feedbackResult.style.display = 'none';
+                startBtn.style.display = 'inline-block';
+                skipBtn.style.display = 'inline-block';
+                timeLeft = 300;
+                document.getElementById('timer-display').textContent = "05:00";
+                document.getElementById('reflection-text').value = '';
+                
+                // Load new exercise
+                loadExercises();
+            }, 3000);
+        } else {
+            alert("Please write your reflection before saving.");
+        }
+    });
+    
+    // Skip reflection
+    skipReflectionBtn.addEventListener('click', function() {
+        // Still update progress without reflection
+        UserProgress.updateProgress(
+            window.exerciseCompletion.abilityId,
+            window.exerciseCompletion.exerciseId,
+            window.exerciseCompletion.timeSpent,
+            null
+        );
+        
+        // Show minimal success message
+        feedbackSection.style.display = 'none';
+        
+        // Reset UI
+        startBtn.style.display = 'inline-block';
+        skipBtn.style.display = 'inline-block';
+        timeLeft = 300;
+        document.getElementById('timer-display').textContent = "05:00";
+        document.getElementById('reflection-text').value = '';
+        
+        // Update progress display
+        updateProgressDisplay();
+        
+        // Load new exercise
+        loadExercises();
+    });
+    
+    // Signature submission
+    document.getElementById('submit-signature').addEventListener('click', function() {
+        const name = document.getElementById('user-name').value.trim();
+        const location = document.getElementById('user-location').value.trim();
+        const commitment = document.getElementById('user-commitment').value.trim();
+        
+        if (!name) {
+            alert("Please enter your name or pseudonym.");
+            return;
+        }
+        
+        // Create signature element
+        const container = document.getElementById('signatures-container');
+        const item = document.createElement('div');
+        item.className = 'signature-item';
+        item.innerHTML = `
+            <div class="signature-name">${name}</div>
+            <div class="signature-location">${location || 'Anonymous location'}</div>
+            <div class="signature-commitment">"${commitment || 'Committed to human empowerment'}"</div>
+        `;
+        
+        // Add to beginning
+        container.insertBefore(item, container.firstChild);
+        
+        // Clear form
+        document.getElementById('user-name').value = '';
+        document.getElementById('user-location').value = '';
+        document.getElementById('user-commitment').value = '';
+        
+        // Update stats
+        updateStats(0, 0, 1);
+        
+        alert("Thank you for joining our community of cultivators!");
+    });
+    
+    // Save reflection in progress section
+    document.getElementById('save-reflection-btn').addEventListener('click', function() {
+        const reflection = document.getElementById('reflection-input').value.trim();
+        
+        if (!reflection) {
+            alert("Please write a reflection before saving.");
+            return;
+        }
+        
+        // In a real implementation, would save to user's progress
+        alert("Reflection saved to your personal journal!");
+        document.getElementById('reflection-input').value = '';
+        
+        // Update stats
+        updateStats(0, 1, 0);
+    });
+    
+    // Pilot project buttons
+    document.getElementById('start-data-cleansing')?.addEventListener('click', function() {
+        alert("AI Training Data Cleansing pilot coming soon! This will allow you to tag high-quality content to improve AI training data.");
+    });
+    
+    document.getElementById('try-algorithm-tool')?.addEventListener('click', function() {
+        alert("Algorithm Transparency Tool demo coming soon! You'll be able to adjust algorithm parameters and see how they affect your information environment.");
+    });
+    
+    document.getElementById('join-dialogue')?.addEventListener('click', function() {
+        alert("Public Dialogue Experiment coming soon! Participate in structured rational conversations about important topics with other community members.");
+    });
+}
+
+// Global functions
+function startAbilityExercise(abilityId) {
+    // Find the ability
+    let ability;
+    for (const dimension in abilitiesData) {
+        const found = abilitiesData[dimension].find(a => a.id === abilityId);
+        if (found) {
+            ability = found;
+            break;
+        }
+    }
+    
+    if (ability) {
+        // Scroll to exercise section
+        document.getElementById('daily-exercise').scrollIntoView({ behavior: 'smooth' });
+        
+        // Update exercise to match this ability
+        document.getElementById('exercise-category').textContent = ability.category;
+        document.getElementById('exercise-title').textContent = `${ability.title} Practice`;
+        document.getElementById('exercise-description').textContent = 
+            `Focus on developing your ${ability.title.toLowerCase()} through intentional practice. Set aside 10 minutes for focused cultivation of this ability.`;
+        
+        // Store as current exercise
+        window.currentExercise = {
+            category: ability.category,
+            title: `${ability.title} Practice`,
+            description: `Focus on developing your ${ability.title.toLowerCase()} through intentional practice.`,
+            duration: "10 min",
+            abilityId: ability.id
+        };
+    }
+}
+
+function learnMore(abilityId) {
+    // Find the ability
+    let ability;
+    for (const dimension in abilitiesData) {
+        const found = abilitiesData[dimension].find(a => a.id === abilityId);
+        if (found) {
+            ability = found;
+            break;
+        }
+    }
+    
+    if (ability) {
+        // Create a modal or alert with detailed information
+        const modalContent = `
+            <h3>${ability.title}</h3>
+            <p><strong>Category:</strong> ${ability.category}</p>
+            <p><strong>Description:</strong> ${ability.description}</p>
+            <p><strong>AI Limitation:</strong> ${ability.aiLimitation}</p>
+            <p><strong>Philosophical Basis:</strong> ${ability.philosophicalBasis}</p>
+            ${ability.example ? `<p><strong>Example:</strong> ${ability.example}</p>` : ''}
+        `;
+        
+        // Create a modal dialog
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>${ability.title}</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    ${modalContent}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary close-modal">Close</button>
+                </div>
+            </div>
+        `;
+        
+        // Add to page
+        document.body.appendChild(modal);
+        
+        // Add styles if not already present
+        if (!document.querySelector('#modal-styles')) {
+            const style = document.createElement('style');
+            style.id = 'modal-styles';
+            style.textContent = `
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: rgba(0, 0, 0, 0.7);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 2000;
+                    padding: 20px;
+                }
+                .modal-content {
+                    background-color: white;
+                    border-radius: 12px;
+                    max-width: 600px;
+                    width: 100%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                }
+                .modal-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1.5rem;
+                    border-bottom: 1px solid #eee;
+                }
+                .modal-header h2 {
+                    margin: 0;
+                    color: var(--primary-color);
+                }
+                .close-modal {
+                    background: none;
+                    border: none;
+                    font-size: 2rem;
+                    cursor: pointer;
+                    color: var(--gray-color);
+                }
+                .modal-body {
+                    padding: 1.5rem;
+                }
+                .modal-footer {
+                    padding: 1.5rem;
+                    border-top: 1px solid #eee;
+                    text-align: right;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Add close functionality
+        modal.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+        });
+        
+        // Close on overlay click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+    }
+}
+
+function updateStats(exercises = 0, reflections = 0, signatures = 0) {
+    // Update the displayed stats
+    const cultivatorsEl = document.getElementById('total-cultivators');
+    const exercisesEl = document.getElementById('total-exercises');
+    const signaturesEl = document.getElementById('total-signatures');
+    
+    // Parse current values and update
+    let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, ''));
+    let currentSignatures = parseInt(signaturesEl.textContent.replace(/,/g, ''));
+    
+    exercisesEl.textContent = (currentExercises + exercises).toLocaleString();
+    signaturesEl.textContent = (currentSignatures + signatures).toLocaleString();
+}
+
+function updateLiveStats() {
+    // Simulate live updates
+    const exercisesEl = document.getElementById('total-exercises');
+    const signaturesEl = document.getElementById('total-signatures');
+    
+    let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, ''));
+    let currentSignatures = parseInt(signaturesEl.textContent.replace(/,/g, ''));
+    
+    // Random small increases to simulate community activity
+    const exerciseIncrease = Math.floor(Math.random() * 3);
+    const signatureIncrease = Math.floor(Math.random() * 2);
+    
+    exercisesEl.textContent = (currentExercises + exerciseIncrease).toLocaleString();
+    signaturesEl.textContent = (currentSignatures + signatureIncrease).toLocaleString();
+}
+
+function updateProgressDisplay() {
+    const progress = UserProgress.getProgress();
+    
+    // Update badges display
+    const badgeContainer = document.getElementById('badge-container');
     if (badgeContainer) {
         const badges = [
-            { id: 'sprout', name: '新芽', icon: 'fas fa-seedling', earned: userProgress.badges.includes('sprout') },
-            { id: 'cultivator', name: '培育者', icon: 'fas fa-leaf', earned: userProgress.badges.includes('cultivator') },
-            { id: 'guardian', name: '守护者', icon: 'fas fa-shield-alt', earned: userProgress.badges.includes('guardian') },
-            { id: 'beacon', name: '灯塔', icon: 'fas fa-star', earned: userProgress.badges.includes('beacon') }
+            { id: 'sprout', name: 'Sprout', icon: 'fas fa-seedling', earned: progress.badges.includes('sprout') },
+            { id: 'cultivator', name: 'Cultivator', icon: 'fas fa-leaf', earned: progress.badges.includes('cultivator') },
+            { id: 'guardian', name: 'Guardian', icon: 'fas fa-shield-alt', earned: progress.badges.includes('guardian') },
+            { id: 'beacon', name: 'Beacon', icon: 'fas fa-star', earned: progress.badges.includes('beacon') }
         ];
         
         badgeContainer.innerHTML = '';
@@ -440,418 +839,24 @@ function initProgressChart() {
             badgeContainer.appendChild(badgeEl);
         });
     }
-}
-
-// 设置事件监听器
-function setupEventListeners() {
-    // Tab switching
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            displayAbilities();
-        });
-    });
     
-    // Exercise timer
-    const startBtn = document.getElementById('start-exercise');
-    const timerDisplay = document.getElementById('exercise-timer');
-    const skipBtn = document.getElementById('skip-exercise');
-    const completeBtn = document.getElementById('complete-exercise');
-    
-    let timerInterval;
-    let timeLeft = 300; // 5 minutes in seconds
-    
-    if (startBtn) {
-        startBtn.addEventListener('click', function() {
-            this.style.display = 'none';
-            if (skipBtn) skipBtn.style.display = 'none';
-            if (timerDisplay) timerDisplay.style.display = 'block';
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                const timerDisplayEl = document.getElementById('timer-display');
-                if (timerDisplayEl) {
-                    timerDisplayEl.textContent = 
-                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                }
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    if (timerDisplayEl) timerDisplayEl.textContent = "时间到!";
-                }
-            }, 1000);
-        });
-    }
-    
-    if (completeBtn) {
-        completeBtn.addEventListener('click', function() {
-            clearInterval(timerInterval);
-            
-            // Mark exercise as completed
-            if (window.currentExercise) {
-                const exerciseId = window.currentExercise.id;
-                const abilityId = window.currentExercise.abilityId;
-                
-                if (!userProgress.completedExercises.includes(exerciseId)) {
-                    userProgress.completedExercises.push(exerciseId);
-                    
-                    // Update ability progress
-                    const currentProgress = userProgress.abilitiesProgress[abilityId] || 0;
-                    userProgress.abilitiesProgress[abilityId] = Math.min(currentProgress + 20, 100);
-                    
-                    // Check for new badges
-                    checkForNewBadges();
-                    
-                    // Save progress
-                    saveUserProgress();
-                    
-                    // Update UI
-                    displayAbilities();
-                    initProgressChart();
-                }
-            }
-            
-            alert("练习完成！你的反思已保存到进度日记中。");
-            if (timerDisplay) timerDisplay.style.display = 'none';
-            if (startBtn) startBtn.style.display = 'inline-block';
-            if (skipBtn) skipBtn.style.display = 'inline-block';
-            timeLeft = 300;
-            const timerDisplayEl = document.getElementById('timer-display');
-            if (timerDisplayEl) timerDisplayEl.textContent = "05:00";
-            
-            // Update stats
-            updateStats(1, 0, 0);
-            
-            // Load new random exercise
-            displayRandomExercise();
-        });
-    }
-    
-    if (skipBtn) {
-        skipBtn.addEventListener('click', function() {
-            clearInterval(timerInterval);
-            if (timerDisplay) timerDisplay.style.display = 'none';
-            if (startBtn) startBtn.style.display = 'inline-block';
-            timeLeft = 300;
-            const timerDisplayEl = document.getElementById('timer-display');
-            if (timerDisplayEl) timerDisplayEl.textContent = "05:00";
-            
-            displayRandomExercise();
-        });
-    }
-    
-    // Signature submission
-    const submitBtn = document.getElementById('submit-signature');
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function() {
-            const name = document.getElementById('user-name')?.value.trim();
-            const location = document.getElementById('user-location')?.value.trim();
-            const commitment = document.getElementById('user-commitment')?.value.trim();
-            
-            if (!name) {
-                alert("请输入您的姓名或昵称。");
-                return;
-            }
-            
-            // Create signature element
-            const container = document.getElementById('signatures-container');
-            if (container) {
-                const item = document.createElement('div');
-                item.className = 'signature-item';
-                item.innerHTML = `
-                    <div class="signature-name">${name}</div>
-                    <div class="signature-location">${location || '匿名地点'}</div>
-                    <div class="signature-commitment">"${commitment || '致力于人类赋能'}"</div>
-                `;
-                
-                // Add to beginning
-                container.insertBefore(item, container.firstChild);
-                
-                // Clear form
-                const nameInput = document.getElementById('user-name');
-                const locationInput = document.getElementById('user-location');
-                const commitmentInput = document.getElementById('user-commitment');
-                
-                if (nameInput) nameInput.value = '';
-                if (locationInput) locationInput.value = '';
-                if (commitmentInput) commitmentInput.value = '';
-                
-                // Update stats
-                updateStats(0, 0, 1);
-                
-                alert("感谢您加入我们的培育者社区！");
-            }
-        });
-    }
-    
-    // Save reflection
-    const saveReflectionBtn = document.getElementById('save-reflection');
-    if (saveReflectionBtn) {
-        saveReflectionBtn.addEventListener('click', function() {
-            const reflectionInput = document.getElementById('reflection-input');
-            if (!reflectionInput) return;
-            
-            const reflection = reflectionInput.value.trim();
-            
-            if (!reflection) {
-                alert("请在保存前写下您的反思。");
-                return;
-            }
-            
-            // Add to user progress
-            userProgress.reflections.push({
-                date: new Date().toISOString().split('T')[0],
-                text: reflection
-            });
-            
-            // Save progress
-            saveUserProgress();
-            
-            alert("反思已保存到您的个人日记中！");
-            reflectionInput.value = '';
-            
-            // Update stats
-            updateStats(0, 1, 0);
-        });
-    }
-}
-
-// 检查新徽章
-function checkForNewBadges() {
-    const completedCount = userProgress.completedExercises.length;
-    
-    // Cultivator badge: 完成3个以上练习
-    if (completedCount >= 3 && !userProgress.badges.includes('cultivator')) {
-        userProgress.badges.push('cultivator');
-        showBadgeNotification('cultivator', '培育者');
-    }
-    
-    // Guardian badge: 完成10个以上练习
-    if (completedCount >= 10 && !userProgress.badges.includes('guardian')) {
-        userProgress.badges.push('guardian');
-        showBadgeNotification('guardian', '守护者');
-    }
-    
-    // Beacon badge: 所有能力进度超过80%
-    const allProgress = Object.values(userProgress.abilitiesProgress);
-    const averageProgress = allProgress.reduce((a, b) => a + b, 0) / allProgress.length;
-    if (averageProgress >= 80 && !userProgress.badges.includes('beacon')) {
-        userProgress.badges.push('beacon');
-        showBadgeNotification('beacon', '灯塔');
-    }
-}
-
-// 显示徽章通知
-function showBadgeNotification(badgeId, badgeName) {
-    const notification = document.createElement('div');
-    notification.className = 'badge-notification';
-    notification.innerHTML = `
-        <div style="position: fixed; top: 20px; right: 20px; background: #4361ee; color: white; padding: 15px; border-radius: 10px; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-            <h4 style="margin: 0 0 10px 0;">🎉 获得新徽章!</h4>
-            <p style="margin: 0;">您已获得 <strong>${badgeName}</strong> 徽章!</p>
-        </div>
-    `;
-    document.body.appendChild(notification);
-    
-    // Remove after 5 seconds
-    setTimeout(() => {
-        notification.remove();
-    }, 5000);
-}
-
-// 全局函数
-function startAbilityExercise(abilityId) {
-    // Find exercises for this ability
-    const exercisesForAbility = globalExercisesData.filter(ex => ex.abilityId === abilityId);
-    
-    if (exercisesForAbility.length > 0) {
-        // Select a random exercise for this ability
-        const randomIndex = Math.floor(Math.random() * exercisesForAbility.length);
-        const exercise = exercisesForAbility[randomIndex];
-        
-        // Update UI with this exercise
-        const categoryEl = document.getElementById('exercise-category');
-        const titleEl = document.getElementById('exercise-title');
-        const descEl = document.getElementById('exercise-description');
-        const durationEl = document.getElementById('exercise-duration');
-        
-        if (categoryEl) categoryEl.textContent = exercise.category;
-        if (titleEl) titleEl.textContent = exercise.title;
-        if (descEl) descEl.textContent = exercise.description;
-        if (durationEl) durationEl.textContent = exercise.duration;
-        
-        // Store current exercise
-        window.currentExercise = exercise;
-        
-        // Scroll to exercise section
-        document.getElementById('daily-exercise')?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        alert("暂时没有此能力的练习。我们将为您选择一个随机练习。");
-        displayRandomExercise();
-        document.getElementById('daily-exercise')?.scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-function learnMore(abilityId) {
-    // Find the ability
-    let ability;
-    for (const dimension in globalAbilitiesData) {
-        const found = globalAbilitiesData[dimension].find(a => a.id === abilityId);
-        if (found) {
-            ability = found;
-            break;
-        }
-    }
-    
-    if (ability) {
-        const modalContent = `
-            <div style="max-width: 600px; background: white; padding: 30px; border-radius: 10px;">
-                <h2 style="color: #4361ee; margin-top: 0;">${ability.title}</h2>
-                <p><strong>类别:</strong> ${ability.category}</p>
-                <p><strong>描述:</strong> ${ability.description}</p>
-                <p><strong>AI局限性:</strong> ${ability.aiLimitation}</p>
-                <p><strong>哲学基础:</strong> ${ability.philosophicalBasis || '基于人类有限性、具身性和关系性的存在论根基。'}</p>
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                    <button onclick="closeModal()" style="background: #4361ee; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">关闭</button>
-                </div>
-            </div>
-        `;
-        
-        showModal(modalContent);
-    }
-}
-
-function showModal(content) {
-    // Remove existing modal
-    const existingModal = document.querySelector('.modal-overlay');
-    if (existingModal) existingModal.remove();
-    
-    // Create modal
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-    `;
-    
-    modal.innerHTML = content;
-    document.body.appendChild(modal);
-    
-    // Close on overlay click
-    modal.addEventListener('click', function(e) {
-        if (e.target === this) {
-            this.remove();
-        }
-    });
-}
-
-function closeModal() {
-    const modal = document.querySelector('.modal-overlay');
-    if (modal) modal.remove();
-}
-
-function updateStats(exercises = 0, reflections = 0, signatures = 0) {
-    // Update the displayed stats
+    // Update stats
+    const cultivatorsEl = document.getElementById('total-cultivators');
     const exercisesEl = document.getElementById('total-exercises');
-    const signaturesEl = document.getElementById('total-signatures');
+    
+    if (cultivatorsEl && progress.completedExercises.length > 0) {
+        // Increment the number of cultivators if this user completed their first exercise
+        let currentCultivators = parseInt(cultivatorsEl.textContent.replace(/,/g, ''));
+        if (progress.completedExercises.length === 1) {
+            cultivatorsEl.textContent = (currentCultivators + 1).toLocaleString();
+        }
+    }
     
     if (exercisesEl) {
-        let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, '')) || 0;
-        exercisesEl.textContent = (currentExercises + exercises).toLocaleString();
-    }
-    
-    if (signaturesEl) {
-        let currentSignatures = parseInt(signaturesEl.textContent.replace(/,/g, '')) || 0;
-        signaturesEl.textContent = (currentSignatures + signatures).toLocaleString();
-    }
-    
-    // Also update globalUsersData for consistency
-    if (globalUsersData.totalExercisesCompleted !== undefined) {
-        globalUsersData.totalExercisesCompleted += exercises;
-    }
-    if (globalUsersData.totalSignatures !== undefined) {
-        globalUsersData.totalSignatures += signatures;
+        let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, ''));
+        exercisesEl.textContent = (currentExercises + progress.completedExercises.length).toLocaleString();
     }
 }
 
-function updateLiveStats() {
-    // Simulate live updates
-    const exercisesEl = document.getElementById('total-exercises');
-    const signaturesEl = document.getElementById('total-signatures');
-    
-    if (!exercisesEl || !signaturesEl) return;
-    
-    let currentExercises = parseInt(exercisesEl.textContent.replace(/,/g, '')) || 0;
-    let currentSignatures = parseInt(signaturesEl.textContent.replace(/,/g, '')) || 0;
-    
-    // Random small increases to simulate community activity
-    const exerciseIncrease = Math.floor(Math.random() * 3);
-    const signatureIncrease = Math.floor(Math.random() * 2);
-    
-    exercisesEl.textContent = (currentExercises + exerciseIncrease).toLocaleString();
-    signaturesEl.textContent = (currentSignatures + signatureIncrease).toLocaleString();
-}
-
-// 备用数据（当JSON文件无法加载时使用）
-function getFallbackAbilitiesData() {
-    // 这是之前硬编码的数据
-    return {
-        "emotional": [
-            {
-                id: 1,
-                number: "01",
-                category: "Emotional & Meaning",
-                title: "Embodied Empathy",
-                description: "The capacity for compassion rooted in biological neurochemistry, sensory experience, and life journey.",
-                aiLimitation: "Can simulate response patterns but lacks the weight of understanding from embodied pain and ecstasy.",
-                icon: "fas fa-heart",
-                color: "#4cc9f0",
-                exercises: 5,
-                philosophicalBasis: "Rooted in our biological existence, this ability emerges from the interplay of mirror neurons, hormonal responses, and lived experience that cannot be algorithmically reproduced."
-            },
-            // ... 其他能力数据
-        ],
-        // ... 其他维度数据
-    };
-}
-
-function getFallbackExercisesData() {
-    return [
-        {
-            id: 1,
-            abilityId: 1,
-            category: "Embodied Empathy",
-            title: "The Mirror of Another's Pain",
-            description: "Recall a moment of witnessing someone's genuine pain. Instead of analyzing it, try to feel where in your own body you sense their suffering. Sit with that sensation for 5 minutes without judgment.",
-            duration: "10 min"
-        },
-        // ... 其他练习数据
-    ];
-}
-
-function getFallbackUsersData() {
-    return {
-        users: [
-            {
-                username: "Alex Chen",
-                location: "Taipei, Taiwan",
-                reflections: [{ text: "Committed to daily embodied empathy practice." }]
-            },
-            // ... 其他用户数据
-        ],
-        activeUsers: 1247,
-        totalExercisesCompleted: 5935,
-        totalSignatures: 907
-    };
-}
+// Initialize user progress on load
+UserProgress.init();
