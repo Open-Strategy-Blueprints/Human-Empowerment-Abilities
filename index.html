@@ -110,6 +110,23 @@
                     </div>
                     <button class="btn-secondary" id="complete-exercise">Complete & Reflect</button>
                 </div>
+                
+                <!-- Exercise Feedback Section -->
+                <div class="exercise-feedback" id="exercise-feedback" style="display: none;">
+                    <h4>Exercise completed! Please share your reflection:</h4>
+                    <textarea id="reflection-text" placeholder="What did you learn from this exercise? Any new insights?..." rows="4"></textarea>
+                    <div class="feedback-actions">
+                        <button class="btn-secondary" id="save-reflection">Save Reflection</button>
+                        <button class="btn-text" id="skip-reflection">Skip</button>
+                    </div>
+                    <div class="feedback-result" id="feedback-result" style="display: none;">
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Reflection saved! Your <span id="ability-name">Embodied Empathy</span> ability has been strengthened.</p>
+                            <p class="small">Completed <span id="total-completed">1</span> exercises, keep going!</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -130,15 +147,58 @@
                     <div class="progress-form">
                         <h4>Add Your Reflection</h4>
                         <textarea id="reflection-input" placeholder="What did you discover about your human abilities today?..." rows="4"></textarea>
-                        <button class="btn-primary" id="save-reflection">Save Reflection</button>
+                        <button class="btn-primary" id="save-reflection-btn">Save Reflection</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Pilot Projects -->
+    <section id="pilot-projects" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Civilization Immune Engineering Pilots</h2>
+            <p class="section-subtitle">Participate in practices to purify the network and defend civilizational subjectivity</p>
+            
+            <div class="pilot-grid">
+                <div class="pilot-card">
+                    <div class="pilot-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h3>AI Training Data Cleansing</h3>
+                    <p>Help tag high-quality online content to provide healthy 'nutrition' data for AI.</p>
+                    <button class="btn-secondary" id="start-data-cleansing">
+                        <i class="fas fa-play"></i> Start Tagging
+                    </button>
+                </div>
+                
+                <div class="pilot-card">
+                    <div class="pilot-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Algorithm Transparency Experience</h3>
+                    <p>Experience how different algorithm parameters affect your information environment.</p>
+                    <button class="btn-secondary" id="try-algorithm-tool">
+                        <i class="fas fa-cogs"></i> Try Tool
+                    </button>
+                </div>
+                
+                <div class="pilot-card">
+                    <div class="pilot-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Public Dialogue Experiment</h3>
+                    <p>Participate in structured rational dialogue to cultivate a healthy public sphere.</p>
+                    <button class="btn-secondary" id="join-dialog">
+                        <i class="fas fa-comments"></i> Join Dialogue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Community Signatures -->
-    <section id="community" class="section section-dark">
+    <section id="community" class="section">
         <div class="container">
             <h2 class="section-title">Community of Cultivators</h2>
             <p class="section-subtitle">Join others in committing to human empowerment</p>
@@ -164,55 +224,74 @@
     </section>
 
     <!-- Footer -->
-   <footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <div class="logo">
-                    <i class="fas fa-brain"></i>
-                    <span>人类赋能</span>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-brain"></i>
+                        <span>Human Empowerment</span>
+                    </div>
+                    <p>An open-source project dedicated to cultivating what makes us uniquely human.</p>
+                    <p class="footer-note">Completely open, only initial authorship rights reserved.</p>
                 </div>
-                <p>一个开源项目，致力于培养让我们独特的人类特质。</p>
-                <p class="footer-note">完全开放，仅保留初始作者权利。</p>
+                <div class="footer-links">
+                    <h4>Dimensions</h4>
+                    <a href="#abilities" onclick="showTab('emotional')">Emotional & Meaning</a>
+                    <a href="#abilities" onclick="showTab('cognitive')">Cognitive & Creative</a>
+                    <a href="#abilities" onclick="showTab('practical')">Practical & Historical</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Contribute</h4>
+                    <a href="CONTRIBUTING.md">Add Exercises</a>
+                    <a href="https://github.com/Open-Strategy-Blueprints/Human-Empowerment-Abilities">GitHub Repo</a>
+                    <a href="#community">View Signatures</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <a href="#" onclick="alert('Discussion forum coming soon!')">Discussion Forum</a>
+                    <a href="#" onclick="alert('Research collaboration opportunities coming soon!')">Research Collaboration</a>
+                    <a href="#community">Share Your Story</a>
+                </div>
             </div>
-            <div class="footer-links">
-                <h4>维度</h4>
-                <a href="#emotional">情感与意义</a>
-                <a href="#cognitive">认知与创造</a>
-                <a href="#practical">实用与历史</a>
-            </div>
-            <div class="footer-links">
-                <h4>贡献</h4>
-                <a href="CONTRIBUTING.md">添加练习</a>
-                <a href="https://github.com/Open-Strategy-Blueprints/Human-Empowerment-Abilities">GitHub仓库</a>
-                <a href="#community">查看签名</a>
-            </div>
-            <div class="footer-links">
-                <h4>联系</h4>
-                <a href="#">讨论论坛</a>
-                <a href="#">研究合作</a>
-                <a href="#">分享你的故事</a>
+            <div class="footer-bottom">
+                <p class="footer-bottom-text">
+                    Initiated by: [黄青玄] | Inspired by: 《"我们思"的异化与捍卫：论AI时代文明主体性的免疫工程》
+                </p>
+                <p class="footer-bottom-text">
+                    This project is licensed under <a href="https://opensource.org/licenses/MIT" target="_blank" style="color: #4cc9f0; text-decoration: none;">MIT License</a>. We do not collect or share your personal information.
+                </p>
+                <p class="footer-bottom-text small">
+                    <i class="fas fa-heart" style="color: #f72585; margin: 0 5px;"></i>
+                    Empowering Human Civilization
+                    <i class="fas fa-brain" style="color: #4361ee; margin: 0 5px;"></i>
+                </p>
             </div>
         </div>
-        
-        <!-- 底部信息 -->
-        <div class="footer-bottom">
-            <p class="footer-bottom-text">
-                发起人：<strong>[黄青玄]</strong> | 灵感来源：《"我们思"的异化与捍卫：论AI时代文明主体性的免疫工程》
-            </p>
-            <p class="footer-bottom-text">
-                该项目采用 <a href="https://opensource.org/licenses/MIT" target="_blank" style="color: #4cc9f0; text-decoration: none;">MIT许可协议</a> 授权。我们不会收集或分享您的个人信息。
-            </p>
-            <p class="footer-bottom-text small">
-                <i class="fas fa-heart" style="color: #f72585; margin: 0 5px;"></i>
-                为人类文明赋能
-                <i class="fas fa-brain" style="color: #4361ee; margin: 0 5px;"></i>
-            </p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Helper function to show specific ability tab
+        function showTab(dimension) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active class to the correct tab
+            document.querySelector(`.tab-btn[data-dimension="${dimension}"]`).classList.add('active');
+            
+            // Load abilities for this dimension
+            if (typeof loadAbilities === 'function') {
+                loadAbilities();
+            }
+            
+            // Scroll to abilities section
+            document.getElementById('abilities').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
