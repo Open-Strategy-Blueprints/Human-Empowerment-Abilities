@@ -3,123 +3,123 @@
     {
       "id": 1,
       "number": "01",
-      "category": "情感与意义",
-      "title": "具身共情",
-      "description": "源于生物神经化学、感官体验与生命历程交织的共情能力。",
-      "aiLimitation": "可模拟反应模式，但缺乏具身痛苦与狂喜的生命体验作为理解的重量。",
+      "category": "Emotional & Meaning",
+      "title": "Embodied Empathy",
+      "description": "The capacity for compassion rooted in biological neurochemistry, sensory experience, and life journey.",
+      "aiLimitation": "Can simulate response patterns but lacks the weight of understanding from embodied pain and ecstasy.",
       "icon": "fas fa-heart",
       "color": "#4cc9f0",
       "exercises": 5,
-      "philosophicalBasis": "植根于我们的生物性存在，这种能力源于镜像神经元、激素反应和生活经验的相互作用，无法算法化复制。",
-      "example": "当你看到朋友失去亲人时，不仅理解他们的悲伤，你的身体也能感受到类似的沉重感。"
+      "philosophicalBasis": "Rooted in our biological existence, this ability emerges from the interplay of mirror neurons, hormonal responses, and lived experience that cannot be algorithmically reproduced.",
+      "example": "When you see a friend lose a loved one, you not only understand their sadness, but your body also feels a similar heaviness."
     },
     {
       "id": 2,
       "number": "02",
-      "category": "情感与意义",
-      "title": "荒诞中的意义赋予",
-      "description": "在苦难、虚无与有限性中，依然创造希望、叙事与信仰的'向死而生'冲动。",
-      "aiLimitation": "能组合有关意义的文本，但其行为无死亡意识驱动的存在性紧迫。",
+      "category": "Emotional & Meaning",
+      "title": "Meaning-Giving in Absurdity",
+      "description": "Creating hope, narrative, and faith in the face of suffering, meaninglessness, and finitude.",
+      "aiLimitation": "Can combine texts about meaning but lacks existential urgency driven by death awareness.",
       "icon": "fas fa-seedling",
       "color": "#4361ee",
       "exercises": 4,
-      "philosophicalBasis": "源于我们与死亡的对抗和人类处境。死亡意识催生了对意义的需求，这是人类独特的存在性项目。",
-      "example": "在失去工作后，你重新定义生活的意义，找到了志愿服务的新方向。"
+      "philosophicalBasis": "Emerges from our confrontation with mortality and the human condition. The awareness of death gives birth to the need for meaning, a uniquely human existential project.",
+      "example": "After losing a job, you redefine the meaning of life and find a new direction in volunteer work."
     },
     {
       "id": 3,
       "number": "03",
-      "category": "情感与意义",
-      "title": "无功利性的爱与牺牲",
-      "description": "超越基因计算与利益交换的纯粹利他，其价值在于'牺牲'行为本身。",
-      "aiLimitation": "其'利他'是预设的程序目标，无法理解牺牲作为意义完成的伦理悖论之美。",
+      "category": "Emotional & Meaning",
+      "title": "Non-Utilitarian Love & Sacrifice",
+      "description": "Pure altruism beyond genetic calculation and interest exchange, where value lies in the act of sacrifice itself.",
+      "aiLimitation": "Its 'altruism' is a preset program goal, unable to understand the paradoxical beauty of sacrifice as meaning-completion.",
       "icon": "fas fa-hands-helping",
       "color": "#3a0ca3",
       "exercises": 6,
-      "philosophicalBasis": "通过自由意志和道德想象超越进化编程。为他人牺牲而不求回报的选择定义了人类的伦理能力。",
-      "example": "匿名捐赠器官给陌生人，或者冒着生命危险救助非亲非故的人。"
+      "philosophicalBasis": "Transcends evolutionary programming through free will and moral imagination. The choice to sacrifice for another without expected return defines human ethical capacity.",
+      "example": "Donating an organ anonymously to a stranger, or risking one's life to save someone unrelated."
     }
   ],
   "cognitive": [
     {
       "id": 4,
       "number": "04",
-      "category": "认知与创造",
-      "title": "模糊直觉飞跃",
-      "description": "在矛盾与不完整信息中，凭借潜意识整合实现创造性突破的'灵光'。",
-      "aiLimitation": "创新是基于已有数据模式的重组与优化，而非源于意识边缘的'涌现'。",
+      "category": "Cognitive & Creative",
+      "title": "Intuitive Leap from Ambiguity",
+      "description": "Creative breakthroughs from contradictory and incomplete information through subconscious integration.",
+      "aiLimitation": "Innovation is recombination and optimization of existing data patterns, not emergence from consciousness edges.",
       "icon": "fas fa-lightbulb",
       "color": "#f72585",
       "exercises": 5,
-      "philosophicalBasis": "源于潜意识处理信息的整体能力，能够建立超越逻辑演绎的联系。这种'啊哈'时刻是人类意识的神秘之处。",
-      "example": "阿基米德在浴缸中突然理解浮力原理，或者科学家在梦中解决研究难题。"
+      "philosophicalBasis": "Arises from the subconscious mind's ability to process information holistically, making connections that exceed logical deduction. This 'aha!' moment is a mystery of human consciousness.",
+      "example": "Archimedes suddenly understanding the principle of buoyancy in a bathtub, or a scientist solving a research problem in a dream."
     },
     {
       "id": 5,
       "number": "05",
-      "category": "认知与创造",
-      "title": "悲剧性选择承担",
-      "description": "在不可通约的价值冲突（如忠孝难两全）中做出并承担伦理重负的选择。",
-      "aiLimitation": "其选择是基于权重计算的最优解，无法体验抉择伴随的永恒遗憾与生命质感。",
-      "example": "医疗资源有限时选择救谁，或在家庭与事业之间做出不可逆的选择。",
+      "category": "Cognitive & Creative",
+      "title": "Tragic Choice Bearing",
+      "description": "Making and carrying the ethical burden of choices between incommensurable values.",
+      "aiLimitation": "Its choices are optimal solutions based on weight calculations, unable to experience the eternal regret and life texture.",
       "icon": "fas fa-balance-scale",
       "color": "#b5179e",
       "exercises": 4,
-      "philosophicalBasis": "植根于人类道德模糊性的处境。与AI的成本效益分析不同，人类必须承受选择的不可调和后果。"
+      "philosophicalBasis": "Rooted in the human condition of moral ambiguity. Unlike AI's cost-benefit analysis, humans must live with the irreconcilable consequences of their choices.",
+      "example": "Choosing whom to save when medical resources are limited, or making an irreversible choice between family and career."
     },
     {
       "id": 6,
       "number": "06",
-      "category": "认知与创造",
-      "title": "第一人称意识体验",
-      "description": "'红'的感觉、'痛'的厌恶等主观感受，是一切理解与赋价值的绝对原点。",
-      "aiLimitation": "可处理'红色'波长数据，但没有'红'的感觉。这是意识'难问题'的核心。",
+      "category": "Cognitive & Creative",
+      "title": "First-Person Consciousness",
+      "description": "Subjective experiences like 'redness' or 'pain' as the absolute origin of all understanding and value.",
+      "aiLimitation": "Can process 'red' wavelength data but has no experience of 'redness'. This is the core of the 'hard problem' of consciousness.",
       "icon": "fas fa-eye",
       "color": "#7209b7",
       "exercises": 3,
-      "philosophicalBasis": "意识的'难问题'——存在的质性、主观体验。这种现象意识是所有人类体验和价值的基础。",
-      "example": "看到夕阳时的内心感动，或品尝美食时的愉悦感受，这些都无法完全用语言描述。"
+      "philosophicalBasis": "The 'hard problem' of consciousness - the qualitative, subjective experience of being. This phenomenal consciousness is the foundation of all human experience and value.",
+      "example": "The inner emotion when seeing a sunset, or the pleasure of tasting delicious food, which cannot be fully described in words."
     }
   ],
   "practical": [
     {
       "id": 7,
       "number": "07",
-      "category": "实践与历史",
-      "title": "历史中自我重塑",
-      "description": "重新阐释过去，从中获得新的身份认同与未来方向，历史是'活的教科书'。",
-      "aiLimitation": "历史对其是待分析的封闭数据集，无法与之进行产生自我改变的'视域融合'。",
+      "category": "Practical & Historical",
+      "title": "Historical Self-Reinvention",
+      "description": "Reinterpreting the past to gain new identity and future direction. History as a 'living textbook'.",
+      "aiLimitation": "History for it is a closed dataset for analysis, unable to engage in self-changing 'horizon fusion'.",
       "icon": "fas fa-history",
       "color": "#560bad",
       "exercises": 5,
-      "philosophicalBasis": "人类与历史存在于诠释循环中——我们重新解读过去，这反过来重新定义我们的现在和未来。这是对话性关系，而非分析性关系。",
-      "example": "重新审视家族历史，理解祖辈的选择，并从中找到自己生活的方向和意义。"
+      "philosophicalBasis": "Humans exist in hermeneutical circles with history - we reinterpret our past, which in turn redefines our present and future. This is a dialogical, not analytical, relationship.",
+      "example": "Re-examining family history, understanding the choices of ancestors, and finding direction and meaning for one's own life."
     },
     {
       "id": 8,
       "number": "08",
-      "category": "实践与历史",
-      "title": "敬畏式共生互动",
-      "description": "将自然、他者视为伙伴而非客体，情感联结催生可持续的智慧。",
-      "aiLimitation": "其环境策略是冷优化模型，缺乏'天人合一'或'敬畏生命'的情感驱动力。",
+      "category": "Practical & Historical",
+      "title": "Reverence-Based Coexistence",
+      "description": "Interacting with nature and others as partners rather than objects, with emotional connection fostering sustainable wisdom.",
+      "aiLimitation": "Its environmental strategy is a cold optimization model, lacking emotional drivers like 'unity with nature' or 'reverence for life'.",
       "icon": "fas fa-mountain",
       "color": "#480ca8",
       "exercises": 4,
-      "philosophicalBasis": "源于在世界中存在的现象学体验。我们不仅分析环境，我们还居住其中，形成激发关怀的情感联结。",
-      "example": "像原住民一样与自然和谐共处，或将他人视为具有内在价值的生命而非工具。"
+      "philosophicalBasis": "Emerges from the phenomenological experience of being-in-the-world. We don't just analyze the environment; we dwell within it, forming affective bonds that motivate care.",
+      "example": "Living in harmony with nature like indigenous peoples, or seeing others as beings with intrinsic value rather than tools."
     },
     {
       "id": 9,
       "number": "09",
-      "category": "实践与历史",
-      "title": "灵魂转向式对话",
-      "description": "在真诚对话中被对方的理由与人格打动，从而改变核心信念。",
-      "aiLimitation": "其辩论旨在逻辑取胜或优化目标，而非引发基于信任与承认的信念转化。",
+      "category": "Practical & Historical",
+      "title": "Soul-Transforming Dialogue",
+      "description": "Changing core beliefs through being genuinely moved by another's reasoning and character in sincere dialogue.",
+      "aiLimitation": "Its debate aims at logical victory or goal optimization, not belief transformation based on trust and recognition.",
       "icon": "fas fa-comments",
       "color": "#3a0ca3",
       "exercises": 6,
-      "philosophicalBasis": "需要相互承认和脆弱性。在真实对话中，我们冒着世界观被挑战的风险，并可能通过遭遇他者的不可约主观性而被转化。",
-      "example": "与不同政治立场的人深度交流后，真正理解对方立场并调整自己原有观点。"
+      "philosophicalBasis": "Requires mutual recognition and vulnerability. In authentic dialogue, we risk our own worldview and can be transformed through encounter with the other's irreducible subjectivity.",
+      "example": "After deep communication with someone of different political views, truly understanding their position and adjusting one's own views."
     }
   ]
 }
