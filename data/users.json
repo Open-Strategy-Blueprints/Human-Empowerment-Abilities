@@ -1,1 +1,148 @@
-
+{
+  "users": [
+    {
+      "id": "user_001",
+      "username": "Alex Chen",
+      "location": "Taipei, Taiwan",
+      "joinDate": "2024-03-15",
+      "abilitiesProgress": {
+        "1": 65,
+        "2": 40,
+        "3": 30,
+        "4": 75,
+        "5": 50,
+        "6": 35,
+        "7": 60,
+        "8": 45,
+        "9": 55
+      },
+      "completedExercises": [1, 2, 4],
+      "badges": ["sprout", "cultivator"],
+      "reflections": [
+        {
+          "date": "2024-03-20",
+          "abilityId": 1,
+          "text": "Today I realized that embodied empathy isn't just about understanding others' pain, but about honoring the connection our bodies create between us."
+        },
+        {
+          "date": "2024-03-22",
+          "abilityId": 4,
+          "text": "Holding contradictory ideas felt uncomfortable at first, but then I saw how creativity emerges from that very tension."
+        }
+      ]
+    },
+    {
+      "id": "user_002",
+      "username": "Maria Rodriguez",
+      "location": "Barcelona, Spain",
+      "joinDate": "2024-03-10",
+      "abilitiesProgress": {
+        "1": 80,
+        "2": 60,
+        "3": 70,
+        "4": 90,
+        "5": 40,
+        "6": 55,
+        "7": 75,
+        "8": 85,
+        "9": 65
+      },
+      "completedExercises": [1, 3, 5],
+      "badges": ["sprout", "cultivator", "guardian"],
+      "reflections": [
+        {
+          "date": "2024-03-12",
+          "abilityId": 3,
+          "text": "True love asks for sacrifice without expectation of return. This is what separates human connection from transactional relationships."
+        }
+      ]
+    },
+    {
+      "id": "user_003",
+      "username": "Kofi Mensah",
+      "location": "Accra, Ghana",
+      "joinDate": "2024-03-05",
+      "abilitiesProgress": {
+        "1": 45,
+        "2": 80,
+        "3": 60,
+        "4": 50,
+        "5": 90,
+        "6": 40,
+        "7": 70,
+        "8": 55,
+        "9": 75
+      },
+      "completedExercises": [2, 5],
+      "badges": ["sprout"],
+      "reflections": [
+        {
+          "date": "2024-03-08",
+          "abilityId": 5,
+          "text": "We carry our choices with us. The weight of them shapes who we become. An AI calculates, but a human bears responsibility."
+        }
+      ]
+    },
+    {
+      "id": "user_004",
+      "username": "Sakura Tanaka",
+      "location": "Kyoto, Japan",
+      "joinDate": "2024-03-18",
+      "abilitiesProgress": {
+        "1": 70,
+        "2": 50,
+        "3": 65,
+        "4": 40,
+        "5": 55,
+        "6": 85,
+        "7": 60,
+        "8": 95,
+        "9": 45
+      },
+      "completedExercises": [1, 4],
+      "badges": ["sprout", "cultivator"],
+      "reflections": [
+        {
+          "date": "2024-03-19",
+          "abilityId": 8,
+          "text": "Walking in the forest today, I felt not as an observer but as a participant in something ancient and alive. This reverence cannot be programmed."
+        }
+      ]
+    },
+    {
+      "id": "user_005",
+      "username": "Liam O'Connor",
+      "location": "Dublin, Ireland",
+      "joinDate": "2024-03-22",
+      "abilitiesProgress": {
+        "1": 55,
+        "2": 45,
+        "3": 75,
+        "4": 65,
+        "5": 40,
+        "6": 50,
+        "7": 85,
+        "8": 60,
+        "9": 90
+      },
+      "completedExercises": [3],
+      "badges": ["sprout"],
+      "reflections": [
+        {
+          "date": "2024-03-23",
+          "abilityId": 9,
+          "text": "A true conversation isn't about winning arguments. It's about being vulnerable enough to let another person's truth change you."
+        }
+      ]
+    }
+  ],
+  "totalSignatures": 907,
+  "totalExercisesCompleted": 5935,
+  "activeUsers": 1247,
+  "communityStats": {
+    "mostPopularAbility": 1,
+    "mostChallengingAbility": 5,
+    "averageProgress": 62,
+    "newUsersLastWeek": 127
+  }
+}
