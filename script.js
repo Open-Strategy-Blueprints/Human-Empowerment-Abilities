@@ -1112,5 +1112,78 @@ function updateProgressDisplay() {
     }
     
     // Update the progress chart with new data
+    // 你的现有代码
+function updateProgressDisplay() {
+    // ... 现有代码 ...
+}
+
+// ============================================
+// 【在这里添加】社交媒体分享功能
+// ============================================
+
+// 社交媒体分享功能
+function initSocialSharing() {
+    // 创建分享按钮
+    const shareButtons = `
+        <div class="social-share-container">
+            <h4>分享这个项目：</h4>
+            <div class="share-buttons">
+                <button class="share-btn twitter" onclick="shareToTwitter()">
+                    <i class="fab fa-twitter"></i> Twitter
+                </button>
+                <button class="share-btn linkedin" onclick="shareToLinkedIn()">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </button>
+                <button class="share-btn facebook" onclick="shareToFacebook()">
+                    <i class="fab fa-facebook"></i> Facebook
+                </button>
+                <button class="share-btn wechat" onclick="showWeChatQR()">
+                    <i class="fab fa-weixin"></i> 微信
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // 添加到页脚或侧边栏
+    const footer = document.querySelector('.footer-content');
+    if (footer) {
+        footer.insertAdjacentHTML('beforeend', shareButtons);
+    }
+}
+
+// 分享到不同平台
+function shareToTwitter() {
+    const text = encodeURIComponent('发现这个超棒的人类赋能能力项目！在AI时代培养不可替代的人类核心能力。');
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+}
+
+function shareToLinkedIn() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+}
+
+function shareToFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+
+function showWeChatQR() {
+    // 创建微信二维码弹窗
+    const modal = document.createElement('div');
+    modal.className = 'wechat-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h3>微信分享</h3>
+            <p>扫描二维码在微信中打开</p>
+            <div class="qrcode-placeholder">
+                <p>二维码生成功能需要后端支持</p>
+                <p>请复制链接分享：${window.location.href}</p>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()">关闭</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
     initProgressChart();
 }
