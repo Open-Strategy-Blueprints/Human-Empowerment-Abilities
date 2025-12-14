@@ -403,7 +403,29 @@ async function loadExercises() {
 async function loadSignatures() {
     const container = document.getElementById('signatures-container');
     
-    // Sample signatures
+    // 检查是否已有永久签名
+    let hasPermanentSignature = false;
+    const existingItems = container.querySelectorAll('.signature-item');
+    existingItems.forEach(item => {
+        if (item.classList.contains('permanent-signature')) {
+            hasPermanentSignature = true;
+        }
+    });
+    
+    // 如果没有永久签名，先添加一个
+    if (!hasPermanentSignature) {
+        const permanentItem = document.createElement('div');
+        permanentItem.className = 'signature-item permanent-signature';
+        permanentItem.innerHTML = `
+            <div class="signature-name">元始天尊 Yuan Shi Tian Zun / Primeval Lord of Heaven</div>
+            <div class="signature-location">昆仑山玉虚宫 Jade Void Palace on Kunlun Mountains</div>
+            <div class="signature-commitment">"Disciples of my Chan Jiao, assemble at once!"</div>
+            <div class="signature-special">✨ 永久签名 ✨</div>
+        `;
+        container.insertBefore(permanentItem, container.firstChild);
+    }
+    
+    // 其他示例签名
     const signatures = [
         { name: "Alex Chen", location: "Taipei", commitment: "Committing to daily embodied empathy practice." },
         { name: "Maria Rodriguez", location: "Barcelona", commitment: "Protecting human creativity in an algorithmic world." },
@@ -414,8 +436,7 @@ async function loadSignatures() {
         { name: "David Kim", location: "Seoul", commitment: "Defending first-person consciousness in an age of data." }
     ];
     
-    container.innerHTML = '';
-    
+    // 只添加非永久签名
     signatures.forEach(sig => {
         const item = document.createElement('div');
         item.className = 'signature-item';
