@@ -1,1 +1,1355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老照片价值挖掘 - 人文赋能能力平台</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 照片分析器特定样式 */
+        .photo-analyzer-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .analyzer-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .analyzer-progress {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            gap: 16px;
+        }
+        
+        .progress-bar-container {
+            flex: 1;
+            height: 8px;
+            background: var(--neutral-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-400), var(--accent-400));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .photo-upload-section {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .upload-zone {
+            border: 3px dashed var(--secondary-300);
+            border-radius: var(--radius-xl);
+            padding: 48px 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            margin-bottom: 24px;
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--primary-400);
+            background: var(--neutral-50);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .upload-zone.dragover {
+            border-color: var(--accent-500);
+            background: var(--accent-50);
+        }
+        
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            color: var(--secondary-400);
+        }
+        
+        .photo-preview-container {
+            text-align: center;
+            margin: 32px 0;
+            display: none;
+        }
+        
+        .photo-preview {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            border: 3px solid white;
+            object-fit: contain;
+        }
+        
+        .question-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            animation: slideInUp 0.5s ease-out;
+        }
+        
+        .question-header {
+            margin-bottom: 20px;
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .question-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .question-description {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .answer-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            line-height: 1.6;
+            resize: vertical;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--neutral-800);
+            transition: all 0.3s ease;
+        }
+        
+        .answer-textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+            background: white;
+        }
+        
+        .question-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+        }
+        
+        .insight-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .insight-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: white;
+        }
+        
+        .insight-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .insight-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .insight-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .insight-icon {
+            color: #FFD700;
+        }
+        
+        .analysis-summary {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .summary-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .character-insights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+        }
+        
+        .character-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid var(--primary-500);
+        }
+        
+        .insight-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .insight-badge {
+            background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+            color: white;
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .timeline-container {
+            margin: 32px 0;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 24px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary-400), var(--secondary-400));
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-500);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-200);
+        }
+        
+        .timeline-item.active::before {
+            background: var(--accent-500);
+            animation: pulse 2s infinite;
+        }
+        
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary-600);
+            margin-bottom: 4px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        
+        /* 加载动画 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--neutral-200);
+            border-top: 5px solid var(--primary-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .photo-analyzer-container {
+                padding: 16px;
+            }
+            
+            .upload-zone {
+                padding: 32px 16px;
+            }
+            
+            .question-card {
+                padding: 24px 16px;
+            }
+            
+            .question-navigation {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .question-navigation button {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons button {
+                width: 100%;
+            }
+        }
+        
+        /* 自定义动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                <div class="navbar-logo">📸</div>
+                <span>人文赋能能力平台</span>
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item">
+                    <a href="../index.html" class="navbar-link">首页</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="photo-analyzer.html" class="navbar-link active">照片分析</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="character-explorer.html" class="navbar-link">角色探索</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="skill-heritage.html" class="navbar-link">技能传承</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="../dashboard.html" class="navbar-link">仪表板</a>
+                </li>
+            </ul>
+            <div class="navbar-actions">
+                <button class="btn btn-primary btn-sm" onclick="saveAnalysis()">
+                    <i class="fas fa-save"></i> 保存
+                </button>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container">
+        <!-- 主内容区域 -->
+        <div class="photo-analyzer-container">
+            <!-- 头部 -->
+            <div class="analyzer-header">
+                <h1 class="text-3xl font-bold text-gray-800">老照片价值挖掘</h1>
+                <p class="text-gray-600 mt-2">通过分析老照片，挖掘家族记忆和个人成长的价值</p>
+            </div>
+            
+            <!-- 进度指示器 -->
+            <div class="analyzer-progress">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="text-sm text-gray-600" id="progressText">步骤 1/3：上传照片</div>
+            </div>
+            
+            <!-- 步骤1：照片上传 -->
+            <div class="photo-upload-section" id="uploadSection">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📸 上传老照片</h3>
+                        <p class="card-subtitle">让我们一起从一张老照片开始，探索背后的故事</p>
+                    </div>
+                    <div class="card-body">
+                        <!-- 上传区域 -->
+                        <div class="upload-zone" id="uploadZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">拖拽照片到这里</h3>
+                            <p class="text-gray-600 mb-4">或点击选择文件（支持 JPG、PNG 格式）</p>
+                            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                            <button class="btn btn-primary" onclick="document.getElementById('photoInput').click()">
+                                <i class="fas fa-camera mr-2"></i> 选择照片
+                            </button>
+                            <p class="text-xs text-gray-500 mt-4">最大文件大小：5MB</p>
+                        </div>
+                        
+                        <!-- 照片预览 -->
+                        <div class="photo-preview-container" id="previewContainer">
+                            <img class="photo-preview" id="photoPreview" alt="照片预览">
+                            <div class="mt-4">
+                                <button class="btn btn-outline" onclick="removePhoto()">
+                                    <i class="fas fa-trash-alt mr-2"></i> 移除照片
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 提示信息 -->
+                        <div class="alert alert-info mt-6">
+                            <div class="flex">
+                                <div class="alert-icon mr-3">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <div>
+                                    <div class="alert-title">分析建议</div>
+                                    <div class="alert-message">
+                                        选择一张有意义的家族照片，最好包含人物。清晰、光线充足的照片能获得更好的分析效果。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 导航按钮 -->
+                        <div class="flex justify-center mt-8">
+                            <button class="btn btn-primary" id="startAnalysisBtn" onclick="startAnalysis()" style="display: none;">
+                                <i class="fas fa-search mr-2"></i> 开始分析照片
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步骤2：问题回答 -->
+            <div id="questionSection" style="display: none;">
+                <!-- 问题卡片将由JavaScript动态生成 -->
+            </div>
+            
+            <!-- 步骤3：分析总结 -->
+            <div class="analysis-summary" id="summarySection">
+                <div class="summary-header">
+                    <h2 class="text-3xl font-bold text-gray-800">🎉 分析完成！</h2>
+                    <p class="text-gray-600 mt-2">您已经完成了这次深度探索</p>
+                </div>
+                
+                <!-- 总结卡片 -->
+                <div class="summary-card">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center text-3xl mr-4">
+                            📊
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">分析洞察</h3>
+                            <p class="text-white text-opacity-90">基于您的回答生成</p>
+                        </div>
+                    </div>
+                    
+                    <div class="character-insights" id="characterInsights">
+                        <!-- 角色卡片将由JavaScript动态生成 -->
+                    </div>
+                    
+                    <div class="insight-badges" id="insightBadges">
+                        <!-- 洞察徽章将由JavaScript动态生成 -->
+                    </div>
+                    
+                    <div class="timeline-container">
+                        <h4 class="text-xl font-bold text-white mb-4">📅 记忆时间线</h4>
+                        <div class="timeline" id="timeline">
+                            <!-- 时间线将由JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 统计信息 -->
+                <div class="card mt-6">
+                    <div class="card-header">
+                        <h3 class="card-title">📈 分析统计</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid grid-4 gap-6 text-center">
+                            <div>
+                                <div class="text-3xl font-bold text-primary-600" id="statQuestions">0</div>
+                                <div class="text-sm text-gray-600">回答问题</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-secondary-600" id="statWords">0</div>
+                                <div class="text-sm text-gray-600">记录字数</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-accent-600" id="statInsights">0</div>
+                                <div class="text-sm text-gray-600">获得洞察</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-success-600" id="statCompletion">0%</div>
+                                <div class="text-sm text-gray-600">完成度</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 行动按钮 -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="saveAnalysis()">
+                        <i class="fas fa-save mr-2"></i> 保存分析
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportAnalysis()">
+                        <i class="fas fa-download mr-2"></i> 导出报告
+                    </button>
+                    <button class="btn btn-accent" onclick="shareAnalysis()">
+                        <i class="fas fa-share-alt mr-2"></i> 分享发现
+                    </button>
+                    <button class="btn btn-outline" onclick="startNewAnalysis()">
+                        <i class="fas fa-plus mr-2"></i> 新的分析
+                    </button>
+                </div>
+                
+                <!-- 仪表板链接 -->
+                <div class="text-center mt-8">
+                    <a href="../dashboard.html" class="btn btn-outline">
+                        <i class="fas fa-tachometer-alt mr-2"></i> 前往仪表板查看所有记录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div>
+                <h4 class="footer-section-title">人文赋能能力平台</h4>
+                <p class="text-gray-300 mt-2">通过数字化练习，探索家族记忆，传承人文价值</p>
+            </div>
+            <div>
+                <h4 class="footer-section-title">练习工具</h4>
+                <ul class="footer-links">
+                    <li><a href="photo-analyzer.html" class="footer-link">老照片分析</a></li>
+                    <li><a href="character-explorer.html" class="footer-link">角色探索</a></li>
+                    <li><a href="skill-heritage.html" class="footer-link">技能传承</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-section-title">支持与帮助</h4>
+                <ul class="footer-links">
+                    <li><a href="#" class="footer-link">使用指南</a></li>
+                    <li><a href="#" class="footer-link">常见问题</a></li>
+                    <li><a href="#" class="footer-link">联系我们</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 人文赋能能力平台. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        // 照片分析器核心逻辑
+        class PhotoAnalyzer {
+            constructor() {
+                // 配置
+                this.config = {
+                    questions: [
+                        {
+                            id: 1,
+                            title: "人物识别",
+                            question: "这张照片中的人物是谁？",
+                            description: "请描述照片中的人物及其与您的关系",
+                            insights: [
+                                "考虑家族谱系关系",
+                                "回忆人物的生平故事", 
+                                "思考他们在您成长中的影响"
+                            ],
+                            icon: "👤"
+                        },
+                        {
+                            id: 2,
+                            title: "时空定位",
+                            question: "照片拍摄的时间和地点是？",
+                            description: "尽可能准确地描述拍摄背景",
+                            insights: [
+                                "结合历史背景分析",
+                                "回忆当时的家庭状况",
+                                "思考地点的象征意义"
+                            ],
+                            icon: "📍"
+                        },
+                        {
+                            id: 3,
+                            title: "情感连接",
+                            question: "这张照片唤起您什么情感？",
+                            description: "描述您看到这张照片时的感受",
+                            insights: [
+                                "分析情感背后的价值观",
+                                "连接当下的生活状态",
+                                "思考情感传承的意义"
+                            ],
+                            icon: "❤️"
+                        },
+                        {
+                            id: 4,
+                            title: "价值发现",
+                            question: "这张照片对您最重要的价值是什么？",
+                            description: "从个人、家族、社会等多个层面思考",
+                            insights: [
+                                "识别家族精神传承",
+                                "发现个人成长线索",
+                                "思考历史教育意义"
+                            ],
+                            icon: "💎"
+                        },
+                        {
+                            id: 5,
+                            title: "行动启示",
+                            question: "基于这张照片，您想采取什么行动？",
+                            description: "可以是家庭活动、个人计划或传承行动",
+                            insights: [
+                                "制定家庭故事记录计划",
+                                "计划家族聚会分享",
+                                "考虑数字化保存方案"
+                            ],
+                            icon: "🚀"
+                        }
+                    ]
+                };
+                
+                // 状态
+                this.state = {
+                    currentStep: 1, // 1: 上传, 2: 问题, 3: 总结
+                    currentQuestionIndex: 0,
+                    answers: {},
+                    uploadedPhoto: null,
+                    photoData: null,
+                    analysisId: null,
+                    isAnalyzing: false
+                };
+                
+                // DOM元素
+                this.elements = {
+                    uploadZone: document.getElementById('uploadZone'),
+                    photoInput: document.getElementById('photoInput'),
+                    photoPreview: document.getElementById('photoPreview'),
+                    previewContainer: document.getElementById('previewContainer'),
+                    uploadSection: document.getElementById('uploadSection'),
+                    startAnalysisBtn: document.getElementById('startAnalysisBtn'),
+                    questionSection: document.getElementById('questionSection'),
+                    summarySection: document.getElementById('summarySection'),
+                    progressBar: document.getElementById('progressBar'),
+                    progressText: document.getElementById('progressText'),
+                    loadingOverlay: document.getElementById('loadingOverlay')
+                };
+                
+                // 初始化
+                this.init();
+            }
+            
+            init() {
+                this.bindElements();
+                this.initEventListeners();
+                this.checkSavedProgress();
+            }
+            
+            bindElements() {
+                // 已在构造函数中绑定
+            }
+            
+            initEventListeners() {
+                // 照片上传事件
+                this.elements.photoInput.addEventListener('change', (e) => this.handlePhotoUpload(e));
+                
+                // 拖拽上传事件
+                this.elements.uploadZone.addEventListener('dragover', (e) => this.handleDragOver(e));
+                this.elements.uploadZone.addEventListener('drop', (e) => this.handleDrop(e));
+                this.elements.uploadZone.addEventListener('dragleave', () => {
+                    this.elements.uploadZone.classList.remove('dragover');
+                });
+                
+                // 点击上传区域
+                this.elements.uploadZone.addEventListener('click', () => {
+                    this.elements.photoInput.click();
+                });
+            }
+            
+            handleDragOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.elements.uploadZone.classList.add('dragover');
+            }
+            
+            handleDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.elements.uploadZone.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.processImageFile(files[0]);
+                }
+            }
+            
+            handlePhotoUpload(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    this.processImageFile(file);
+                }
+            }
+            
+            processImageFile(file) {
+                // 验证文件类型
+                if (!file.type.startsWith('image/')) {
+                    this.showAlert('请选择图片文件', 'error');
+                    return;
+                }
+                
+                // 验证文件大小 (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    this.showAlert('图片大小不能超过5MB', 'error');
+                    return;
+                }
+                
+                this.showLoading();
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.state.uploadedPhoto = e.target.result;
+                    this.state.photoData = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        uploadTime: new Date().toISOString()
+                    };
+                    
+                    // 显示预览
+                    this.elements.photoPreview.src = this.state.uploadedPhoto;
+                    this.elements.previewContainer.style.display = 'block';
+                    this.elements.startAnalysisBtn.style.display = 'block';
+                    
+                    // 滚动到预览区域
+                    this.elements.previewContainer.scrollIntoView({ behavior: 'smooth' });
+                    
+                    this.hideLoading();
+                    this.showAlert('照片上传成功！', 'success');
+                };
+                
+                reader.onerror = () => {
+                    this.hideLoading();
+                    this.showAlert('图片读取失败，请重试', 'error');
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            removePhoto() {
+                this.state.uploadedPhoto = null;
+                this.state.photoData = null;
+                this.elements.photoPreview.src = '';
+                this.elements.previewContainer.style.display = 'none';
+                this.elements.startAnalysisBtn.style.display = 'none';
+                this.elements.photoInput.value = '';
+            }
+            
+            startAnalysis() {
+                if (!this.state.uploadedPhoto) {
+                    this.showAlert('请先上传照片', 'warning');
+                    return;
+                }
+                
+                this.state.currentStep = 2;
+                this.state.currentQuestionIndex = 0;
+                this.state.analysisId = Date.now();
+                
+                // 隐藏上传区域，显示问题区域
+                this.elements.uploadSection.style.display = 'none';
+                this.elements.questionSection.style.display = 'block';
+                
+                this.updateProgress(33);
+                this.updateProgressText('步骤 2/3：回答问题 (1/5)');
+                
+                // 显示第一个问题
+                this.showQuestion();
+            }
+            
+            showQuestion() {
+                const question = this.config.questions[this.state.currentQuestionIndex];
+                
+                // 创建问题卡片HTML
+                const questionHTML = `
+                    <div class="question-card" id="questionCard">
+                        <div class="question-header">
+                            <div class="question-number">问题 ${this.state.currentQuestionIndex + 1}/5</div>
+                            <h2 class="question-title">${question.icon} ${question.question}</h2>
+                            <p class="question-description">${question.description}</p>
+                        </div>
+                        
+                        <textarea 
+                            class="answer-textarea" 
+                            id="answerTextarea"
+                            placeholder="请在此输入您的思考..."
+                            autofocus
+                        >${this.state.answers[question.id] || ''}</textarea>
+                        
+                        <div class="question-navigation">
+                            <button class="btn btn-outline" id="prevBtn" ${this.state.currentQuestionIndex === 0 ? 'disabled' : ''}>
+                                <i class="fas fa-arrow-left mr-2"></i> 上一题
+                            </button>
+                            <button class="btn btn-outline" onclick="toggleInsights()">
+                                <i class="fas fa-lightbulb mr-2"></i> 洞察提示
+                            </button>
+                            <button class="btn btn-primary" id="nextBtn">
+                                ${this.state.currentQuestionIndex === this.config.questions.length - 1 ? '完成分析' : '下一题'}
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="insight-panel" id="insightPanel">
+                            <div class="insight-title">
+                                <i class="fas fa-lightbulb insight-icon"></i>
+                                洞察提示
+                            </div>
+                            <ul class="insight-list">
+                                ${question.insights.map(insight => `<li>• ${insight}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                
+                this.elements.questionSection.innerHTML = questionHTML;
+                
+                // 绑定新元素的事件
+                document.getElementById('answerTextarea').addEventListener('input', (e) => {
+                    this.saveAnswer(e.target.value);
+                });
+                
+                document.getElementById('prevBtn').addEventListener('click', () => this.prevQuestion());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextQuestion());
+                
+                // 初始隐藏洞察面板
+                document.getElementById('insightPanel').style.display = 'none';
+            }
+            
+            saveAnswer(answer) {
+                const question = this.config.questions[this.state.currentQuestionIndex];
+                this.state.answers[question.id] = answer;
+            }
+            
+            prevQuestion() {
+                if (this.state.currentQuestionIndex > 0) {
+                    this.state.currentQuestionIndex--;
+                    this.showQuestion();
+                    this.updateProgressText(`步骤 2/3：回答问题 (${this.state.currentQuestionIndex + 1}/5)`);
+                }
+            }
+            
+            nextQuestion() {
+                // 保存当前答案
+                const currentAnswer = document.getElementById('answerTextarea')?.value || '';
+                this.saveAnswer(currentAnswer);
+                
+                if (this.state.currentQuestionIndex < this.config.questions.length - 1) {
+                    this.state.currentQuestionIndex++;
+                    this.showQuestion();
+                    this.updateProgressText(`步骤 2/3：回答问题 (${this.state.currentQuestionIndex + 1}/5)`);
+                } else {
+                    this.completeAnalysis();
+                }
+            }
+            
+            completeAnalysis() {
+                this.state.currentStep = 3;
+                
+                // 隐藏问题区域，显示总结区域
+                this.elements.questionSection.style.display = 'none';
+                this.elements.summarySection.style.display = 'block';
+                
+                this.updateProgress(100);
+                this.updateProgressText('步骤 3/3：分析完成');
+                
+                // 生成分析总结
+                this.generateSummary();
+            }
+            
+            generateSummary() {
+                // 生成角色洞察
+                this.generateCharacterInsights();
+                
+                // 生成洞察徽章
+                this.generateInsightBadges();
+                
+                // 生成时间线
+                this.generateTimeline();
+                
+                // 更新统计信息
+                this.updateStatistics();
+            }
+            
+            generateCharacterInsights() {
+                const container = document.getElementById('characterInsights');
+                const characterAnswer = this.state.answers[1]; // 第一个问题的答案
+                
+                if (characterAnswer && characterAnswer.trim()) {
+                    container.innerHTML = `
+                        <div class="character-card">
+                            <div class="flex items-start mb-4">
+                                <div class="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-2xl mr-3">
+                                    👥
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">识别到的人物</h4>
+                                    <p class="text-sm text-gray-600">基于您的描述</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">${this.truncateText(characterAnswer, 150)}</p>
+                            <div class="mt-4">
+                                <span class="badge badge-primary mr-2">家族成员</span>
+                                <span class="badge badge-secondary">情感连接</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="character-card">
+                            <div class="text-center py-6">
+                                <div class="text-4xl mb-3">👤</div>
+                                <p class="text-gray-600">未识别到具体人物信息</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            generateInsightBadges() {
+                const container = document.getElementById('insightBadges');
+                const badges = [];
+                
+                // 基于答案生成洞察徽章
+                const answersCount = Object.keys(this.state.answers).length;
+                if (answersCount >= 3) badges.push('深度思考');
+                if (this.state.answers[3]?.length > 50) badges.push('情感丰富'); // 情感问题
+                if (this.state.answers[5]?.length > 30) badges.push('行动计划'); // 行动问题
+                
+                // 添加通用徽章
+                badges.push('家族记忆', '价值挖掘', '历史传承');
+                
+                container.innerHTML = badges.map(badge => `
+                    <div class="insight-badge">${badge}</div>
+                `).join('');
+            }
+            
+            generateTimeline() {
+                const container = document.getElementById('timeline');
+                const timelineItems = [
+                    {
+                        date: '今天',
+                        title: '开始分析',
+                        content: '上传照片并开始探索家族记忆',
+                        active: true
+                    },
+                    {
+                        date: '下周',
+                        title: '家族分享',
+                        content: '计划与家人分享这张照片的故事'
+                    },
+                    {
+                        date: '下个月',
+                        title: '数字化保存',
+                        content: '扫描并备份照片到云端相册'
+                    }
+                ];
+                
+                container.innerHTML = timelineItems.map(item => `
+                    <div class="timeline-item ${item.active ? 'active' : ''}">
+                        <div class="timeline-date">${item.date}</div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <h5 class="font-bold text-gray-800 mb-1">${item.title}</h5>
+                            <p class="text-gray-700 text-sm">${item.content}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updateStatistics() {
+                // 计算统计数据
+                const answeredQuestions = Object.keys(this.state.answers).length;
+                const totalQuestions = this.config.questions.length;
+                const completionRate = Math.round((answeredQuestions / totalQuestions) * 100);
+                
+                // 计算总字数
+                let totalWords = 0;
+                Object.values(this.state.answers).forEach(answer => {
+                    totalWords += answer ? answer.length : 0;
+                });
+                
+                // 更新DOM
+                document.getElementById('statQuestions').textContent = answeredQuestions;
+                document.getElementById('statWords').textContent = totalWords;
+                document.getElementById('statInsights').textContent = 5; // 固定值，可根据实际情况调整
+                document.getElementById('statCompletion').textContent = `${completionRate}%`;
+            }
+            
+            saveAnalysis() {
+                if (!this.state.uploadedPhoto) {
+                    this.showAlert('请先上传照片并进行分析', 'warning');
+                    return;
+                }
+                
+                const analysisData = {
+                    id: this.state.analysisId || Date.now(),
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    photo: this.state.uploadedPhoto,
+                    photoData: this.state.photoData,
+                    answers: this.state.answers,
+                    questions: this.config.questions.map(q => ({
+                        id: q.id,
+                        title: q.title,
+                        question: q.question
+                    })),
+                    completed: this.state.currentStep === 3
+                };
+                
+                try {
+                    // 获取现有分析数据
+                    let analyses = JSON.parse(localStorage.getItem('photoAnalyses_v1') || '[]');
+                    
+                    // 检查是否已存在（更新）
+                    const existingIndex = analyses.findIndex(a => a.id === analysisData.id);
+                    if (existingIndex !== -1) {
+                        analyses[existingIndex] = analysisData;
+                    } else {
+                        analyses.push(analysisData);
+                    }
+                    
+                    // 保存到localStorage
+                    localStorage.setItem('photoAnalyses_v1', JSON.stringify(analyses));
+                    
+                    this.showAlert('分析已保存到本地存储！', 'success');
+                    
+                    // 询问是否前往仪表板
+                    setTimeout(() => {
+                        const shouldGoToDashboard = confirm('保存成功！是否前往仪表板查看所有记录？');
+                        if (shouldGoToDashboard) {
+                            window.location.href = '../dashboard.html';
+                        }
+                    }, 500);
+                    
+                } catch (error) {
+                    console.error('保存失败:', error);
+                    this.showAlert('保存失败，请重试', 'error');
+                }
+            }
+            
+            exportAnalysis() {
+                if (Object.keys(this.state.answers).length === 0) {
+                    this.showAlert('没有可导出的分析数据', 'warning');
+                    return;
+                }
+                
+                const analysisData = {
+                    title: '老照片价值分析报告',
+                    exportDate: new Date().toLocaleString('zh-CN'),
+                    photoDescription: this.state.answers[1] || '未描述',
+                    analysisId: this.state.analysisId,
+                    
+                    answers: this.config.questions.map(q => ({
+                        question: q.question,
+                        answer: this.state.answers[q.id] || '未回答'
+                    })),
+                    
+                    summary: {
+                        totalQuestions: this.config.questions.length,
+                        answeredQuestions: Object.keys(this.state.answers).length,
+                        completionRate: Math.round((Object.keys(this.state.answers).length / this.config.questions.length) * 100)
+                    },
+                    
+                    metadata: {
+                        version: '1.0.0',
+                        platform: '人文赋能能力平台',
+                        generatedBy: '老照片价值挖掘工具'
+                    }
+                };
+                
+                // 创建JSON文件
+                const blob = new Blob([JSON.stringify(analysisData, null, 2)], { 
+                    type: 'application/json' 
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `老照片分析报告_${this.state.analysisId}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showAlert('报告已导出为JSON文件！', 'success');
+            }
+            
+            shareAnalysis() {
+                if (!this.state.uploadedPhoto) {
+                    this.showAlert('请先完成照片分析', 'warning');
+                    return;
+                }
+                
+                const shareText = `我发现了一张珍贵的老照片！\n\n` +
+                                 `通过分析，我发现了：${this.state.answers[1]?.substring(0, 50) || '许多珍贵记忆'}...\n\n` +
+                                 `探索更多家族故事，请访问人文赋能能力平台`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: '我的老照片发现',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } else {
+                    // 复制到剪贴板
+                    navigator.clipboard.writeText(shareText)
+                        .then(() => this.showAlert('分享内容已复制到剪贴板', 'success'))
+                        .catch(() => this.showAlert('复制失败，请手动复制', 'error'));
+                }
+            }
+            
+            startNewAnalysis() {
+                const confirmReset = confirm('开始新的分析将清空当前内容，是否继续？');
+                if (!confirmReset) return;
+                
+                // 重置状态
+                this.state = {
+                    currentStep: 1,
+                    currentQuestionIndex: 0,
+                    answers: {},
+                    uploadedPhoto: null,
+                    photoData: null,
+                    analysisId: null,
+                    isAnalyzing: false
+                };
+                
+                // 重置UI
+                this.elements.uploadSection.style.display = 'block';
+                this.elements.questionSection.style.display = 'none';
+                this.elements.summarySection.style.display = 'none';
+                this.elements.previewContainer.style.display = 'none';
+                this.elements.startAnalysisBtn.style.display = 'none';
+                this.elements.photoPreview.src = '';
+                this.elements.photoInput.value = '';
+                
+                // 重置进度
+                this.updateProgress(0);
+                this.updateProgressText('步骤 1/3：上传照片');
+                
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                this.showAlert('已开始新的分析', 'info');
+            }
+            
+            checkSavedProgress() {
+                try {
+                    const savedData = localStorage.getItem('currentPhotoAnalysis');
+                    if (savedData) {
+                        const data = JSON.parse(savedData);
+                        
+                        // 检查是否有未完成的进度
+                        if (data.uploadedPhoto) {
+                            const shouldRestore = confirm('发现上次未完成的照片分析，是否恢复进度？');
+                            if (shouldRestore) {
+                                this.restoreProgress(data);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('恢复进度失败:', error);
+                }
+            }
+            
+            restoreProgress(data) {
+                this.state.uploadedPhoto = data.uploadedPhoto;
+                this.state.photoData = data.photoData;
+                this.state.answers = data.answers || {};
+                this.state.currentStep = data.currentStep || 1;
+                this.state.currentQuestionIndex = data.currentQuestionIndex || 0;
+                
+                // 恢复照片预览
+                if (this.state.uploadedPhoto) {
+                    this.elements.photoPreview.src = this.state.uploadedPhoto;
+                    this.elements.previewContainer.style.display = 'block';
+                    this.elements.startAnalysisBtn.style.display = 'block';
+                }
+                
+                // 根据步骤更新UI
+                if (this.state.currentStep === 2) {
+                    this.startAnalysis();
+                } else if (this.state.currentStep === 3) {
+                    this.completeAnalysis();
+                }
+                
+                this.showAlert('进度已恢复', 'info');
+            }
+            
+            updateProgress(percentage) {
+                this.elements.progressBar.style.width = `${percentage}%`;
+            }
+            
+            updateProgressText(text) {
+                this.elements.progressText.textContent = text;
+            }
+            
+            showLoading() {
+                this.elements.loadingOverlay.style.display = 'flex';
+            }
+            
+            hideLoading() {
+                this.elements.loadingOverlay.style.display = 'none';
+            }
+            
+            showAlert(message, type = 'info') {
+                // 移除现有的提示
+                const existingAlert = document.querySelector('.alert-toast');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+                
+                // 创建新提示
+                const alert = document.createElement('div');
+                alert.className = `alert-toast alert-${type} fixed top-4 right-4 z-50 max-w-md`;
+                alert.innerHTML = `
+                    <div class="flex items-start p-4 rounded-lg shadow-lg animate-slide-in-right">
+                        <div class="mr-3 text-lg">${this.getAlertIcon(type)}</div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">${message}</p>
+                        </div>
+                        <button class="ml-4 text-gray-400 hover:text-gray-600" onclick="this.parentElement.remove()">
+                            &times;
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(alert);
+                
+                // 自动移除
+                setTimeout(() => {
+                    if (alert.parentElement) {
+                        alert.remove();
+                    }
+                }, 3000);
+            }
+            
+            getAlertIcon(type) {
+                const icons = {
+                    success: '✅',
+                    error: '❌',
+                    warning: '⚠️',
+                    info: 'ℹ️'
+                };
+                return icons[type] || 'ℹ️';
+            }
+            
+            truncateText(text, maxLength) {
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength) + '...';
+            }
+        }
+        
+        // 全局辅助函数
+        function toggleInsights() {
+            const insightPanel = document.getElementById('insightPanel');
+            if (insightPanel) {
+                insightPanel.style.display = insightPanel.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            window.photoAnalyzer = new PhotoAnalyzer();
+            
+            // 为全局函数绑定实例方法
+            window.saveAnalysis = () => window.photoAnalyzer.saveAnalysis();
+            window.exportAnalysis = () => window.photoAnalyzer.exportAnalysis();
+            window.shareAnalysis = () => window.photoAnalyzer.shareAnalysis();
+            window.startNewAnalysis = () => window.photoAnalyzer.startNewAnalysis();
+            window.removePhoto = () => window.photoAnalyzer.removePhoto();
+            window.startAnalysis = () => window.photoAnalyzer.startAnalysis();
+            
+            // 保存页面离开时的进度
+            window.addEventListener('beforeunload', () => {
+                window.photoAnalyzer.state.currentStep = window.photoAnalyzer.state.currentStep;
+                localStorage.setItem('currentPhotoAnalysis', JSON.stringify(window.photoAnalyzer.state));
+            });
+        });
+    </script>
+</body>
+</html>
