@@ -1362,3 +1362,14 @@
     </script>
 </body>
 </html>
+        </div> <!-- 关闭容器 -->
+    </main>
+    
+    <!-- 页脚模板 -->
+    <script>
+        fetch('../templates/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.write(data);
+            });
+    </script>
