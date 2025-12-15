@@ -1,1 +1,1686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家族角色探索 - 人文赋能能力平台</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 角色探索特定样式 */
+        .character-wizard {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .character-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            margin: 0 auto 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 4px solid white;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .character-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .avatar-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        
+        .avatar-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            background: var(--neutral-100);
+            transition: all 0.2s ease;
+        }
+        
+        .avatar-option:hover {
+            background: var(--neutral-200);
+            transform: scale(1.1);
+        }
+        
+        .avatar-option.active {
+            background: var(--primary-100);
+            border: 2px solid var(--primary-500);
+        }
+        
+        .trait-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .trait-badge {
+            padding: 8px 16px;
+            background: var(--neutral-100);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            border: 2px solid transparent;
+        }
+        
+        .trait-badge:hover {
+            background: var(--neutral-200);
+        }
+        
+        .trait-badge.selected {
+            background: var(--primary-100);
+            color: var(--primary-700);
+            border-color: var(--primary-300);
+        }
+        
+        .relationship-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .relationship-card {
+            padding: 16px;
+            text-align: center;
+            background: white;
+            border: 2px solid var(--neutral-200);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .relationship-card:hover {
+            border-color: var(--primary-300);
+            transform: translateY(-2px);
+        }
+        
+        .relationship-card.selected {
+            background: var(--primary-50);
+            border-color: var(--primary-500);
+        }
+        
+        .relationship-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .timeline-input {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .timeline-input input {
+            flex: 1;
+        }
+        
+        .timeline-input span {
+            white-space: nowrap;
+            color: var(--neutral-600);
+        }
+        
+        .story-input {
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        .character-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-top: 32px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .preview-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--primary-600);
+            flex-shrink: 0;
+        }
+        
+        .preview-info h2 {
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .preview-relationship {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .preview-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        
+        .preview-trait {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+        }
+        
+        .preview-story {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .preview-story h4 {
+            color: white;
+            margin-bottom: 12px;
+        }
+        
+        .insight-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--neutral-50);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--secondary-500);
+        }
+        
+        .insight-point {
+            margin: 16px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .insight-point:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .generation-visualization {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(90deg, #f0f4ff, #e6f7ff);
+            border-radius: var(--radius-lg);
+            margin: 24px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .generation-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-300);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .generation-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow-md);
+            border: 3px solid var(--primary-500);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        /* 情感选择器 */
+        .emotion-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .emotion-card {
+            flex: 1;
+            min-width: 120px;
+            padding: 16px;
+            text-align: center;
+            background: white;
+            border: 2px solid var(--neutral-200);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .emotion-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .emotion-card.selected {
+            border-color: var(--accent-500);
+            background: var(--accent-50);
+        }
+        
+        .emotion-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        /* 时间线样式 */
+        .memory-timeline {
+            margin: 24px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .memory-timeline:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary-400), var(--secondary-400));
+        }
+        
+        .memory-item {
+            position: relative;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary-400);
+        }
+        
+        .memory-item:before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-500);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-200);
+        }
+        
+        .memory-year {
+            font-weight: bold;
+            color: var(--primary-600);
+            margin-bottom: 4px;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .character-wizard {
+                padding: 16px;
+            }
+            
+            .relationship-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .emotion-card {
+                min-width: 100px;
+            }
+            
+            .preview-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                <div class="navbar-logo">👨‍👩‍👧‍👦</div>
+                <span>人文赋能能力平台</span>
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item">
+                    <a href="../index.html" class="navbar-link">首页</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="../exercises/photo-analyzer.html" class="navbar-link">照片分析</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="../exercises/character-explorer.html" class="navbar-link active">角色探索</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="../exercises/skill-heritage.html" class="navbar-link">技能传承</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="../dashboard.html" class="navbar-link">仪表板</a>
+                </li>
+            </ul>
+            <div class="navbar-actions">
+                <button class="btn btn-primary btn-sm" onclick="saveExploration()">
+                    <i class="fas fa-save"></i> 保存
+                </button>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container">
+        <!-- 向导式导航 -->
+        <div class="wizard">
+            <div class="wizard-steps">
+                <div class="wizard-step active" data-step="1">
+                    <div class="wizard-step-number">1</div>
+                    <div class="wizard-step-label">基本信息</div>
+                </div>
+                <div class="wizard-step" data-step="2">
+                    <div class="wizard-step-number">2</div>
+                    <div class="wizard-step-label">性格特点</div>
+                </div>
+                <div class="wizard-step" data-step="3">
+                    <div class="wizard-step-number">3</div>
+                    <div class="wizard-step-label">人生故事</div>
+                </div>
+                <div class="wizard-step" data-step="4">
+                    <div class="wizard-step-number">4</div>
+                    <div class="wizard-step-label">影响启示</div>
+                </div>
+                <div class="wizard-step" data-step="5">
+                    <div class="wizard-step-number">5</div>
+                    <div class="wizard-step-label">完成探索</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="character-wizard">
+            <div class="wizard-content">
+                <!-- 步骤1：基本信息 -->
+                <div class="wizard-step-content active" id="step1">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">👤 基本信息</h3>
+                            <p class="card-subtitle">让我们从最基本的信息开始了解这位家人</p>
+                        </div>
+                        <div class="card-body">
+                            <!-- 头像选择 -->
+                            <div class="text-center mb-6">
+                                <div class="character-avatar" id="avatarDisplay" onclick="showAvatarOptions()">
+                                    👤
+                                </div>
+                                <p class="text-sm text-gray-600">点击头像选择表情</p>
+                                
+                                <div class="avatar-options" id="avatarOptions" style="display: none;">
+                                    <div class="avatar-option" data-avatar="👴">👴</div>
+                                    <div class="avatar-option" data-avatar="👵">👵</div>
+                                    <div class="avatar-option" data-avatar="👨">👨</div>
+                                    <div class="avatar-option" data-avatar="👩">👩</div>
+                                    <div class="avatar-option" data-avatar="👦">👦</div>
+                                    <div class="avatar-option" data-avatar="👧">👧</div>
+                                    <div class="avatar-option" data-avatar="🧓">🧓</div>
+                                    <div class="avatar-option" data-avatar="🧑">🧑</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 姓名输入 -->
+                            <div class="form-group">
+                                <label class="form-label" for="characterName">角色姓名</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="characterName" 
+                                       placeholder="请输入姓名（如：王建国）"
+                                       value="">
+                            </div>
+                            
+                            <!-- 关系选择 -->
+                            <div class="form-group">
+                                <label class="form-label">与您的关系</label>
+                                <div class="relationship-selector">
+                                    <div class="relationship-card" data-relationship="祖父">
+                                        <div class="relationship-icon">👴</div>
+                                        <div>祖父</div>
+                                    </div>
+                                    <div class="relationship-card" data-relationship="祖母">
+                                        <div class="relationship-icon">👵</div>
+                                        <div>祖母</div>
+                                    </div>
+                                    <div class="relationship-card" data-relationship="父亲">
+                                        <div class="relationship-icon">👨</div>
+                                        <div>父亲</div>
+                                    </div>
+                                    <div class="relationship-card" data-relationship="母亲">
+                                        <div class="relationship-icon">👩</div>
+                                        <div>母亲</div>
+                                    </div>
+                                    <div class="relationship-card" data-relationship="叔叔">
+                                        <div class="relationship-icon">🧔</div>
+                                        <div>叔叔</div>
+                                    </div>
+                                    <div class="relationship-card" data-relationship="阿姨">
+                                        <div class="relationship-icon">👱‍♀️</div>
+                                        <div>阿姨</div>
+                                    </div>
+                                    <div class="relationship-card" data-relationship="兄弟">
+                                        <div class="relationship-icon">👬</div>
+                                        <div>兄弟</div>
+                                    </div>
+                                    <div class="relationship-card" data-relationship="姐妹">
+                                        <div class="relationship-icon">👭</div>
+                                        <div>姐妹</div>
+                                    </div>
+                                </div>
+                                <input type="text" 
+                                       class="form-control mt-3" 
+                                       id="relationshipOther" 
+                                       placeholder="其他关系（如：表舅、邻居等）"
+                                       style="display: none;">
+                            </div>
+                            
+                            <!-- 年代信息 -->
+                            <div class="form-group">
+                                <label class="form-label">年代信息</label>
+                                <div class="timeline-input">
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="birthYear" 
+                                           placeholder="出生年份" 
+                                           min="1900" 
+                                           max="2024">
+                                    <span>年</span>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="birthMonth" 
+                                           placeholder="月份" 
+                                           min="1" 
+                                           max="12">
+                                    <span>月</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 世代可视化 -->
+                            <div class="generation-visualization" id="generationVisualization">
+                                <div class="generation-line"></div>
+                                <div class="generation-node" style="left: 20%;">
+                                    <div>曾祖</div>
+                                </div>
+                                <div class="generation-node" style="left: 40%;">
+                                    <div>祖辈</div>
+                                </div>
+                                <div class="generation-node" style="left: 60%;">
+                                    <div id="currentGenerationNode">当前</div>
+                                </div>
+                                <div class="generation-node" style="left: 80%;">
+                                    <div>晚辈</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 导航按钮 -->
+                            <div class="flex justify-between mt-6">
+                                <button class="btn btn-outline" disabled>
+                                    上一步
+                                </button>
+                                <button class="btn btn-primary" onclick="nextStep(2)">
+                                    下一步：性格特点
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 步骤2：性格特点 -->
+                <div class="wizard-step-content" id="step2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">🧠 性格特点</h3>
+                            <p class="card-subtitle">描述这位家人的性格特点和品质</p>
+                        </div>
+                        <div class="card-body">
+                            <!-- 性格特质选择 -->
+                            <div class="form-group">
+                                <label class="form-label">主要性格特质</label>
+                                <p class="text-sm text-gray-600 mb-3">请选择最能描述这位家人的性格特质（可多选）</p>
+                                
+                                <div class="trait-selector" id="traitSelector">
+                                    <div class="trait-badge" data-trait="善良">善良</div>
+                                    <div class="trait-badge" data-trait="勤劳">勤劳</div>
+                                    <div class="trait-badge" data-trait="智慧">智慧</div>
+                                    <div class="trait-badge" data-trait="勇敢">勇敢</div>
+                                    <div class="trait-badge" data-trait="幽默">幽默</div>
+                                    <div class="trait-badge" data-trait="坚韧">坚韧</div>
+                                    <div class="trait-badge" data-trait="乐观">乐观</div>
+                                    <div class="trait-badge" data-trait="诚实">诚实</div>
+                                    <div class="trait-badge" data-trait="细心">细心</div>
+                                    <div class="trait-badge" data-trait="大方">大方</div>
+                                    <div class="trait-badge" data-trait="严格">严格</div>
+                                    <div class="trait-badge" data-trait="温柔">温柔</div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="customTrait" 
+                                           placeholder="添加自定义特质（按回车添加）"
+                                           onkeypress="handleTraitKeypress(event)">
+                                </div>
+                            </div>
+                            
+                            <!-- 情感连接 -->
+                            <div class="form-group">
+                                <label class="form-label">情感连接</label>
+                                <p class="text-sm text-gray-600 mb-3">您对这位家人的主要情感是什么？</p>
+                                
+                                <div class="emotion-selector">
+                                    <div class="emotion-card" data-emotion="敬爱">
+                                        <div class="emotion-icon">🙏</div>
+                                        <div>敬爱</div>
+                                    </div>
+                                    <div class="emotion-card" data-emotion="亲近">
+                                        <div class="emotion-icon">❤️</div>
+                                        <div>亲近</div>
+                                    </div>
+                                    <div class="emotion-card" data-emotion="感激">
+                                        <div class="emotion-icon">🥰</div>
+                                        <div>感激</div>
+                                    </div>
+                                    <div class="emotion-card" data-emotion="怀念">
+                                        <div class="emotion-icon">😔</div>
+                                        <div>怀念</div>
+                                    </div>
+                                    <div class="emotion-card" data-emotion="尊敬">
+                                        <div class="emotion-icon">👑</div>
+                                        <div>尊敬</div>
+                                    </div>
+                                    <div class="emotion-card" data-emotion="钦佩">
+                                        <div class="emotion-icon">🌟</div>
+                                        <div>钦佩</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 口头禅或习惯 -->
+                            <div class="form-group">
+                                <label class="form-label" for="habit">口头禅或特别习惯</label>
+                                <textarea class="form-control" 
+                                          id="habit" 
+                                          rows="3"
+                                          placeholder="这位家人常说的话、特别的习惯或动作..."></textarea>
+                            </div>
+                            
+                            <!-- 导航按钮 -->
+                            <div class="flex justify-between mt-6">
+                                <button class="btn btn-outline" onclick="prevStep(1)">
+                                    上一步：基本信息
+                                </button>
+                                <button class="btn btn-primary" onclick="nextStep(3)">
+                                    下一步：人生故事
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 步骤3：人生故事 -->
+                <div class="wizard-step-content" id="step3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📖 人生故事</h3>
+                            <p class="card-subtitle">记录这位家人的重要经历和故事</p>
+                        </div>
+                        <div class="card-body">
+                            <!-- 人生阶段引导 -->
+                            <div class="insight-section">
+                                <h4>💡 思考提示</h4>
+                                <div class="insight-point">童年时期的重要经历或成长环境</div>
+                                <div class="insight-point">青年时期的求学、工作或婚姻经历</div>
+                                <div class="insight-point">中年时期的家庭责任或事业成就</div>
+                                <div class="insight-point">老年时期的智慧传承或人生感悟</div>
+                            </div>
+                            
+                            <!-- 人生故事输入 -->
+                            <div class="form-group">
+                                <label class="form-label" for="lifeStory">人生故事</label>
+                                <textarea class="form-control story-input" 
+                                          id="lifeStory" 
+                                          placeholder="请详细描述这位家人的生平故事、重要经历和成就..."></textarea>
+                            </div>
+                            
+                            <!-- 重要记忆时间线 -->
+                            <div class="form-group">
+                                <label class="form-label">重要记忆时间线</label>
+                                <div class="memory-timeline" id="memoryTimeline">
+                                    <div class="memory-item">
+                                        <div class="memory-year">1949年</div>
+                                        <div>中华人民共和国成立，很多长辈都经历了这一历史时刻</div>
+                                    </div>
+                                    <div class="memory-item">
+                                        <div class="memory-year">1978年</div>
+                                        <div>改革开放开始，经济和社会发生了巨大变化</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <button class="btn btn-outline btn-sm" onclick="addMemory()">
+                                        <i class="fas fa-plus"></i> 添加重要记忆
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 照片上传（可选） -->
+                            <div class="form-group">
+                                <label class="form-label">相关照片（可选）</label>
+                                <div class="photo-upload-area" onclick="document.getElementById('storyPhoto').click()">
+                                    <div class="upload-icon">📷</div>
+                                    <h3>上传照片</h3>
+                                    <p>添加与这位家人相关的照片（支持 JPG、PNG 格式）</p>
+                                    <input type="file" id="storyPhoto" accept="image/*" style="display: none;">
+                                </div>
+                                <div id="photoPreview" class="mt-3" style="display: none;"></div>
+                            </div>
+                            
+                            <!-- 导航按钮 -->
+                            <div class="flex justify-between mt-6">
+                                <button class="btn btn-outline" onclick="prevStep(2)">
+                                    上一步：性格特点
+                                </button>
+                                <button class="btn btn-primary" onclick="nextStep(4)">
+                                    下一步：影响启示
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 步骤4：影响启示 -->
+                <div class="wizard-step-content" id="step4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">✨ 影响启示</h3>
+                            <p class="card-subtitle">思考这位家人对您和家族的影响</p>
+                        </div>
+                        <div class="card-body">
+                            <!-- 对我的影响 -->
+                            <div class="form-group">
+                                <label class="form-label" for="personalImpact">对您的个人影响</label>
+                                <textarea class="form-control" 
+                                          id="personalImpact" 
+                                          rows="4"
+                                          placeholder="这位家人对您的性格、价值观、人生选择等方面有什么影响？"></textarea>
+                            </div>
+                            
+                            <!-- 对家族的影响 -->
+                            <div class="form-group">
+                                <label class="form-label" for="familyImpact">对家族的影响</label>
+                                <textarea class="form-control" 
+                                          id="familyImpact" 
+                                          rows="4"
+                                          placeholder="这位家人在家族中的角色、对家族的贡献或改变..."></textarea>
+                            </div>
+                            
+                            <!-- 传承的价值观 -->
+                            <div class="form-group">
+                                <label class="form-label">传承的价值观</label>
+                                <div class="trait-selector">
+                                    <div class="trait-badge" data-value="勤劳致富">勤劳致富</div>
+                                    <div class="trait-badge" data-value="诚实守信">诚实守信</div>
+                                    <div class="trait-badge" data-value="尊老爱幼">尊老爱幼</div>
+                                    <div class="trait-badge" data-value="重视教育">重视教育</div>
+                                    <div class="trait-badge" data-value="家庭和睦">家庭和睦</div>
+                                    <div class="trait-badge" data-value="乐于助人">乐于助人</div>
+                                    <div class="trait-badge" data-value="坚韧不拔">坚韧不拔</div>
+                                    <div class="trait-badge" data-value="知足常乐">知足常乐</div>
+                                </div>
+                                <textarea class="form-control mt-3" 
+                                          id="customValues" 
+                                          rows="2"
+                                          placeholder="其他重要的价值观..."></textarea>
+                            </div>
+                            
+                            <!-- 希望传承给后代 -->
+                            <div class="form-group">
+                                <label class="form-label" for="legacy">希望传承给后代</label>
+                                <textarea class="form-control" 
+                                          id="legacy" 
+                                          rows="4"
+                                          placeholder="您希望把这位家人的哪些精神、故事或品质传承给下一代？"></textarea>
+                            </div>
+                            
+                            <!-- 导航按钮 -->
+                            <div class="flex justify-between mt-6">
+                                <button class="btn btn-outline" onclick="prevStep(3)">
+                                    上一步：人生故事
+                                </button>
+                                <button class="btn btn-primary" onclick="nextStep(5)">
+                                    下一步：完成探索
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 步骤5：完成探索 -->
+                <div class="wizard-step-content" id="step5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">🎉 探索完成！</h3>
+                            <p class="card-subtitle">查看您的角色探索成果</p>
+                        </div>
+                        <div class="card-body">
+                            <!-- 角色预览 -->
+                            <div class="character-preview" id="characterPreview">
+                                <div class="preview-header">
+                                    <div class="preview-avatar" id="previewAvatar">👤</div>
+                                    <div class="preview-info">
+                                        <h2 id="previewName">未命名</h2>
+                                        <div class="preview-relationship" id="previewRelationship">未知关系</div>
+                                        <div class="text-sm mt-1" id="previewAge">年代不详</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="preview-traits" id="previewTraits">
+                                    <!-- 特质会通过JavaScript动态添加 -->
+                                </div>
+                                
+                                <div class="preview-story">
+                                    <h4>人生故事</h4>
+                                    <p id="previewStory" class="opacity-90">暂无故事描述</p>
+                                </div>
+                                
+                                <div class="preview-story mt-4">
+                                    <h4>传承的价值观</h4>
+                                    <p id="previewLegacy" class="opacity-90">等待您来记录...</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 探索总结 -->
+                            <div class="insight-section mt-6">
+                                <h4>📊 探索总结</h4>
+                                <div class="grid grid-2 gap-4 mt-4">
+                                    <div class="text-center p-4 bg-white rounded-lg">
+                                        <div class="text-2xl font-bold text-primary-600" id="traitCount">0</div>
+                                        <div class="text-sm text-gray-600">识别特质</div>
+                                    </div>
+                                    <div class="text-center p-4 bg-white rounded-lg">
+                                        <div class="text-2xl font-bold text-secondary-600" id="storyLength">0</div>
+                                        <div class="text-sm text-gray-600">故事字数</div>
+                                    </div>
+                                    <div class="text-center p-4 bg-white rounded-lg">
+                                        <div class="text-2xl font-bold text-accent-600" id="valueCount">0</div>
+                                        <div class="text-sm text-gray-600">传承价值</div>
+                                    </div>
+                                    <div class="text-center p-4 bg-white rounded-lg">
+                                        <div class="text-2xl font-bold text-success-600" id="completionRate">0%</div>
+                                        <div class="text-sm text-gray-600">完成度</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 保存和分享选项 -->
+                            <div class="mt-8">
+                                <div class="button-group" style="display: flex; gap: 12px; justify-content: center;">
+                                    <button class="btn btn-primary" onclick="saveExploration()">
+                                        <i class="fas fa-save"></i> 保存探索
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="exportExploration()">
+                                        <i class="fas fa-download"></i> 导出报告
+                                    </button>
+                                    <button class="btn btn-accent" onclick="shareExploration()">
+                                        <i class="fas fa-share-alt"></i> 分享故事
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4 text-center">
+                                    <button class="btn btn-outline" onclick="startNewExploration()">
+                                        <i class="fas fa-plus"></i> 开始新探索
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div>
+                <h4 class="footer-section-title">人文赋能能力平台</h4>
+                <p class="text-gray-300 mt-2">通过数字化练习，探索家族记忆，传承人文价值</p>
+            </div>
+            <div>
+                <h4 class="footer-section-title">练习工具</h4>
+                <ul class="footer-links">
+                    <li><a href="photo-analyzer.html" class="footer-link">老照片分析</a></li>
+                    <li><a href="character-explorer.html" class="footer-link">角色探索</a></li>
+                    <li><a href="skill-heritage.html" class="footer-link">技能传承</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-section-title">支持与帮助</h4>
+                <ul class="footer-links">
+                    <li><a href="#" class="footer-link">使用指南</a></li>
+                    <li><a href="#" class="footer-link">常见问题</a></li>
+                    <li><a href="#" class="footer-link">联系我们</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 人文赋能能力平台. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 角色探索器核心逻辑
+        class CharacterExplorer {
+            constructor() {
+                this.currentStep = 1;
+                this.totalSteps = 5;
+                this.explorationData = {
+                    id: null,
+                    avatar: '👤',
+                    name: '',
+                    relationship: '',
+                    birthYear: '',
+                    birthMonth: '',
+                    traits: [],
+                    emotions: [],
+                    habit: '',
+                    lifeStory: '',
+                    memories: [],
+                    personalImpact: '',
+                    familyImpact: '',
+                    values: [],
+                    legacy: '',
+                    photos: [],
+                    createdAt: null,
+                    updatedAt: null,
+                    completed: false
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindElements();
+                this.initEventListeners();
+                this.updateWizardProgress();
+                this.loadSavedProgress();
+            }
+            
+            bindElements() {
+                this.elements = {
+                    avatarDisplay: document.getElementById('avatarDisplay'),
+                    avatarOptions: document.getElementById('avatarOptions'),
+                    characterName: document.getElementById('characterName'),
+                    relationshipOther: document.getElementById('relationshipOther'),
+                    birthYear: document.getElementById('birthYear'),
+                    birthMonth: document.getElementById('birthMonth'),
+                    traitSelector: document.getElementById('traitSelector'),
+                    customTrait: document.getElementById('customTrait'),
+                    habit: document.getElementById('habit'),
+                    lifeStory: document.getElementById('lifeStory'),
+                    personalImpact: document.getElementById('personalImpact'),
+                    familyImpact: document.getElementById('familyImpact'),
+                    legacy: document.getElementById('legacy'),
+                    characterPreview: document.getElementById('characterPreview'),
+                    previewAvatar: document.getElementById('previewAvatar'),
+                    previewName: document.getElementById('previewName'),
+                    previewRelationship: document.getElementById('previewRelationship'),
+                    previewAge: document.getElementById('previewAge'),
+                    previewTraits: document.getElementById('previewTraits'),
+                    previewStory: document.getElementById('previewStory'),
+                    previewLegacy: document.getElementById('previewLegacy'),
+                    traitCount: document.getElementById('traitCount'),
+                    storyLength: document.getElementById('storyLength'),
+                    valueCount: document.getElementById('valueCount'),
+                    completionRate: document.getElementById('completionRate')
+                };
+            }
+            
+            initEventListeners() {
+                // 头像选择
+                this.elements.avatarDisplay.addEventListener('click', () => this.showAvatarOptions());
+                document.querySelectorAll('.avatar-option').forEach(option => {
+                    option.addEventListener('click', (e) => this.selectAvatar(e.target.getAttribute('data-avatar')));
+                });
+                
+                // 关系选择
+                document.querySelectorAll('.relationship-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        const relationship = e.currentTarget.getAttribute('data-relationship');
+                        this.selectRelationship(relationship);
+                    });
+                });
+                
+                // 特质选择
+                document.querySelectorAll('.trait-badge').forEach(badge => {
+                    if (badge.getAttribute('data-trait')) {
+                        badge.addEventListener('click', (e) => this.toggleTrait(e.currentTarget));
+                    }
+                });
+                
+                // 情感选择
+                document.querySelectorAll('.emotion-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        const emotion = e.currentTarget.getAttribute('data-emotion');
+                        this.selectEmotion(emotion, e.currentTarget);
+                    });
+                });
+                
+                // 价值观选择
+                document.querySelectorAll('.trait-badge[data-value]').forEach(badge => {
+                    badge.addEventListener('click', (e) => {
+                        const value = e.currentTarget.getAttribute('data-value');
+                        this.toggleValue(value, e.currentTarget);
+                    });
+                });
+                
+                // 表单输入监听
+                this.elements.characterName.addEventListener('input', (e) => {
+                    this.explorationData.name = e.target.value;
+                    this.updatePreview();
+                });
+                
+                this.elements.habit.addEventListener('input', (e) => {
+                    this.explorationData.habit = e.target.value;
+                });
+                
+                this.elements.lifeStory.addEventListener('input', (e) => {
+                    this.explorationData.lifeStory = e.target.value;
+                    this.updatePreview();
+                });
+                
+                this.elements.personalImpact.addEventListener('input', (e) => {
+                    this.explorationData.personalImpact = e.target.value;
+                });
+                
+                this.elements.familyImpact.addEventListener('input', (e) => {
+                    this.explorationData.familyImpact = e.target.value;
+                });
+                
+                this.elements.legacy.addEventListener('input', (e) => {
+                    this.explorationData.legacy = e.target.value;
+                    this.updatePreview();
+                });
+                
+                // 照片上传
+                document.getElementById('storyPhoto').addEventListener('change', (e) => this.handlePhotoUpload(e));
+            }
+            
+            showAvatarOptions() {
+                const options = this.elements.avatarOptions;
+                options.style.display = options.style.display === 'none' ? 'flex' : 'none';
+            }
+            
+            selectAvatar(avatar) {
+                this.explorationData.avatar = avatar;
+                this.elements.avatarDisplay.innerHTML = avatar;
+                this.elements.previewAvatar.innerHTML = avatar;
+                
+                // 更新头像选项选中状态
+                document.querySelectorAll('.avatar-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (option.getAttribute('data-avatar') === avatar) {
+                        option.classList.add('active');
+                    }
+                });
+                
+                this.showAvatarOptions();
+            }
+            
+            selectRelationship(relationship) {
+                this.explorationData.relationship = relationship;
+                
+                // 更新选中状态
+                document.querySelectorAll('.relationship-card').forEach(card => {
+                    card.classList.remove('selected');
+                    if (card.getAttribute('data-relationship') === relationship) {
+                        card.classList.add('selected');
+                    }
+                });
+                
+                // 显示/隐藏其他关系输入框
+                this.elements.relationshipOther.style.display = relationship === '其他' ? 'block' : 'none';
+                this.updatePreview();
+            }
+            
+            toggleTrait(badge) {
+                const trait = badge.getAttribute('data-trait');
+                const index = this.explorationData.traits.indexOf(trait);
+                
+                if (index === -1) {
+                    this.explorationData.traits.push(trait);
+                    badge.classList.add('selected');
+                } else {
+                    this.explorationData.traits.splice(index, 1);
+                    badge.classList.remove('selected');
+                }
+                
+                this.updatePreview();
+            }
+            
+            selectEmotion(emotion, card) {
+                this.explorationData.emotions = [emotion]; // 目前单选，可改为多选
+                
+                // 更新选中状态
+                document.querySelectorAll('.emotion-card').forEach(c => {
+                    c.classList.remove('selected');
+                });
+                card.classList.add('selected');
+            }
+            
+            toggleValue(value, badge) {
+                const index = this.explorationData.values.indexOf(value);
+                
+                if (index === -1) {
+                    this.explorationData.values.push(value);
+                    badge.classList.add('selected');
+                } else {
+                    this.explorationData.values.splice(index, 1);
+                    badge.classList.remove('selected');
+                }
+                
+                this.updatePreview();
+            }
+            
+            handleTraitKeypress(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const customTrait = this.elements.customTrait.value.trim();
+                    
+                    if (customTrait && !this.explorationData.traits.includes(customTrait)) {
+                        // 创建新的特质徽章
+                        const badge = document.createElement('div');
+                        badge.className = 'trait-badge';
+                        badge.textContent = customTrait;
+                        badge.setAttribute('data-trait', customTrait);
+                        badge.addEventListener('click', (e) => this.toggleTrait(e.currentTarget));
+                        
+                        this.elements.traitSelector.appendChild(badge);
+                        this.explorationData.traits.push(customTrait);
+                        this.elements.customTrait.value = '';
+                        
+                        this.updatePreview();
+                    }
+                }
+            }
+            
+            handlePhotoUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                // 验证文件类型
+                if (!file.type.startsWith('image/')) {
+                    alert('请选择图片文件');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const photoData = {
+                        id: Date.now(),
+                        data: e.target.result,
+                        name: file.name,
+                        uploadTime: new Date().toISOString()
+                    };
+                    
+                    this.explorationData.photos.push(photoData);
+                    
+                    // 显示预览
+                    const previewDiv = document.getElementById('photoPreview');
+                    previewDiv.style.display = 'block';
+                    previewDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <img src="${photoData.data}" alt="预览" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                            <div class="ml-4">
+                                <p class="font-medium">${photoData.name}</p>
+                                <p class="text-sm text-gray-600">已上传</p>
+                            </div>
+                        </div>
+                    `;
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            nextStep(step) {
+                // 验证当前步骤
+                if (!this.validateStep(this.currentStep)) {
+                    this.showAlert('请先完成当前步骤的必要信息', 'warning');
+                    return;
+                }
+                
+                // 隐藏当前步骤
+                document.getElementById(`step${this.currentStep}`).classList.remove('active');
+                document.querySelector(`.wizard-step[data-step="${this.currentStep}"]`).classList.remove('active', 'completed');
+                
+                // 显示下一步骤
+                this.currentStep = step;
+                document.getElementById(`step${this.currentStep}`).classList.add('active');
+                document.querySelector(`.wizard-step[data-step="${this.currentStep}"]`).classList.add('active');
+                
+                // 标记上一步为完成
+                document.querySelector(`.wizard-step[data-step="${this.currentStep - 1}"]`).classList.add('completed');
+                
+                this.updateWizardProgress();
+                
+                // 如果是最后一步，更新预览
+                if (this.currentStep === 5) {
+                    this.updatePreview();
+                    this.updateStatistics();
+                    this.elements.characterPreview.style.display = 'block';
+                }
+            }
+            
+            prevStep(step) {
+                // 隐藏当前步骤
+                document.getElementById(`step${this.currentStep}`).classList.remove('active');
+                document.querySelector(`.wizard-step[data-step="${this.currentStep}"]`).classList.remove('active');
+                
+                // 显示上一步骤
+                this.currentStep = step;
+                document.getElementById(`step${this.currentStep}`).classList.add('active');
+                document.querySelector(`.wizard-step[data-step="${this.currentStep}"]`).classList.add('active');
+                
+                this.updateWizardProgress();
+                
+                // 隐藏预览
+                if (this.currentStep !== 5) {
+                    this.elements.characterPreview.style.display = 'none';
+                }
+            }
+            
+            validateStep(step) {
+                switch(step) {
+                    case 1:
+                        if (!this.explorationData.name.trim()) {
+                            this.showAlert('请填写角色姓名', 'warning');
+                            return false;
+                        }
+                        if (!this.explorationData.relationship) {
+                            this.showAlert('请选择与您的关系', 'warning');
+                            return false;
+                        }
+                        break;
+                    case 2:
+                        if (this.explorationData.traits.length === 0) {
+                            this.showAlert('请至少选择一个性格特质', 'warning');
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (!this.explorationData.lifeStory.trim()) {
+                            this.showAlert('请填写人生故事', 'warning');
+                            return false;
+                        }
+                        break;
+                    case 4:
+                        if (!this.explorationData.personalImpact.trim()) {
+                            this.showAlert('请填写对您的个人影响', 'warning');
+                            return false;
+                        }
+                        break;
+                }
+                return true;
+            }
+            
+            updateWizardProgress() {
+                // 更新步骤指示器
+                const steps = document.querySelectorAll('.wizard-step');
+                steps.forEach((step, index) => {
+                    const stepNum = parseInt(step.getAttribute('data-step'));
+                    if (stepNum < this.currentStep) {
+                        step.classList.add('completed');
+                    } else if (stepNum === this.currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+            }
+            
+            updatePreview() {
+                // 更新基本信息
+                this.elements.previewName.textContent = this.explorationData.name || '未命名';
+                this.elements.previewRelationship.textContent = this.explorationData.relationship || '未知关系';
+                
+                // 更新年龄/年代信息
+                if (this.explorationData.birthYear) {
+                    const age = new Date().getFullYear() - parseInt(this.explorationData.birthYear);
+                    this.elements.previewAge.textContent = `约 ${age} 岁`;
+                } else {
+                    this.elements.previewAge.textContent = '年代不详';
+                }
+                
+                // 更新特质
+                this.elements.previewTraits.innerHTML = '';
+                this.explorationData.traits.forEach(trait => {
+                    const traitSpan = document.createElement('span');
+                    traitSpan.className = 'preview-trait';
+                    traitSpan.textContent = trait;
+                    this.elements.previewTraits.appendChild(traitSpan);
+                });
+                
+                // 更新故事预览（截取前150字）
+                if (this.explorationData.lifeStory) {
+                    const previewText = this.explorationData.lifeStory.length > 150 
+                        ? this.explorationData.lifeStory.substring(0, 150) + '...' 
+                        : this.explorationData.lifeStory;
+                    this.elements.previewStory.textContent = previewText;
+                } else {
+                    this.elements.previewStory.textContent = '暂无故事描述';
+                }
+                
+                // 更新传承预览
+                if (this.explorationData.legacy) {
+                    const legacyText = this.explorationData.legacy.length > 100
+                        ? this.explorationData.legacy.substring(0, 100) + '...'
+                        : this.explorationData.legacy;
+                    this.elements.previewLegacy.textContent = legacyText;
+                } else {
+                    this.elements.previewLegacy.textContent = '等待您来记录...';
+                }
+            }
+            
+            updateStatistics() {
+                // 特质数量
+                this.elements.traitCount.textContent = this.explorationData.traits.length;
+                
+                // 故事字数
+                const storyLength = this.explorationData.lifeStory.length;
+                this.elements.storyLength.textContent = storyLength;
+                
+                // 传承价值数量
+                const valueCount = this.explorationData.values.length + 
+                                 (this.explorationData.legacy ? 1 : 0) +
+                                 (this.explorationData.personalImpact ? 1 : 0) +
+                                 (this.explorationData.familyImpact ? 1 : 0);
+                this.elements.valueCount.textContent = valueCount;
+                
+                // 完成度计算
+                let completionScore = 0;
+                if (this.explorationData.name) completionScore += 20;
+                if (this.explorationData.relationship) completionScore += 15;
+                if (this.explorationData.traits.length > 0) completionScore += 15;
+                if (this.explorationData.lifeStory) completionScore += 25;
+                if (this.explorationData.personalImpact) completionScore += 15;
+                if (this.explorationData.legacy) completionScore += 10;
+                
+                this.elements.completionRate.textContent = completionScore + '%';
+            }
+            
+            saveExploration() {
+                // 收集所有数据
+                this.collectFormData();
+                
+                // 验证必要数据
+                if (!this.validateStep(1) || !this.validateStep(2) || !this.validateStep(3) || !this.validateStep(4)) {
+                    this.showAlert('请先完成所有必要步骤', 'warning');
+                    return;
+                }
+                
+                // 设置ID和时间戳
+                this.explorationData.id = this.explorationData.id || Date.now();
+                this.explorationData.createdAt = this.explorationData.createdAt || new Date().toISOString();
+                this.explorationData.updatedAt = new Date().toISOString();
+                this.explorationData.completed = true;
+                
+                // 保存到本地存储
+                try {
+                    let explorations = JSON.parse(localStorage.getItem('characterExplorations_v1') || '[]');
+                    
+                    // 检查是否已存在（更新）
+                    const existingIndex = explorations.findIndex(e => e.id === this.explorationData.id);
+                    if (existingIndex !== -1) {
+                        explorations[existingIndex] = this.explorationData;
+                    } else {
+                        explorations.push(this.explorationData);
+                    }
+                    
+                    localStorage.setItem('characterExplorations_v1', JSON.stringify(explorations));
+                    
+                    this.showAlert('角色探索已保存！', 'success');
+                    
+                    // 自动跳转到仪表板或保持当前页面
+                    setTimeout(() => {
+                        const shouldGoToDashboard = confirm('保存成功！是否前往仪表板查看所有记录？');
+                        if (shouldGoToDashboard) {
+                            window.location.href = '../dashboard.html';
+                        }
+                    }, 500);
+                    
+                } catch (error) {
+                    console.error('保存失败:', error);
+                    this.showAlert('保存失败，请重试', 'error');
+                }
+            }
+            
+            collectFormData() {
+                // 基本信息
+                this.explorationData.name = this.elements.characterName.value;
+                this.explorationData.birthYear = this.elements.birthYear.value;
+                this.explorationData.birthMonth = this.elements.birthMonth.value;
+                
+                // 性格特点
+                this.explorationData.habit = this.elements.habit.value;
+                
+                // 人生故事
+                this.explorationData.lifeStory = this.elements.lifeStory.value;
+                
+                // 影响启示
+                this.explorationData.personalImpact = this.elements.personalImpact.value;
+                this.explorationData.familyImpact = this.elements.familyImpact.value;
+                this.explorationData.legacy = this.elements.legacy.value;
+                
+                // 自定义价值观
+                const customValues = document.getElementById('customValues').value;
+                if (customValues.trim()) {
+                    this.explorationData.values.push(customValues.trim());
+                }
+            }
+            
+            loadSavedProgress() {
+                try {
+                    const savedData = localStorage.getItem('currentCharacterExploration');
+                    if (savedData) {
+                        const data = JSON.parse(savedData);
+                        Object.assign(this.explorationData, data);
+                        
+                        // 恢复表单状态
+                        this.restoreFormState();
+                        this.updatePreview();
+                        
+                        console.log('已恢复保存的进度');
+                    }
+                } catch (error) {
+                    console.error('恢复进度失败:', error);
+                }
+            }
+            
+            restoreFormState() {
+                // 恢复头像
+                if (this.explorationData.avatar) {
+                    this.selectAvatar(this.explorationData.avatar);
+                }
+                
+                // 恢复姓名
+                if (this.explorationData.name) {
+                    this.elements.characterName.value = this.explorationData.name;
+                }
+                
+                // 恢复关系
+                if (this.explorationData.relationship) {
+                    this.selectRelationship(this.explorationData.relationship);
+                }
+                
+                // 恢复特质
+                if (this.explorationData.traits.length > 0) {
+                    this.explorationData.traits.forEach(trait => {
+                        const badge = document.querySelector(`.trait-badge[data-trait="${trait}"]`);
+                        if (badge) {
+                            badge.classList.add('selected');
+                        }
+                    });
+                }
+                
+                // 恢复故事
+                if (this.explorationData.lifeStory) {
+                    this.elements.lifeStory.value = this.explorationData.lifeStory;
+                }
+            }
+            
+            exportExploration() {
+                this.collectFormData();
+                
+                const exportData = {
+                    title: '家族角色探索报告',
+                    exportDate: new Date().toLocaleString('zh-CN'),
+                    characterName: this.explorationData.name,
+                    relationship: this.explorationData.relationship,
+                    birthInfo: `${this.explorationData.birthYear || '未知'}年${this.explorationData.birthMonth || '未知'}月`,
+                    
+                    traits: this.explorationData.traits,
+                    habit: this.explorationData.habit,
+                    emotions: this.explorationData.emotions,
+                    
+                    lifeStory: this.explorationData.lifeStory,
+                    personalImpact: this.explorationData.personalImpact,
+                    familyImpact: this.explorationData.familyImpact,
+                    values: this.explorationData.values,
+                    legacy: this.explorationData.legacy,
+                    
+                    statistics: {
+                        traitsCount: this.explorationData.traits.length,
+                        storyLength: this.explorationData.lifeStory.length,
+                        valuesCount: this.explorationData.values.length
+                    }
+                };
+                
+                // 导出为JSON
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
+                    type: 'application/json' 
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `角色探索报告_${this.explorationData.name || '未命名'}_${new Date().getTime()}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showAlert('报告已导出为JSON文件！', 'success');
+            }
+            
+            shareExploration() {
+                if (!this.explorationData.name || !this.explorationData.lifeStory) {
+                    this.showAlert('请先完成角色探索', 'warning');
+                    return;
+                }
+                
+                const shareText = `我发现了一位特别的家人：${this.explorationData.name}（${this.explorationData.relationship}）\n\n` +
+                                 `性格特点：${this.explorationData.traits.join('、')}\n\n` +
+                                 `人生故事：${this.explorationData.lifeStory.substring(0, 100)}...\n\n` +
+                                 `探索更多家族故事，请访问人文赋能能力平台`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: `家族故事：${this.explorationData.name}`,
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } else {
+                    // 复制到剪贴板
+                    navigator.clipboard.writeText(shareText)
+                        .then(() => this.showAlert('分享内容已复制到剪贴板', 'success'))
+                        .catch(() => this.showAlert('复制失败，请手动复制', 'error'));
+                }
+            }
+            
+            startNewExploration() {
+                const confirmReset = confirm('开始新的探索将清空当前内容，是否继续？');
+                if (!confirmReset) return;
+                
+                // 重置数据
+                this.explorationData = {
+                    id: null,
+                    avatar: '👤',
+                    name: '',
+                    relationship: '',
+                    birthYear: '',
+                    birthMonth: '',
+                    traits: [],
+                    emotions: [],
+                    habit: '',
+                    lifeStory: '',
+                    memories: [],
+                    personalImpact: '',
+                    familyImpact: '',
+                    values: [],
+                    legacy: '',
+                    photos: [],
+                    createdAt: null,
+                    updatedAt: null,
+                    completed: false
+                };
+                
+                // 重置表单
+                this.resetForm();
+                
+                // 返回第一步
+                this.currentStep = 1;
+                document.querySelectorAll('.wizard-step-content').forEach(div => div.classList.remove('active'));
+                document.getElementById('step1').classList.add('active');
+                
+                // 重置步骤指示器
+                document.querySelectorAll('.wizard-step').forEach(step => {
+                    step.classList.remove('active', 'completed');
+                });
+                document.querySelector('.wizard-step[data-step="1"]').classList.add('active');
+                
+                this.updateWizardProgress();
+                
+                // 隐藏预览
+                this.elements.characterPreview.style.display = 'none';
+                
+                this.showAlert('已开始新的探索', 'info');
+            }
+            
+            resetForm() {
+                // 重置所有表单元素
+                this.elements.avatarDisplay.innerHTML = '👤';
+                this.elements.characterName.value = '';
+                this.elements.birthYear.value = '';
+                this.elements.birthMonth.value = '';
+                this.elements.habit.value = '';
+                this.elements.lifeStory.value = '';
+                this.elements.personalImpact.value = '';
+                this.elements.familyImpact.value = '';
+                this.elements.legacy.value = '';
+                document.getElementById('customValues').value = '';
+                
+                // 重置选择状态
+                document.querySelectorAll('.relationship-card').forEach(card => card.classList.remove('selected'));
+                document.querySelectorAll('.trait-badge').forEach(badge => badge.classList.remove('selected'));
+                document.querySelectorAll('.emotion-card').forEach(card => card.classList.remove('selected'));
+                document.querySelectorAll('.trait-badge[data-value]').forEach(badge => badge.classList.remove('selected'));
+                
+                // 重置预览
+                this.updatePreview();
+            }
+            
+            showAlert(message, type = 'info') {
+                // 移除现有的提示
+                const existingAlert = document.querySelector('.alert-toast');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+                
+                // 创建新提示
+                const alert = document.createElement('div');
+                alert.className = `alert-toast alert-${type} fixed top-4 right-4 z-50 max-w-md`;
+                alert.innerHTML = `
+                    <div class="flex items-start p-4 rounded-lg shadow-lg animate-slide-in-right">
+                        <div class="mr-3 text-lg">${this.getAlertIcon(type)}</div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">${message}</p>
+                        </div>
+                        <button class="ml-4 text-gray-400 hover:text-gray-600" onclick="this.parentElement.remove()">
+                            &times;
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(alert);
+                
+                // 自动移除
+                setTimeout(() => {
+                    if (alert.parentElement) {
+                        alert.remove();
+                    }
+                }, 3000);
+            }
+            
+            getAlertIcon(type) {
+                const icons = {
+                    success: '✅',
+                    error: '❌',
+                    warning: '⚠️',
+                    info: 'ℹ️'
+                };
+                return icons[type] || 'ℹ️';
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            window.characterExplorer = new CharacterExplorer();
+            
+            // 为全局函数绑定实例方法
+            window.nextStep = (step) => window.characterExplorer.nextStep(step);
+            window.prevStep = (step) => window.characterExplorer.prevStep(step);
+            window.saveExploration = () => window.characterExplorer.saveExploration();
+            window.exportExploration = () => window.characterExplorer.exportExploration();
+            window.shareExploration = () => window.characterExplorer.shareExploration();
+            window.startNewExploration = () => window.characterExplorer.startNewExploration();
+            window.showAvatarOptions = () => window.characterExplorer.showAvatarOptions();
+            window.handleTraitKeypress = (event) => window.characterExplorer.handleTraitKeypress(event);
+            window.addMemory = () => {
+                const year = prompt('请输入记忆年份（例如：1998）');
+                if (year) {
+                    const description = prompt('请描述这个记忆');
+                    if (description) {
+                        // 这里可以添加记忆到时间线
+                        alert('记忆已添加');
+                    }
+                }
+            };
+            
+            // 保存页面离开时的进度
+            window.addEventListener('beforeunload', () => {
+                window.characterExplorer.collectFormData();
+                localStorage.setItem('currentCharacterExploration', JSON.stringify(window.characterExplorer.explorationData));
+            });
+        });
+    </script>
+</body>
+</html>
