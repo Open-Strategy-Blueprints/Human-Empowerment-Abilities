@@ -1,0 +1,7 @@
+# GitHub Pages 配置文件
+title: Human Empowerment Abilities
+description: Cultivate 9 core abilities in the AI era
+baseurl: "/Human-Empowerment-Abilities" # 如果使用项目页面
+url: "https://open-strategy-blueprints.github.io" # 你的GitHub域名
+include: [".well-known", "exercises", "styles", "scripts"]
+exclude: ["README.md", "CONTRIBUTING.md", "LICENSE"]
