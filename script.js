@@ -1216,3 +1216,91 @@ window.shareToFacebook = shareToFacebook;
 window.showWeChatQR = showWeChatQR;
 
 console.log('Human Empowerment Abilities 脚本已加载完成');
+// 练习进度管理
+const ExerciseManager = {
+    // 练习状态
+    exercises: {
+        'photo-analyzer': { completed: false, progress: 0, lastAccessed: null },
+        'character-explorer': { completed: false, progress: 0, lastAccessed: null },
+        'skill-heritage': { completed: false, progress: 0, lastAccessed: null }
+    },
+    
+    // 初始化练习数据
+    init() {
+        const saved = localStorage.getItem('exercise-progress');
+        if (saved) {
+            this.exercises = JSON.parse(saved);
+            this.updateUI();
+        }
+    },
+    
+    // 更新练习进度
+    updateProgress(exerciseId, progress) {
+        if (this.exercises[exerciseId]) {
+            this.exercises[exerciseId].progress = progress;
+            this.exercises[exerciseId].lastAccessed = new Date().toISOString();
+            if (progress >= 100) {
+                this.exercises[exerciseId].completed = true;
+            }
+            this.save();
+            this.updateUI();
+        }
+    },
+    
+    // 保存到本地存储
+    save() {
+        localStorage.setItem('exercise-progress', JSON.stringify(this.exercises));
+        
+        // 更新主页的进度图表
+        if (typeof updateProgressChart === 'function') {
+            updateProgressChart();
+        }
+    },
+    
+    // 更新UI显示
+    updateUI() {
+        // 更新练习卡片上的进度条
+        Object.keys(this.exercises).forEach(exerciseId => {
+            const progress = this.exercises[exerciseId].progress;
+            const progressFill = document.querySelector(`.exercise-progress[data-exercise="${exerciseId}"] .progress-fill`);
+            const progressText = document.querySelector(`.exercise-progress[data-exercise="${exerciseId}"] .progress-text`);
+            
+            if (progressFill) {
+                progressFill.style.width = `${progress}%`;
+            }
+            
+            if (progressText) {
+                if (progress === 0) {
+                    progressText.textContent = 'Not Started';
+                } else if (progress < 100) {
+                    progressText.textContent = `${progress}% Complete`;
+                } else {
+                    progressText.textContent = 'Completed!';
+                }
+            }
+        });
+        
+        // 更新总进度统计
+        this.updateTotalStats();
+    },
+    
+    // 更新总统计
+    updateTotalStats() {
+        const completedCount = Object.values(this.exercises).filter(e => e.completed).length;
+        const totalExercises = Object.keys(this.exercises).length;
+        const totalProgress = Math.round(
+            Object.values(this.exercises).reduce((sum, e) => sum + e.progress, 0) / totalExercises
+        );
+        
+        // 更新主页统计
+        const totalElement = document.getElementById('total-exercises');
+        if (totalElement) {
+            totalElement.textContent = completedCount;
+        }
+    }
+};
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', () => {
+    ExerciseManager.init();
+});
