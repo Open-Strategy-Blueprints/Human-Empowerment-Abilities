@@ -167,16 +167,35 @@
                     <span><i class="fas fa-clock"></i> 15-20 min</span>
                     <span><i class="fas fa-brain"></i> Empathy & Intuition</span>
                 </div>
-                <div class="exercise-actions">
-                    <a href="./exercises/photo-analyzer.html" class="btn-primary">Start Exercise</a>
-                    <a href="#" class="btn-text">Learn More</a>
-                </div>
-                <div class="exercise-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
-                    </div>
-                    <span class="progress-text">Not Started</span>
-                </div>
+                <!-- 完整的练习卡片修改示例 -->
+<div class="exercise-actions">
+    <!-- 使用正确的相对路径 -->
+    <a href="exercises/photo-analyzer.html" class="btn-primary">
+        <i class="fas fa-play-circle"></i> Start Exercise
+    </a>
+    <!-- 添加数据属性用于跟踪 -->
+    <button class="btn-text" onclick="showExerciseDetails('photo-analyzer')">
+        <i class="fas fa-info-circle"></i> Learn More
+    </button>
+</div>
+
+<script>
+// 添加页面内预览功能
+function showExerciseDetails(exerciseId) {
+    const details = {
+        'photo-analyzer': {
+            title: 'Photo Analysis Exercise',
+            description: 'Develop embodied empathy by analyzing photographs with emotional intelligence.',
+            duration: '15-20 minutes',
+            abilities: ['Empathy', 'Intuition', 'First-person Consciousness'],
+            prerequisites: 'None'
+        }
+    };
+    
+    const detail = details[exerciseId];
+    alert(`${detail.title}\n\n${detail.description}\n\nDuration: ${detail.duration}\nAbilities: ${detail.abilities.join(', ')}`);
+}
+</script>
             </div>
             
             <!-- 角色探索练习 -->
