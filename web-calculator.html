@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>价值锚点稳定性计算器</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 40px auto; padding: 20px; }
+        .dimension { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        input { width: 60px; padding: 5px; margin: 5px; }
+        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .result { background: #e8f5e9; padding: 15px; margin-top: 20px; border-left: 5px solid #4CAF50; }
+    </style>
+</head>
+<body>
+    <h1>🎯 价值锚点稳定性计算器</h1>
+    
+    <div id="calculator">
+        <!-- 维度评分输入区 -->
+        <div class="dimension">
+            <h3>⏰ 时间维度</h3>
+            持久性: <input type="number" id="time1" min="0" max="10" value="5"><br>
+            一致性: <input type="number" id="time2" min="0" max="10" value="5"><br>
+            可追溯性: <input type="number" id="time3" min="0" max="10" value="5">
+        </div>
+        
+        <div class="dimension">
+            <h3>🌍 空间维度</h3>
+            物理存在: <input type="number" id="space1" min="0" max="10" value="5"><br>
+            网络分布: <input type="number" id="space2" min="0" max="10" value="5"><br>
+            文化嵌入: <input type="number" id="space3" min="0" max="10" value="5">
+        </div>
+        
+        <div class="dimension">
+            <h3>❤️ 情感维度</h3>
+            认同感: <input type="number" id="emo1" min="0" max="10" value="5"><br>
+            归属感: <input type="number" id="emo2" min="0" max="10" value="5"><br>
+            激励性: <input type="number" id="emo3" min="0" max="10" value="5">
+        </div>
+        
+        <div class="dimension">
+            <h3>🧠 逻辑维度</h3>
+            自洽性: <input type="number" id="logic1" min="0" max="10" value="5"><br>
+            可扩展性: <input type="number" id="logic2" min="0" max="10" value="5"><br>
+            兼容性: <input type="number" id="logic3" min="0" max="10" value="5">
+        </div>
+        
+        <button onclick="calculate()">📊 计算稳定性</button>
+        
+        <div id="result" class="result" style="display:none;">
+            <h3>📈 计算结果</h3>
+            <p>总分: <span id="totalScore">0</span>/10</p>
+            <p>等级: <span id="level">未计算</span></p>
+            <p>建议: <span id="advice">暂无</span></p>
+        </div>
+    </div>
+    
+    <script>
+        function calculate() {
+            // 收集分数
+            let scores = [];
+            for(let i=1; i<=12; i++) {
+                let elem = document.getElementById('score'+i);
+                if(elem) scores.push(parseFloat(elem.value) || 0);
+            }
+            
+            // 计算维度平均分
+            let time = (parseFloat(document.getElementById('time1').value) + 
+                       parseFloat(document.getElementById('time2').value) + 
+                       parseFloat(document.getElementById('time3').value)) / 3;
+            
+            let space = (parseFloat(document.getElementById('space1').value) + 
+                        parseFloat(document.getElementById('space2').value) + 
+                        parseFloat(document.getElementById('space3').value)) / 3;
+            
+            let emotion = (parseFloat(document.getElementById('emo1').value) + 
+                          parseFloat(document.getElementById('emo2').value) + 
+                          parseFloat(document.getElementById('emo3').value)) / 3;
+            
+            let logic = (parseFloat(document.getElementById('logic1').value) + 
+                        parseFloat(document.getElementById('logic2').value) + 
+                        parseFloat(document.getElementById('logic3').value)) / 3;
+            
+            // 计算总分（加权）
+            let total = (time + space + emotion + logic) / 4;
+            
+            // 判断等级
+            let level, advice;
+            if(total >= 7) {
+                level = "🔵 高稳定性";
+                advice = "锚点稳定性良好，保持现状并监控变化";
+            } else if(total >= 4) {
+                level = "🟡 中等稳定性";
+                advice = "锚点稳定性中等，可在薄弱维度进行优化";
+            } else {
+                level = "🔴 低稳定性";
+                advice = "锚点稳定性较低，建议重新识别基础价值元素";
+            }
+            
+            // 显示结果
+            document.getElementById('totalScore').textContent = total.toFixed(2);
+            document.getElementById('level').textContent = level;
+            document.getElementById('advice').textContent = advice;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
