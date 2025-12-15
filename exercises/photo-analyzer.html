@@ -1,3 +1,12 @@
+<!-- 引入头部模板 -->
+<script>
+    // 动态加载头部
+    fetch('../templates/header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.write(data);
+        });
+</script>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
