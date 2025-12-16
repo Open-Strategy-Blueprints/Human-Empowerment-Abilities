@@ -1,25 +1,21 @@
 <!DOCTYPE html>
-<!-- 引入头部模板 -->
-<script>
-    // 动态加载头部
-    fetch('../templates/header.html')
-        .then(response => response.text())
-        .then(data => {
-            document.write(data);
-        });
-</script>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老照片价值挖掘 - 人文赋能能力平台</title>
+    
+    <!-- 基础样式 -->
+    <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         /* 照片分析器特定样式 */
         .photo-analyzer-container {
             max-width: 900px;
             margin: 0 auto;
+            padding: 20px;
         }
         
         .analyzer-header {
@@ -37,14 +33,14 @@
         .progress-bar-container {
             flex: 1;
             height: 8px;
-            background: var(--neutral-200);
+            background: #e9ecef;
             border-radius: 4px;
             overflow: hidden;
         }
         
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary-400), var(--accent-400));
+            background: linear-gradient(90deg, #4361ee, #3a0ca3);
             border-radius: 4px;
             transition: width 0.5s ease;
             width: 0%;
@@ -55,8 +51,8 @@
         }
         
         .upload-zone {
-            border: 3px dashed var(--secondary-300);
-            border-radius: var(--radius-xl);
+            border: 3px dashed #dee2e6;
+            border-radius: 12px;
             padding: 48px 32px;
             text-align: center;
             cursor: pointer;
@@ -66,21 +62,21 @@
         }
         
         .upload-zone:hover {
-            border-color: var(--primary-400);
-            background: var(--neutral-50);
+            border-color: #4361ee;
+            background: #f8f9fa;
             transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         
         .upload-zone.dragover {
-            border-color: var(--accent-500);
-            background: var(--accent-50);
+            border-color: #7209b7;
+            background: #f3e8ff;
         }
         
         .upload-icon {
             font-size: 64px;
             margin-bottom: 16px;
-            color: var(--secondary-400);
+            color: #6c757d;
         }
         
         .photo-preview-container {
@@ -92,8 +88,8 @@
         .photo-preview {
             max-width: 100%;
             max-height: 400px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-xl);
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
             border: 3px solid white;
             object-fit: contain;
         }
@@ -101,10 +97,10 @@
         .question-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
             padding: 32px;
             margin-bottom: 24px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             display: none;
             animation: slideInUp 0.5s ease-out;
         }
@@ -117,7 +113,7 @@
             display: inline-block;
             background: rgba(255, 255, 255, 0.2);
             padding: 6px 16px;
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 12px;
@@ -140,12 +136,12 @@
             min-height: 150px;
             padding: 20px;
             border: none;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             font-size: 16px;
             line-height: 1.6;
             resize: vertical;
             background: rgba(255, 255, 255, 0.95);
-            color: var(--neutral-800);
+            color: #333;
             transition: all 0.3s ease;
         }
         
@@ -164,7 +160,7 @@
         
         .insight-panel {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             padding: 20px;
             margin-top: 20px;
             display: none;
@@ -214,10 +210,10 @@
         .summary-card {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
             padding: 32px;
             margin-bottom: 24px;
-            box-shadow: var(--shadow-xl);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
         
         .character-insights {
@@ -229,10 +225,10 @@
         
         .character-card {
             background: white;
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
             padding: 24px;
-            box-shadow: var(--shadow-md);
-            border-left: 4px solid var(--primary-500);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #4361ee;
         }
         
         .insight-badges {
@@ -243,10 +239,10 @@
         }
         
         .insight-badge {
-            background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
             padding: 8px 16px;
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
         }
@@ -268,7 +264,7 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background: linear-gradient(to bottom, var(--primary-400), var(--secondary-400));
+            background: linear-gradient(to bottom, #4361ee, #7209b7);
         }
         
         .timeline-item {
@@ -284,19 +280,19 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: var(--primary-500);
+            background: #4361ee;
             border: 3px solid white;
-            box-shadow: 0 0 0 3px var(--primary-200);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
         
         .timeline-item.active::before {
-            background: var(--accent-500);
+            background: #f72585;
             animation: pulse 2s infinite;
         }
         
         .timeline-date {
             font-weight: 600;
-            color: var(--primary-600);
+            color: #4361ee;
             margin-bottom: 4px;
         }
         
@@ -306,6 +302,152 @@
             gap: 12px;
             justify-content: center;
             margin-top: 32px;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-subtitle {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+        
+        .card-body {
+            margin-top: 1.5rem;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #7209b7, #560bad);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #4361ee;
+            color: #4361ee;
+        }
+        
+        .btn-outline:hover {
+            background: #4361ee;
+            color: white;
+        }
+        
+        .btn-accent {
+            background: linear-gradient(135deg, #f72585, #b5179e);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        /* 警告框 */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .alert-info {
+            background: #e7f3ff;
+            border-left: 4px solid #4361ee;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-message {
+            color: #666;
+        }
+        
+        /* 徽章 */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background: #4361ee;
+            color: white;
+        }
+        
+        .badge-secondary {
+            background: #7209b7;
+            color: white;
+        }
+        
+        /* 网格系统 */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .grid-4 {
+            grid-template-columns: repeat(4, 1fr);
         }
         
         /* 加载动画 */
@@ -326,10 +468,60 @@
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 5px solid var(--neutral-200);
-            border-top: 5px solid var(--primary-500);
+            border: 5px solid #e9ecef;
+            border-top: 5px solid #4361ee;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+        }
+        
+        /* 页脚 */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-link {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            color: #aaa;
         }
         
         /* 响应式调整 */
@@ -351,7 +543,7 @@
                 gap: 12px;
             }
             
-            .question-navigation button {
+            .question-navigation .btn {
                 width: 100%;
             }
             
@@ -359,8 +551,22 @@
                 flex-direction: column;
             }
             
-            .action-buttons button {
+            .action-buttons .btn {
                 width: 100%;
+            }
+            
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .grid-4 {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -390,31 +596,165 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* 工具类 */
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        
+        .text-3xl { font-size: 1.875rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        
+        .text-gray-800 { color: #333; }
+        .text-gray-700 { color: #555; }
+        .text-gray-600 { color: #666; }
+        .text-gray-500 { color: #888; }
+        .text-gray-400 { color: #aaa; }
+        .text-gray-300 { color: #ccc; }
+        
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        
+        .mr-2 { margin-right: 0.5rem; }
+        .mr-3 { margin-right: 0.75rem; }
+        .mr-4 { margin-right: 1rem; }
+        
+        .ml-2 { margin-left: 0.5rem; }
+        .ml-4 { margin-left: 1rem; }
+        
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        
+        .rounded-lg { border-radius: 12px; }
+        .rounded-md { border-radius: 8px; }
+        .rounded-full { border-radius: 9999px; }
+        
+        .w-12 { width: 3rem; }
+        .w-16 { width: 4rem; }
+        .h-12 { height: 3rem; }
+        .h-16 { height: 4rem; }
+        
+        .shadow-sm { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .shadow-md { box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .shadow-lg { box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        
+        .animate-slide-in-right {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #333;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .navbar-logo {
+            font-size: 1.5rem;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .navbar-link {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        
+        .navbar-link:hover,
+        .navbar-link.active {
+            color: #4361ee;
+        }
+        
+        .navbar-actions {
+            display: flex;
+            gap: 1rem;
+        }
     </style>
 </head>
 <body>
     <!-- 导航栏 -->
     <nav class="navbar">
-        <div class="container navbar-container">
+        <div class="navbar-container">
             <a href="../index.html" class="navbar-brand">
                 <div class="navbar-logo">📸</div>
                 <span>人文赋能能力平台</span>
             </a>
             <ul class="navbar-menu">
-                <li class="navbar-item">
+                <li>
                     <a href="../index.html" class="navbar-link">首页</a>
                 </li>
-                <li class="navbar-item">
+                <li>
                     <a href="photo-analyzer.html" class="navbar-link active">照片分析</a>
                 </li>
-                <li class="navbar-item">
+                <li>
                     <a href="character-explorer.html" class="navbar-link">角色探索</a>
                 </li>
-                <li class="navbar-item">
+                <li>
                     <a href="skill-heritage.html" class="navbar-link">技能传承</a>
-                </li>
-                <li class="navbar-item">
-                    <a href="../dashboard.html" class="navbar-link">仪表板</a>
                 </li>
             </ul>
             <div class="navbar-actions">
@@ -425,176 +765,173 @@
         </div>
     </nav>
 
-    <div class="container">
-        <!-- 主内容区域 -->
-        <div class="photo-analyzer-container">
-            <!-- 头部 -->
-            <div class="analyzer-header">
-                <h1 class="text-3xl font-bold text-gray-800">老照片价值挖掘</h1>
-                <p class="text-gray-600 mt-2">通过分析老照片，挖掘家族记忆和个人成长的价值</p>
+    <div class="photo-analyzer-container">
+        <!-- 头部 -->
+        <div class="analyzer-header">
+            <h1 class="text-3xl font-bold text-gray-800">老照片价值挖掘</h1>
+            <p class="text-gray-600 mt-2">通过分析老照片，挖掘家族记忆和个人成长的价值</p>
+        </div>
+        
+        <!-- 进度指示器 -->
+        <div class="analyzer-progress">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
             </div>
-            
-            <!-- 进度指示器 -->
-            <div class="analyzer-progress">
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progressBar"></div>
+            <div class="text-sm text-gray-600" id="progressText">步骤 1/3：上传照片</div>
+        </div>
+        
+        <!-- 步骤1：照片上传 -->
+        <div class="photo-upload-section" id="uploadSection">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📸 上传老照片</h3>
+                    <p class="card-subtitle">让我们一起从一张老照片开始，探索背后的故事</p>
                 </div>
-                <div class="text-sm text-gray-600" id="progressText">步骤 1/3：上传照片</div>
-            </div>
-            
-            <!-- 步骤1：照片上传 -->
-            <div class="photo-upload-section" id="uploadSection">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">📸 上传老照片</h3>
-                        <p class="card-subtitle">让我们一起从一张老照片开始，探索背后的故事</p>
+                <div class="card-body">
+                    <!-- 上传区域 -->
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">拖拽照片到这里</h3>
+                        <p class="text-gray-600 mb-4">或点击选择文件（支持 JPG、PNG 格式）</p>
+                        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                        <button class="btn btn-primary" onclick="document.getElementById('photoInput').click()">
+                            <i class="fas fa-camera mr-2"></i> 选择照片
+                        </button>
+                        <p class="text-xs text-gray-500 mt-4">最大文件大小：5MB</p>
                     </div>
-                    <div class="card-body">
-                        <!-- 上传区域 -->
-                        <div class="upload-zone" id="uploadZone">
-                            <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">拖拽照片到这里</h3>
-                            <p class="text-gray-600 mb-4">或点击选择文件（支持 JPG、PNG 格式）</p>
-                            <input type="file" id="photoInput" accept="image/*" style="display: none;">
-                            <button class="btn btn-primary" onclick="document.getElementById('photoInput').click()">
-                                <i class="fas fa-camera mr-2"></i> 选择照片
-                            </button>
-                            <p class="text-xs text-gray-500 mt-4">最大文件大小：5MB</p>
-                        </div>
-                        
-                        <!-- 照片预览 -->
-                        <div class="photo-preview-container" id="previewContainer">
-                            <img class="photo-preview" id="photoPreview" alt="照片预览">
-                            <div class="mt-4">
-                                <button class="btn btn-outline" onclick="removePhoto()">
-                                    <i class="fas fa-trash-alt mr-2"></i> 移除照片
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- 提示信息 -->
-                        <div class="alert alert-info mt-6">
-                            <div class="flex">
-                                <div class="alert-icon mr-3">
-                                    <i class="fas fa-lightbulb"></i>
-                                </div>
-                                <div>
-                                    <div class="alert-title">分析建议</div>
-                                    <div class="alert-message">
-                                        选择一张有意义的家族照片，最好包含人物。清晰、光线充足的照片能获得更好的分析效果。
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 导航按钮 -->
-                        <div class="flex justify-center mt-8">
-                            <button class="btn btn-primary" id="startAnalysisBtn" onclick="startAnalysis()" style="display: none;">
-                                <i class="fas fa-search mr-2"></i> 开始分析照片
+                    
+                    <!-- 照片预览 -->
+                    <div class="photo-preview-container" id="previewContainer">
+                        <img class="photo-preview" id="photoPreview" alt="照片预览">
+                        <div class="mt-4">
+                            <button class="btn btn-outline" onclick="removePhoto()">
+                                <i class="fas fa-trash-alt mr-2"></i> 移除照片
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- 提示信息 -->
+                    <div class="alert alert-info mt-6">
+                        <div class="flex">
+                            <div class="mr-3">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <div class="alert-title">分析建议</div>
+                                <div class="alert-message">
+                                    选择一张有意义的家族照片，最好包含人物。清晰、光线充足的照片能获得更好的分析效果。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 导航按钮 -->
+                    <div class="flex justify-center mt-8">
+                        <button class="btn btn-primary" id="startAnalysisBtn" onclick="startAnalysis()" style="display: none;">
+                            <i class="fas fa-search mr-2"></i> 开始分析照片
+                        </button>
+                    </div>
                 </div>
             </div>
-            
-            <!-- 步骤2：问题回答 -->
-            <div id="questionSection" style="display: none;">
-                <!-- 问题卡片将由JavaScript动态生成 -->
+        </div>
+        
+        <!-- 步骤2：问题回答 -->
+        <div id="questionSection" style="display: none;">
+            <!-- 问题卡片将由JavaScript动态生成 -->
+        </div>
+        
+        <!-- 步骤3：分析总结 -->
+        <div class="analysis-summary" id="summarySection">
+            <div class="summary-header">
+                <h2 class="text-3xl font-bold text-gray-800">🎉 分析完成！</h2>
+                <p class="text-gray-600 mt-2">您已经完成了这次深度探索</p>
             </div>
             
-            <!-- 步骤3：分析总结 -->
-            <div class="analysis-summary" id="summarySection">
-                <div class="summary-header">
-                    <h2 class="text-3xl font-bold text-gray-800">🎉 分析完成！</h2>
-                    <p class="text-gray-600 mt-2">您已经完成了这次深度探索</p>
+            <!-- 总结卡片 -->
+            <div class="summary-card">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center text-3xl mr-4">
+                        📊
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">分析洞察</h3>
+                        <p class="text-white text-opacity-90">基于您的回答生成</p>
+                    </div>
                 </div>
                 
-                <!-- 总结卡片 -->
-                <div class="summary-card">
-                    <div class="flex items-center mb-6">
-                        <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center text-3xl mr-4">
-                            📊
+                <div class="character-insights" id="characterInsights">
+                    <!-- 角色卡片将由JavaScript动态生成 -->
+                </div>
+                
+                <div class="insight-badges" id="insightBadges">
+                    <!-- 洞察徽章将由JavaScript动态生成 -->
+                </div>
+                
+                <div class="timeline-container">
+                    <h4 class="text-xl font-bold text-white mb-4">📅 记忆时间线</h4>
+                    <div class="timeline" id="timeline">
+                        <!-- 时间线将由JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 统计信息 -->
+            <div class="card mt-6">
+                <div class="card-header">
+                    <h3 class="card-title">📈 分析统计</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-4 gap-6 text-center">
+                        <div>
+                            <div class="text-3xl font-bold" style="color: #4361ee;" id="statQuestions">0</div>
+                            <div class="text-sm text-gray-600">回答问题</div>
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-white">分析洞察</h3>
-                            <p class="text-white text-opacity-90">基于您的回答生成</p>
+                            <div class="text-3xl font-bold" style="color: #7209b7;" id="statWords">0</div>
+                            <div class="text-sm text-gray-600">记录字数</div>
                         </div>
-                    </div>
-                    
-                    <div class="character-insights" id="characterInsights">
-                        <!-- 角色卡片将由JavaScript动态生成 -->
-                    </div>
-                    
-                    <div class="insight-badges" id="insightBadges">
-                        <!-- 洞察徽章将由JavaScript动态生成 -->
-                    </div>
-                    
-                    <div class="timeline-container">
-                        <h4 class="text-xl font-bold text-white mb-4">📅 记忆时间线</h4>
-                        <div class="timeline" id="timeline">
-                            <!-- 时间线将由JavaScript动态生成 -->
+                        <div>
+                            <div class="text-3xl font-bold" style="color: #f72585;" id="statInsights">0</div>
+                            <div class="text-sm text-gray-600">获得洞察</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold" style="color: #4cc9f0;" id="statCompletion">0%</div>
+                            <div class="text-sm text-gray-600">完成度</div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- 统计信息 -->
-                <div class="card mt-6">
-                    <div class="card-header">
-                        <h3 class="card-title">📈 分析统计</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="grid grid-4 gap-6 text-center">
-                            <div>
-                                <div class="text-3xl font-bold text-primary-600" id="statQuestions">0</div>
-                                <div class="text-sm text-gray-600">回答问题</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold text-secondary-600" id="statWords">0</div>
-                                <div class="text-sm text-gray-600">记录字数</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold text-accent-600" id="statInsights">0</div>
-                                <div class="text-sm text-gray-600">获得洞察</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold text-success-600" id="statCompletion">0%</div>
-                                <div class="text-sm text-gray-600">完成度</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 行动按钮 -->
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="saveAnalysis()">
-                        <i class="fas fa-save mr-2"></i> 保存分析
-                    </button>
-                    <button class="btn btn-secondary" onclick="exportAnalysis()">
-                        <i class="fas fa-download mr-2"></i> 导出报告
-                    </button>
-                    <button class="btn btn-accent" onclick="shareAnalysis()">
-                        <i class="fas fa-share-alt mr-2"></i> 分享发现
-                    </button>
-                    <button class="btn btn-outline" onclick="startNewAnalysis()">
-                        <i class="fas fa-plus mr-2"></i> 新的分析
-                    </button>
-                </div>
-                
-                <!-- 仪表板链接 -->
-                <div class="text-center mt-8">
-                    <a href="../dashboard.html" class="btn btn-outline">
-                        <i class="fas fa-tachometer-alt mr-2"></i> 前往仪表板查看所有记录
-                    </a>
-                </div>
+            </div>
+            
+            <!-- 行动按钮 -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="saveAnalysis()">
+                    <i class="fas fa-save mr-2"></i> 保存分析
+                </button>
+                <button class="btn btn-secondary" onclick="exportAnalysis()">
+                    <i class="fas fa-download mr-2"></i> 导出报告
+                </button>
+                <button class="btn btn-accent" onclick="shareAnalysis()">
+                    <i class="fas fa-share-alt mr-2"></i> 分享发现
+                </button>
+                <button class="btn btn-outline" onclick="startNewAnalysis()">
+                    <i class="fas fa-plus mr-2"></i> 新的分析
+                </button>
+            </div>
+            
+            <!-- 仪表板链接 -->
+            <div class="text-center mt-8">
+                <a href="../index.html#progress" class="btn btn-outline">
+                    <i class="fas fa-tachometer-alt mr-2"></i> 前往仪表板查看所有记录
+                </a>
             </div>
         </div>
     </div>
 
     <!-- 页脚 -->
     <footer class="footer">
-        <div class="container footer-container">
+        <div class="footer-container">
             <div>
                 <h4 class="footer-section-title">人文赋能能力平台</h4>
                 <p class="text-gray-300 mt-2">通过数字化练习，探索家族记忆，传承人文价值</p>
@@ -963,6 +1300,9 @@
                 
                 // 更新统计信息
                 this.updateStatistics();
+                
+                // 通知主页进度
+                this.notifyMainPageProgress();
             }
             
             generateCharacterInsights() {
@@ -973,7 +1313,7 @@
                     container.innerHTML = `
                         <div class="character-card">
                             <div class="flex items-start mb-4">
-                                <div class="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-2xl mr-3">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-2xl mr-3">
                                     👥
                                 </div>
                                 <div>
@@ -1069,6 +1409,37 @@
                 document.getElementById('statCompletion').textContent = `${completionRate}%`;
             }
             
+            notifyMainPageProgress() {
+                // 尝试通知主页练习已完成
+                try {
+                    // 设置一个标记，表示练习已完成
+                    localStorage.setItem('photo-analyzer-completed', 'true');
+                    
+                    // 如果有父窗口（从主页iframe打开），通知它
+                    if (window.parent !== window.self) {
+                        window.parent.postMessage({
+                            type: 'exercise-completed',
+                            exercise: 'photo-analyzer',
+                            progress: 100,
+                            timestamp: new Date().toISOString()
+                        }, '*');
+                    }
+                    
+                    // 更新主页的localStorage数据
+                    let exerciseProgress = JSON.parse(localStorage.getItem('exercise-progress') || '{}');
+                    exerciseProgress['photo-analyzer'] = {
+                        completed: true,
+                        progress: 100,
+                        lastAccessed: new Date().toISOString(),
+                        started: true
+                    };
+                    localStorage.setItem('exercise-progress', JSON.stringify(exerciseProgress));
+                    
+                } catch (error) {
+                    console.log('无法通知主页进度:', error);
+                }
+            }
+            
             saveAnalysis() {
                 if (!this.state.uploadedPhoto) {
                     this.showAlert('请先上传照片并进行分析', 'warning');
@@ -1106,14 +1477,6 @@
                     localStorage.setItem('photoAnalyses_v1', JSON.stringify(analyses));
                     
                     this.showAlert('分析已保存到本地存储！', 'success');
-                    
-                    // 询问是否前往仪表板
-                    setTimeout(() => {
-                        const shouldGoToDashboard = confirm('保存成功！是否前往仪表板查看所有记录？');
-                        if (shouldGoToDashboard) {
-                            window.location.href = '../dashboard.html';
-                        }
-                    }, 500);
                     
                 } catch (error) {
                     console.error('保存失败:', error);
@@ -1296,12 +1659,12 @@
                 const alert = document.createElement('div');
                 alert.className = `alert-toast alert-${type} fixed top-4 right-4 z-50 max-w-md`;
                 alert.innerHTML = `
-                    <div class="flex items-start p-4 rounded-lg shadow-lg animate-slide-in-right">
+                    <div class="flex items-start p-4 rounded-lg shadow-lg animate-slide-in-right" style="background: ${this.getAlertColor(type)}; color: white;">
                         <div class="mr-3 text-lg">${this.getAlertIcon(type)}</div>
                         <div class="flex-1">
                             <p class="text-sm font-medium">${message}</p>
                         </div>
-                        <button class="ml-4 text-gray-400 hover:text-gray-600" onclick="this.parentElement.remove()">
+                        <button class="ml-4 text-white hover:text-gray-200" onclick="this.parentElement.parentElement.remove()">
                             &times;
                         </button>
                     </div>
@@ -1315,6 +1678,16 @@
                         alert.remove();
                     }
                 }, 3000);
+            }
+            
+            getAlertColor(type) {
+                const colors = {
+                    success: '#28a745',
+                    error: '#dc3545',
+                    warning: '#ffc107',
+                    info: '#17a2b8'
+                };
+                return colors[type] || '#17a2b8';
             }
             
             getAlertIcon(type) {
@@ -1352,25 +1725,7 @@
             window.startNewAnalysis = () => window.photoAnalyzer.startNewAnalysis();
             window.removePhoto = () => window.photoAnalyzer.removePhoto();
             window.startAnalysis = () => window.photoAnalyzer.startAnalysis();
-            
-            // 保存页面离开时的进度
-            window.addEventListener('beforeunload', () => {
-                window.photoAnalyzer.state.currentStep = window.photoAnalyzer.state.currentStep;
-                localStorage.setItem('currentPhotoAnalysis', JSON.stringify(window.photoAnalyzer.state));
-            });
         });
     </script>
 </body>
-     </div> <!-- 关闭容器 -->
-    </main>
-    
-    <!-- 页脚模板 -->
-    <script>
-        fetch('../templates/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.write(data);
-            });
-    </script>
 </html>
-       
