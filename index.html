@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 基础SEO标签 -->
+    <title>人类赋能能力 - 在AI时代培养不可替代的人类核心能力</title>
+    <meta name="description" content="一个开源项目，致力于培养9项在AI时代不可替代的人类核心赋能能力：共情、意义创造、无功利之爱、直觉飞跃、悲剧选择承担、第一人称意识、历史重塑、敬畏共生、灵魂对话">
+    <meta name="keywords" content="人类赋能,AI时代,人类核心能力,文明主体性,情感赋能,认知创造,实践历史,开源教育,心理学,社会学,哲学,人工智能伦理">
+    <meta name="author" content="黄青玄">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 社交媒体分享标签（Open Graph） -->
+    <meta property="og:title" content="人类赋能能力 - 在AI时代培养不可替代的人类核心能力">
+    <meta property="og:description" content="加入我们的开源社区，共同培养AI时代不可替代的9项人类赋能能力">
+    <meta property="og:image" content="https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/assets/images/social-preview.png">
+    <meta property="og:url" content="https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="人类赋能项目">
+    
+    <!-- Twitter卡片 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="人类赋能能力 - AI时代的文明免疫工程">
+    <meta name="twitter:description" content="开源项目：培养9项AI无法替代的人类核心能力">
+    <meta name="twitter:image" content="https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/assets/images/twitter-preview.png">
+    <meta name="twitter:creator" content="@HumanEmpowerment">
+    
+    <!-- 结构化数据（Schema.org） -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalProject",
+      "name": "人类赋能能力项目",
+      "description": "开源项目致力于培养AI时代不可替代的人类核心赋能能力",
+      "url": "https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/",
+      "keywords": "人类赋能,AI伦理,心理学,社会学,哲学,教育,开源",
+      "educationalLevel": "所有人",
+      "educationalUse": "个人发展,教育研究,社区建设",
+      "timeRequired": "P3M",
+      "datePublished": "2024-03-01",
+      "publisher": {
+        "@type": "Person",
+        "name": "黄青玄"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+    </script>
+    
+    <!-- 网站图标和主题色 -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+    <meta name="theme-color" content="#4361ee">
+    <meta name="msapplication-TileColor" content="#4361ee">
+    
+    <!-- 样式表 -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- 练习平台特定样式 -->
+    <style>
+        /* 练习平台特定样式 */
+        #exercises {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 80px 0;
+        }
+
+        .exercises-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .exercise-card-large {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .exercise-card-large:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border-color: #4361ee;
+        }
+
+        .exercise-icon {
+            font-size: 2.5rem;
+            color: #4361ee;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            width: 60px;
+            background: linear-gradient(135deg, #4361ee20, #3a0ca310);
+            border-radius: 50%;
+        }
+
+        .exercise-card-large h3 {
+            margin: 1rem 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .exercise-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .exercise-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .exercise-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4361ee, #3a0ca3);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .coming-soon {
+            opacity: 0.7;
+            filter: grayscale(30%);
+        }
+
+        .exercises-filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn.active {
+            background: #4361ee;
+            color: white;
+            border-color: #4361ee;
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: #f8f9fa;
+            border-color: #4361ee;
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+            max-width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .exercise-description {
+            flex-grow: 1;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .exercise-progress-container {
+            margin-top: auto;
+        }
+
+        .exercise-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .exercise-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .exercise-tag i {
+            font-size: 0.7rem;
+        }
+
+        .btn-primary, .btn-secondary, .btn-text {
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .exercise-difficulty {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .difficulty-beginner {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .difficulty-intermediate {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .difficulty-advanced {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            .exercises-filter {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-options {
+                justify-content: center;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .exercise-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* 修复导航栏链接 */
+        .nav-links a[href="#exercises"] {
+            color: #4361ee;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-brain"></i>
+                <span>Human Empowerment</span>
+            </a>
+           <div class="nav-links">
+             <a href="#abilities">Abilities</a>
+             <a href="#exercises">Exercises</a> <!-- 指向练习平台 -->
+             <a href="#progress">My Progress</a>
+             <a href="#community">Community</a>
+             <a href="#community" class="btn-sign">Sign Manifesto</a>
+           </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Cultivate Your <span class="highlight">Human Empowerment</span> Abilities</h1>
+                <p class="hero-subtitle">In the AI era, these 9 core abilities define our civilizational subjectivity. They cannot be outsourced, automated, or surrendered.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="total-cultivators">1,247</span>
+                        <span class="stat-label">Active Cultivators</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-exercises">5,892</span>
+                        <span class="stat-label">Exercises Completed</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-signatures">893</span>
+                        <span class="stat-label">Community Signatures</span>
+                    </div>
+                </div>
+                <a href="#exercises" class="btn-primary">Start Practicing</a> <!-- 修改为指向练习平台 -->
+            </div>
+            <div class="hero-visual">
+                <div class="visual-circle">
+                    <div class="circle-segment" data-ability="empathy"></div>
+                    <div class="circle-segment" data-ability="meaning"></div>
+                    <div class="circle-segment" data-ability="love"></div>
+                    <div class="circle-segment" data-ability="intuition"></div>
+                    <div class="circle-segment" data-ability="choice"></div>
+                    <div class="circle-segment" data-ability="consciousness"></div>
+                    <div class="circle-segment" data-ability="history"></div>
+                    <div class="circle-segment" data-ability="reverence"></div>
+                    <div class="circle-segment" data-ability="dialogue"></div>
+                    <div class="circle-center">
+                        <span>We<br>Think</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Abilities Section -->
+    <section id="abilities" class="section">
+        <div class="container">
+            <h2 class="section-title">The 9 Core Empowerment Abilities</h2>
+            <p class="section-subtitle">Rooted in our finitude, embodiment, and relationality</p>
+            
+            <div class="dimension-tabs">
+                <button class="tab-btn active" data-dimension="emotional">Emotional & Meaning</button>
+                <button class="tab-btn" data-dimension="cognitive">Cognitive & Creative</button>
+                <button class="tab-btn" data-dimension="practical">Practical & Historical</button>
+            </div>
+            
+            <div class="abilities-grid" id="abilities-container">
+                <!-- Abilities will be loaded dynamically from abilities.json -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Exercise -->
+    <section id="daily-exercise" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Today's Empowerment Exercise</h2>
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-category" id="exercise-category">Embodied Empathy</span>
+                    <span class="exercise-duration" id="exercise-duration">10 min</span>
+                </div>
+                <h3 class="exercise-title" id="exercise-title">The Mirror of Another's Pain</h3>
+                <p class="exercise-description" id="exercise-description">Recall a moment of witnessing someone's genuine pain. Instead of analyzing it, try to feel where in your own body you sense their suffering. Sit with that sensation for 5 minutes without judgment.</p>
+                <div class="exercise-actions">
+                    <button class="btn-secondary" id="start-exercise">
+                        <i class="fas fa-play"></i> Start Exercise
+                    </button>
+                    <button class="btn-text" id="skip-exercise">
+                        Skip to Another
+                    </button>
+                </div>
+                <div class="exercise-timer" id="exercise-timer" style="display: none;">
+                    <div class="timer-circle">
+                        <span id="timer-display">05:00</span>
+                    </div>
+                    <button class="btn-secondary" id="complete-exercise">Complete & Reflect</button>
+                </div>
+                
+                <!-- Exercise Feedback Section -->
+                <div class="exercise-feedback" id="exercise-feedback" style="display: none;">
+                    <h4>Exercise completed! Please share your reflection:</h4>
+                    <textarea id="reflection-text" placeholder="What did you learn from this exercise? Any new insights?..." rows="4"></textarea>
+                    <div class="feedback-actions">
+                        <button class="btn-secondary" id="save-reflection">Save Reflection</button>
+                        <button class="btn-text" id="skip-reflection">Skip</button>
+                    </div>
+                    <div class="feedback-result" id="feedback-result" style="display: none;">
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Reflection saved! Your <span id="ability-name">Embodied Empathy</span> ability has been strengthened.</p>
+                            <p class="small">Completed <span id="total-completed">1</span> exercises, keep going!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Digital Practice Platform -->
+    <section id="exercises" class="section">
+        <div class="container">
+            <h2 class="section-title">Digital Practice Platform</h2>
+            <p class="section-subtitle">Interactive exercises to develop each empowerment ability</p>
+            
+            <!-- 练习筛选和搜索 -->
+            <div class="exercises-filter">
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">All Exercises</button>
+                    <button class="filter-btn" data-filter="beginner">Beginner</button>
+                    <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+                    <button class="filter-btn" data-filter="advanced">Advanced</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" placeholder="Search exercises by ability or keyword..." id="exercise-search">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            
+            <div class="exercises-grid">
+                <!-- 照片分析练习 -->
+                <div class="exercise-card-large" data-difficulty="beginner" data-abilities="empathy,intuition">
+                    <div class="exercise-icon">
+                        <i class="fas fa-camera-retro"></i>
+                    </div>
+                    <h3>Photo Analysis</h3>
+                    <div class="exercise-tags">
+                        <span class="exercise-tag"><i class="fas fa-heart"></i> Empathy</span>
+                        <span class="exercise-tag"><i class="fas fa-lightbulb"></i> Intuition</span>
+                    </div>
+                    <div class="exercise-difficulty difficulty-beginner">Beginner</div>
+                    <p class="exercise-description">Develop embodied empathy by analyzing photographs with emotional intelligence. Learn to read subtle emotional cues and understand unspoken stories through visual analysis.</p>
+                    <div class="exercise-stats">
+                        <span><i class="fas fa-clock"></i> 15-20 min</span>
+                        <span><i class="fas fa-brain"></i> Empathy & Intuition</span>
+                    </div>
+                    <div class="exercise-actions">
+                        <a href="exercises/photo-analyzer.html" class="btn-primary">Start Exercise</a>
+                        <button class="btn-text" onclick="showExerciseDetails('photo-analyzer')">Learn More</button>
+                    </div>
+                    <div class="exercise-progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="photo-analyzer-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text" id="photo-analyzer-text">Not Started</div>
+                    </div>
+                </div>
+                
+                <!-- 角色探索练习 -->
+                <div class="exercise-card-large" data-difficulty="intermediate" data-abilities="meaning,history">
+                    <div class="exercise-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Character Explorer</h3>
+                    <div class="exercise-tags">
+                        <span class="exercise-tag"><i class="fas fa-star"></i> Meaning</span>
+                        <span class="exercise-tag"><i class="fas fa-history"></i> History</span>
+                    </div>
+                    <div class="exercise-difficulty difficulty-intermediate">Intermediate</div>
+                    <p class="exercise-description">Understand historical consciousness by exploring character development across time. Analyze how characters evolve through different historical contexts and personal journeys.</p>
+                    <div class="exercise-stats">
+                        <span><i class="fas fa-clock"></i> 20-30 min</span>
+                        <span><i class="fas fa-brain"></i> History & Meaning</span>
+                    </div>
+                    <div class="exercise-actions">
+                        <a href="exercises/character-explorer.html" class="btn-primary">Start Exercise</a>
+                        <button class="btn-text" onclick="showExerciseDetails('character-explorer')">Learn More</button>
+                    </div>
+                    <div class="exercise-progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="character-explorer-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text" id="character-explorer-text">Not Started</div>
+                    </div>
+                </div>
+                
+                <!-- 技能传承练习 -->
+                <div class="exercise-card-large" data-difficulty="intermediate" data-abilities="dialogue,reverence">
+                    <div class="exercise-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>Skill Heritage</h3>
+                    <div class="exercise-tags">
+                        <span class="exercise-tag"><i class="fas fa-comments"></i> Dialogue</span>
+                        <span class="exercise-tag"><i class="fas fa-hands"></i> Reverence</span>
+                    </div>
+                    <div class="exercise-difficulty difficulty-intermediate">Intermediate</div>
+                    <p class="exercise-description">Practice dialogue and reverence by exploring knowledge transmission across generations. Understand the importance of preserving and passing on valuable skills and wisdom.</p>
+                    <div class="exercise-stats">
+                        <span><i class="fas fa-clock"></i> 25-35 min</span>
+                        <span><i class="fas fa-brain"></i> Dialogue & Reverence</span>
+                    </div>
+                    <div class="exercise-actions">
+                        <a href="exercises/skill-heritage.html" class="btn-primary">Start Exercise</a>
+                        <button class="btn-text" onclick="showExerciseDetails('skill-heritage')">Learn More</button>
+                    </div>
+                    <div class="exercise-progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="skill-heritage-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text" id="skill-heritage-text">Not Started</div>
+                    </div>
+                </div>
+                
+                <!-- 更多练习占位符 -->
+                <div class="exercise-card-large coming-soon" data-difficulty="advanced" data-abilities="choice,consciousness">
+                    <div class="exercise-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Decision Simulation</h3>
+                    <div class="exercise-tags">
+                        <span class="exercise-tag"><i class="fas fa-balance-scale"></i> Choice</span>
+                        <span class="exercise-tag"><i class="fas fa-eye"></i> Consciousness</span>
+                    </div>
+                    <div class="exercise-difficulty difficulty-advanced">Advanced</div>
+                    <p class="exercise-description">Practice tragic choice-making in complex scenarios. Navigate through difficult ethical dilemmas and learn to make decisions when there are no perfect solutions. (Coming Soon)</p>
+                    <div class="exercise-stats">
+                        <span><i class="fas fa-clock"></i> 15-25 min</span>
+                        <span><i class="fas fa-brain"></i> Choice & Consciousness</span>
+                    </div>
+                    <button class="btn-secondary" disabled>Coming Soon</button>
+                </div>
+                
+                <div class="exercise-card-large coming-soon" data-difficulty="beginner" data-abilities="love,reverence">
+                    <div class="exercise-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Loving Presence</h3>
+                    <div class="exercise-tags">
+                        <span class="exercise-tag"><i class="fas fa-heart"></i> Love</span>
+                        <span class="exercise-tag"><i class="fas fa-hands"></i> Reverence</span>
+                    </div>
+                    <div class="exercise-difficulty difficulty-beginner">Beginner</div>
+                    <p class="exercise-description">Cultivate non-instrumental love through mindfulness and presence exercises. Learn to appreciate beings for their own sake without seeking personal gain. (Coming Soon)</p>
+                    <div class="exercise-stats">
+                        <span><i class="fas fa-clock"></i> 10-15 min</span>
+                        <span><i class="fas fa-brain"></i> Love & Reverence</span>
+                    </div>
+                    <button class="btn-secondary" disabled>Coming Soon</button>
+                </div>
+                
+                <div class="exercise-card-large coming-soon" data-difficulty="advanced" data-abilities="meaning,history,dialogue">
+                    <div class="exercise-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Historical Dialogue</h3>
+                    <div class="exercise-tags">
+                        <span class="exercise-tag"><i class="fas fa-star"></i> Meaning</span>
+                        <span class="exercise-tag"><i class="fas fa-history"></i> History</span>
+                        <span class="exercise-tag"><i class="fas fa-comments"></i> Dialogue</span>
+                    </div>
+                    <div class="exercise-difficulty difficulty-advanced">Advanced</div>
+                    <p class="exercise-description">Engage in imagined dialogues with historical figures to understand different perspectives and reshape historical narratives. (Coming Soon)</p>
+                    <div class="exercise-stats">
+                        <span><i class="fas fa-clock"></i> 30-40 min</span>
+                        <span><i class="fas fa-brain"></i> Meaning, History & Dialogue</span>
+                    </div>
+                    <button class="btn-secondary" disabled>Coming Soon</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Tracker -->
+    <section id="progress" class="section">
+        <div class="container">
+            <h2 class="section-title">Your Empowerment Journey</h2>
+            <div class="progress-container">
+                <div class="progress-visual">
+                    <canvas id="progress-chart" width="400" height="400"></canvas>
+                </div>
+                <div class="progress-details">
+                    <h3>My Development Profile</h3>
+                    <div class="progress-badges" id="badge-container">
+                        <!-- Badges will be loaded here -->
+                    </div>
+                    <div class="progress-form">
+                        <h4>Add Your Reflection</h4>
+                        <textarea id="reflection-input" placeholder="What did you discover about your human abilities today?..." rows="4"></textarea>
+                        <button class="btn-primary" id="save-reflection-btn">Save Reflection</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pilot Projects -->
+    <section id="pilot-projects" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Civilization Immune Engineering Pilots</h2>
+            <p class="section-subtitle">Participate in practices to purify the network and defend civilizational subjectivity</p>
+            
+            <div class="pilot-grid">
+                <div class="pilot-card">
+                    <div class="pilot-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h3>AI Training Data Cleansing</h3>
+                    <p>Help tag high-quality online content to provide healthy 'nutrition' data for AI.</p>
+                    <button class="btn-secondary" id="start-data-cleansing">
+                        <i class="fas fa-play"></i> Start Tagging
+                    </button>
+                </div>
+                
+                <div class="pilot-card">
+                    <div class="pilot-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Algorithm Transparency Experience</h3>
+                    <p>Experience how different algorithm parameters affect your information environment.</p>
+                    <button class="btn-secondary" id="try-algorithm-tool">
+                        <i class="fas fa-cogs"></i> Try Tool
+                    </button>
+                </div>
+                
+                <div class="pilot-card">
+                    <div class="pilot-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Public Dialogue Experiment</h3>
+                    <p>Participate in structured rational dialogue to cultivate a healthy public sphere.</p>
+                    <button class="btn-secondary" id="join-dialog">
+                        <i class="fas fa-comments"></i> Join Dialogue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Signatures -->
+    <section id="community" class="section">
+        <div class="container">
+            <h2 class="section-title">Community of Cultivators</h2>
+            <p class="section-subtitle">Join others in committing to human empowerment</p>
+            
+            <!-- 社区签名部分 -->
+<div class="signature-box">
+    <h3><i class="fas fa-signature"></i> Sign the Empowerment Manifesto</h3>
+    <p>"I commit to cultivating my uniquely human abilities, recognizing that in the AI era, my embodied empathy, creative intuition, and historical consciousness define my contribution to our collective future."</p>
+    
+    <div class="signature-form">
+        <input type="text" id="user-name" placeholder="Your Name or Pseudonym" maxlength="50">
+        <input type="text" id="user-location" placeholder="Your Location (optional)">
+        <textarea id="user-commitment" placeholder="Personal commitment statement (optional)" rows="2"></textarea>
+        <button class="btn-primary" id="submit-signature">
+            <i class="fas fa-feather-alt"></i> Add My Signature
+        </button>
+    </div>
+    
+    <div class="signatures-display" id="signatures-container">
+        <!-- =========== 永久签名开始 =========== -->
+        <div class="signature-item permanent-signature">
+            <div class="signature-name">元始天尊 Yuan Shi Tian Zun / Primeval Lord of Heaven</div>
+            <div class="signature-location">昆仑山玉虚宫 Jade Void Palace on Kunlun Mountains</div>
+            <div class="signature-commitment">"Disciples of my Chan Jiao, assemble at once!"</div>
+            <div class="signature-special">✨ 永久签名 ✨</div>
+        </div>
+        <!-- =========== 永久签名结束 =========== -->
+        
+        <!-- 其他签名将通过JavaScript动态加载 -->
+    </div>
+</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-brain"></i>
+                        <span>Human Empowerment</span>
+                    </div>
+                    <p>An open-source project dedicated to cultivating what makes us uniquely human.</p>
+                    <p class="footer-note">Completely open, only initial authorship rights reserved.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Dimensions</h4>
+                    <a href="#abilities" onclick="showTab('emotional')">Emotional & Meaning</a>
+                    <a href="#abilities" onclick="showTab('cognitive')">Cognitive & Creative</a>
+                    <a href="#abilities" onclick="showTab('practical')">Practical & Historical</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Contribute</h4>
+                    <a href="CONTRIBUTING.md">Add Exercises</a>
+                    <a href="https://github.com/Open-Strategy-Blueprints/Human-Empowerment-Abilities">GitHub Repo</a>
+                    <a href="#exercises">View Exercises</a>  <!-- 改为指向练习平台 -->
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <a href="#" onclick="alert('Discussion forum coming soon!')">Discussion Forum</a>
+                    <a href="#" onclick="alert('Research collaboration opportunities coming soon!')">Research Collaboration</a>
+                    <a href="#community">Share Your Story</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-bottom-text">
+                    Initiated by: [黄青玄] | Inspired by: 《"我们思"的异化与捍卫：论AI时代文明主体性的免疫工程》
+                </p>
+                <p class="footer-bottom-text">
+                    This project is licensed under <a href="https://opensource.org/licenses/MIT" target="_blank" style="color: #4cc9f0; text-decoration: none;">MIT License</a>. We do not collect or share your personal information.
+                </p>
+                <p class="footer-bottom-text small">
+                    <i class="fas fa-heart" style="color: #f72585; margin: 0 5px;"></i>
+                    Empowering Human Civilization
+                    <i class="fas fa-brain" style="color: #4361ee; margin: 0 5px;"></i>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- 练习平台功能脚本 -->
+    <script>
+        // 练习进度管理
+        const ExerciseManager = {
+            exercises: {
+                'photo-analyzer': { 
+                    completed: false, 
+                    progress: 0, 
+                    lastAccessed: null,
+                    started: false
+                },
+                'character-explorer': { 
+                    completed: false, 
+                    progress: 0, 
+                    lastAccessed: null,
+                    started: false
+                },
+                'skill-heritage': { 
+                    completed: false, 
+                    progress: 0, 
+                    lastAccessed: null,
+                    started: false
+                }
+            },
+            
+            init() {
+                const saved = localStorage.getItem('exercise-progress');
+                if (saved) {
+                    this.exercises = JSON.parse(saved);
+                    this.updateUI();
+                }
+                this.setupEventListeners();
+                this.checkExerciseProgress();
+            },
+            
+            setupEventListeners() {
+                // 练习卡片点击跟踪
+                document.querySelectorAll('.exercise-card-large a.btn-primary').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        const exerciseId = this.getExerciseIdFromUrl(e.target.href);
+                        if (exerciseId) {
+                            this.markExerciseStarted(exerciseId);
+                        }
+                    });
+                });
+                
+                // 筛选按钮
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const filter = e.target.dataset.filter;
+                        this.filterExercises(filter);
+                        
+                        // 更新活动状态
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                    });
+                });
+                
+                // 搜索功能
+                const searchInput = document.getElementById('exercise-search');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        this.searchExercises(e.target.value);
+                    });
+                }
+            },
+            
+            getExerciseIdFromUrl(url) {
+                if (url.includes('photo-analyzer')) return 'photo-analyzer';
+                if (url.includes('character-explorer')) return 'character-explorer';
+                if (url.includes('skill-heritage')) return 'skill-heritage';
+                return null;
+            },
+            
+            markExerciseStarted(exerciseId) {
+                if (this.exercises[exerciseId]) {
+                    this.exercises[exerciseId].started = true;
+                    this.exercises[exerciseId].lastAccessed = new Date().toISOString();
+                    this.save();
+                }
+            },
+            
+            checkExerciseProgress() {
+                // 检查是否有来自练习页面的进度更新
+                const urlParams = new URLSearchParams(window.location.search);
+                const exerciseProgress = urlParams.get('exerciseProgress');
+                const exerciseId = urlParams.get('exerciseId');
+                
+                if (exerciseId && exerciseProgress !== null) {
+                    const progress = parseInt(exerciseProgress);
+                    if (!isNaN(progress)) {
+                        this.updateProgress(exerciseId, progress);
+                        
+                        // 清除URL参数
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                }
+            },
+            
+            updateProgress(exerciseId, progress) {
+                if (this.exercises[exerciseId]) {
+                    this.exercises[exerciseId].progress = progress;
+                    this.exercises[exerciseId].lastAccessed = new Date().toISOString();
+                    
+                    if (progress >= 100) {
+                        this.exercises[exerciseId].completed = true;
+                        this.showCompletionMessage(exerciseId);
+                    }
+                    
+                    this.save();
+                    this.updateUI();
+                }
+            },
+            
+            showCompletionMessage(exerciseId) {
+                const exerciseNames = {
+                    'photo-analyzer': 'Photo Analysis',
+                    'character-explorer': 'Character Explorer',
+                    'skill-heritage': 'Skill Heritage'
+                };
+                
+                alert(`🎉 Congratulations! You've completed the ${exerciseNames[exerciseId]} exercise!`);
+            },
+            
+            save() {
+                localStorage.setItem('exercise-progress', JSON.stringify(this.exercises));
+                this.updateTotalStats();
+            },
+            
+            updateUI() {
+                // 更新每个练习的进度条
+                Object.keys(this.exercises).forEach(exerciseId => {
+                    const progress = this.exercises[exerciseId].progress;
+                    const progressFill = document.getElementById(`${exerciseId}-progress`);
+                    const progressText = document.getElementById(`${exerciseId}-text`);
+                    
+                    if (progressFill) {
+                        progressFill.style.width = `${progress}%`;
+                    }
+                    
+                    if (progressText) {
+                        if (progress === 0) {
+                            progressText.textContent = 'Not Started';
+                        } else if (progress < 100) {
+                            progressText.textContent = `${progress}% Complete`;
+                        } else {
+                            progressText.textContent = 'Completed! 🎉';
+                        }
+                    }
+                });
+            },
+            
+            updateTotalStats() {
+                const completedCount = Object.values(this.exercises).filter(e => e.completed).length;
+                const startedCount = Object.values(this.exercises).filter(e => e.started).length;
+                
+                // 更新主页统计
+                const totalExercisesElement = document.getElementById('total-exercises');
+                if (totalExercisesElement) {
+                    totalExercisesElement.textContent = parseInt(totalExercisesElement.textContent) + completedCount;
+                }
+                
+                // 更新练习平台统计
+                const statsElement = document.querySelector('.exercise-platform-stats');
+                if (!statsElement) {
+                    const platformSection = document.querySelector('#exercises .container');
+                    if (platformSection) {
+                        const statsHTML = `
+                            <div class="exercise-platform-stats" style="margin: 1rem 0; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                <div style="display: flex; justify-content: space-around; text-align: center;">
+                                    <div>
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: #4361ee;">${startedCount}</div>
+                                        <div style="font-size: 0.9rem; color: #6c757d;">Exercises Started</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: #3a0ca3;">${completedCount}</div>
+                                        <div style="font-size: 0.9rem; color: #6c757d;">Exercises Completed</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: #7209b7;">${Object.keys(this.exercises).length}</div>
+                                        <div style="font-size: 0.9rem; color: #6c757d;">Total Available</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        platformSection.insertAdjacentHTML('afterbegin', statsHTML);
+                    }
+                }
+            },
+            
+            filterExercises(filter) {
+                const cards = document.querySelectorAll('.exercise-card-large');
+                
+                cards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'flex';
+                    } else if (filter === 'beginner' && card.dataset.difficulty === 'beginner') {
+                        card.style.display = 'flex';
+                    } else if (filter === 'intermediate' && card.dataset.difficulty === 'intermediate') {
+                        card.style.display = 'flex';
+                    } else if (filter === 'advanced' && card.dataset.difficulty === 'advanced') {
+                        card.style.display = 'flex';
+                    } else if (filter !== 'all') {
+                        card.style.display = 'none';
+                    }
+                });
+            },
+            
+            searchExercises(query) {
+                const cards = document.querySelectorAll('.exercise-card-large');
+                const searchTerm = query.toLowerCase();
+                
+                cards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const description = card.querySelector('.exercise-description').textContent.toLowerCase();
+                    const tags = Array.from(card.querySelectorAll('.exercise-tag')).map(tag => tag.textContent.toLowerCase());
+                    
+                    if (title.includes(searchTerm) || 
+                        description.includes(searchTerm) || 
+                        tags.some(tag => tag.includes(searchTerm))) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        };
+
+        // 练习详情显示
+        function showExerciseDetails(exerciseId) {
+            const details = {
+                'photo-analyzer': {
+                    title: 'Photo Analysis Exercise',
+                    description: 'Develop embodied empathy by analyzing photographs with emotional intelligence.',
+                    fullDescription: 'This exercise helps you cultivate your ability to read emotional cues and understand unspoken stories through visual analysis. You will be presented with photographs and guided through a process of emotional interpretation and empathy development.',
+                    duration: '15-20 minutes',
+                    abilities: ['Empathy', 'Intuition', 'First-person Consciousness'],
+                    prerequisites: 'No prior experience needed',
+                    learningOutcomes: [
+                        'Enhanced emotional intelligence',
+                        'Improved non-verbal communication skills',
+                        'Deeper understanding of human experiences',
+                        'Increased empathy for diverse perspectives'
+                    ]
+                },
+                'character-explorer': {
+                    title: 'Character Explorer Exercise',
+                    description: 'Understand historical consciousness by exploring character development.',
+                    fullDescription: 'Through analyzing character development across different historical contexts, this exercise helps you understand how individuals and societies evolve over time. You will explore character arcs, motivations, and transformations.',
+                    duration: '20-30 minutes',
+                    abilities: ['Meaning Creation', 'Historical Consciousness'],
+                    prerequisites: 'Basic understanding of historical contexts',
+                    learningOutcomes: [
+                        'Deeper historical understanding',
+                        'Improved character analysis skills',
+                        'Enhanced understanding of human motivation',
+                        'Better appreciation of historical context'
+                    ]
+                },
+                'skill-heritage': {
+                    title: 'Skill Heritage Exercise',
+                    description: 'Practice dialogue and reverence by exploring knowledge transmission.',
+                    fullDescription: 'This exercise focuses on the transmission of skills and knowledge across generations. You will explore how skills are learned, preserved, and passed on, cultivating reverence for traditional knowledge and dialogical learning.',
+                    duration: '25-35 minutes',
+                    abilities: ['Dialogue', 'Reverence', 'Knowledge Transmission'],
+                    prerequisites: 'Openness to learning from others',
+                    learningOutcomes: [
+                        'Appreciation for traditional knowledge',
+                        'Improved dialogue skills',
+                        'Understanding of knowledge transmission',
+                        'Reverence for skilled practitioners'
+                    ]
+                }
+            };
+            
+            const detail = details[exerciseId];
+            if (!detail) return;
+            
+            const modalHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+                    <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative;">
+                        <button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6c757d;">×</button>
+                        <h2 style="color: #333; margin-bottom: 1rem;">${detail.title}</h2>
+                        <div style="color: #555; line-height: 1.6; margin-bottom: 1.5rem;">
+                            <p><strong>Description:</strong> ${detail.fullDescription}</p>
+                            <p><strong>Duration:</strong> ${detail.duration}</p>
+                            <p><strong>Abilities Developed:</strong> ${detail.abilities.join(', ')}</p>
+                            <p><strong>Prerequisites:</strong> ${detail.prerequisites}</p>
+                            <p><strong>Learning Outcomes:</strong></p>
+                            <ul style="margin-left: 1.5rem;">
+                                ${detail.learningOutcomes.map(outcome => `<li>${outcome}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                            <a href="exercises/${exerciseId}.html" class="btn-primary" style="text-decoration: none;">Start Exercise</a>
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="btn-text">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        // Helper function to show specific ability tab
+        function showTab(dimension) {
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelector(`.tab-btn[data-dimension="${dimension}"]`).classList.add('active');
+            
+            if (typeof loadAbilities === 'function') {
+                loadAbilities();
+            }
+            
+            document.getElementById('abilities').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 初始化练习管理器
+        document.addEventListener('DOMContentLoaded', () => {
+            ExerciseManager.init();
+        });
+    </script>
+</body>
+</html>
