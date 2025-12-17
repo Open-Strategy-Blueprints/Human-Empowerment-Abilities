@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未来场景模拟工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #e0f7fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 20, 40, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(64, 224, 208, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #40e0d0, #20b2aa, #00ced1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #b0e0e6;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background: rgba(10, 25, 47, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(64, 224, 208, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .control-panel {
+            flex: 1;
+            min-width: 350px;
+        }
+
+        .visualization-panel {
+            flex: 2;
+            min-width: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #40e0d0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #e0f7fa;
+        }
+
+        .panel-title i {
+            color: #40e0d0;
+        }
+
+        .scenario-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .control-group {
+            background: rgba(20, 40, 60, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #20b2aa;
+        }
+
+        .control-group h3 {
+            font-size: 1.3rem;
+            margin-bottom: 18px;
+            color: #7fffd4;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .factor-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(30, 60, 90, 0.4);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .factor-item:hover {
+            background: rgba(40, 80, 120, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .factor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .factor-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #afeeee;
+        }
+
+        .factor-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #00ffff;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 10px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #0a3d62, #1e90ff, #00ced1);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #00ffff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e90ff, #00bfff);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(30, 144, 255, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-scenario {
+            background: linear-gradient(135deg, #20b2aa, #40e0d0);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #ff7f50, #ff6347);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #9370db, #8a2be2);
+        }
+
+        .chart-container {
+            flex: 1;
+            min-height: 300px;
+            background: rgba(20, 40, 60, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .scenario-description {
+            background: rgba(20, 40, 60, 0.5);
+            border-radius: 12px;
+            padding: 25px;
+            border-top: 4px solid #ff7f50;
+        }
+
+        .scenario-description h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #ff7f50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-content {
+            line-height: 1.7;
+            font-size: 1.05rem;
+            color: #e0f7fa;
+        }
+
+        .scenario-content p {
+            margin-bottom: 15px;
+        }
+
+        .scenario-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00ffff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #b0e0e6;
+        }
+
+        .scenario-tags {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 8px 15px;
+            background: rgba(30, 144, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #87ceeb;
+            border: 1px solid rgba(30, 144, 255, 0.4);
+        }
+
+        .scenario-presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .preset-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(40, 80, 120, 0.6);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid rgba(64, 224, 208, 0.2);
+        }
+
+        .preset-btn:hover {
+            background: rgba(64, 224, 208, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .preset-optimistic {
+            border-left: 5px solid #2ecc71;
+        }
+
+        .preset-pessimistic {
+            border-left: 5px solid #e74c3c;
+        }
+
+        .preset-balanced {
+            border-left: 5px solid #f39c12;
+        }
+
+        .preset-disruptive {
+            border-left: 5px solid #9b59b6;
+        }
+
+        .timeline-container {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(20, 40, 60, 0.5);
+            border-radius: 12px;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, #0a3d62, #1e90ff, #00ced1);
+            border-radius: 3px;
+        }
+
+        .timeline-point {
+            position: relative;
+            text-align: center;
+            width: 100px;
+        }
+
+        .timeline-dot {
+            width: 15px;
+            height: 15px;
+            background: #00ffff;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+        }
+
+        .timeline-year {
+            font-weight: 700;
+            color: #00ffff;
+            font-size: 1.1rem;
+        }
+
+        .timeline-label {
+            font-size: 0.9rem;
+            color: #b0e0e6;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 1100px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .control-panel, .visualization-panel {
+                min-width: 100%;
+            }
+            
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .scenario-presets {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-crystal-ball"></i> 未来场景模拟工具</h1>
+        <p>探索多种未来可能性，调整关键因素参数，可视化不同发展路径的结果与影响</p>
+    </div>
+
+    <div class="container">
+        <div class="panel control-panel">
+            <h2 class="panel-title"><i class="fas fa-sliders-h"></i> 场景控制面板</h2>
+            
+            <div class="scenario-controls">
+                <div class="control-group">
+                    <h3><i class="fas fa-chart-line"></i> 关键未来因素</h3>
+                    
+                    <div id="factors-container">
+                        <!-- 因素将通过JavaScript动态生成 -->
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn" id="add-factor-btn">
+                            <i class="fas fa-plus-circle"></i> 添加因素
+                        </button>
+                        <button class="btn btn-reset" id="reset-btn">
+                            <i class="fas fa-redo"></i> 重置所有
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h3><i class="fas fa-bolt"></i> 场景预设</h3>
+                    <p style="margin-bottom: 15px; color: #b0e0e6;">选择预设场景快速模拟不同未来可能性</p>
+                    
+                    <div class="scenario-presets">
+                        <button class="preset-btn preset-optimistic" data-preset="optimistic">
+                            <i class="fas fa-sun"></i> 乐观场景
+                        </button>
+                        <button class="preset-btn preset-pessimistic" data-preset="pessimistic">
+                            <i class="fas fa-cloud-rain"></i> 悲观场景
+                        </button>
+                        <button class="preset-btn preset-balanced" data-preset="balanced">
+                            <i class="fas fa-balance-scale"></i> 平衡场景
+                        </button>
+                        <button class="preset-btn preset-disruptive" data-preset="disruptive">
+                            <i class="fas fa-bolt"></i> 颠覆性场景
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="timeline-container">
+                    <h3><i class="fas fa-hourglass-half"></i> 时间线模拟</h3>
+                    <p style="margin-bottom: 15px; color: #b0e0e6;">调整模拟时间范围</p>
+                    
+                    <div class="slider-container">
+                        <span style="min-width: 120px;">时间范围: <span id="timeline-value">10</span> 年</span>
+                        <input type="range" id="timeline-slider" min="5" max="30" value="10" step="5">
+                    </div>
+                    
+                    <div class="timeline">
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-year" id="year-current">2024</div>
+                            <div class="timeline-label">当前</div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-year" id="year-mid">2029</div>
+                            <div class="timeline-label">中期</div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-year" id="year-end">2034</div>
+                            <div class="timeline-label">目标年</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-scenario" id="simulate-btn">
+                        <i class="fas fa-play-circle"></i> 运行模拟
+                    </button>
+                    <button class="btn btn-export" id="export-btn">
+                        <i class="fas fa-download"></i> 导出结果
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel visualization-panel">
+            <h2 class="panel-title"><i class="fas fa-chart-bar"></i> 场景可视化</h2>
+            
+            <div class="chart-container">
+                <canvas id="scenario-chart"></canvas>
+            </div>
+            
+            <div class="scenario-description">
+                <h3><i class="fas fa-scroll"></i> 场景描述</h3>
+                <div class="scenario-content" id="scenario-description">
+                    <p>调整左侧因素滑块以模拟不同未来场景。每个因素的变化将影响整体未来可能性评估。</p>
+                    <p>点击"运行模拟"按钮或选择预设场景来生成详细的未来展望。</p>
+                </div>
+                
+                <div class="scenario-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="probability-value">65%</span>
+                        <span class="stat-label">实现概率</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="impact-value">7.2</span>
+                        <span class="stat-label">影响指数</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="adaptability-value">8.1</span>
+                        <span class="stat-label">适应度</span>
+                    </div>
+                </div>
+                
+                <div class="scenario-tags" id="scenario-tags">
+                    <span class="tag">未来模拟</span>
+                    <span class="tag">场景规划</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 未来场景模拟工具主类
+        class FutureScenarioSimulator {
+            constructor() {
+                this.factors = [
+                    { id: 1, name: "技术发展速度", value: 70, weight: 1.2, color: "#1e90ff" },
+                    { id: 2, name: "政策支持力度", value: 60, weight: 1.0, color: "#20b2aa" },
+                    { id: 3, name: "市场需求增长", value: 75, weight: 1.1, color: "#ff7f50" },
+                    { id: 4, name: "资源可获性", value: 65, weight: 0.9, color: "#9370db" },
+                    { id: 5, name: "社会接受度", value: 55, weight: 0.8, color: "#32cd32" }
+                ];
+                
+                this.scenarios = {
+                    optimistic: {
+                        name: "乐观场景",
+                        description: "在技术突破、强有力政策支持和市场需求旺盛的共同推动下，未来呈现高速增长态势。创新生态系统蓬勃发展，社会适应度高，实现概率较大。",
+                        factors: [85, 80, 90, 75, 70],
+                        tags: ["高增长", "创新驱动", "政策利好", "技术突破"],
+                        probability: 75,
+                        impact: 8.5,
+                        adaptability: 8.8
+                    },
+                    pessimistic: {
+                        name: "悲观场景",
+                        description: "面临技术瓶颈、政策限制和市场萎缩的多重挑战，未来发展受阻。资源约束明显，社会接受度低，需要调整策略以应对不确定性。",
+                        factors: [40, 35, 45, 50, 40],
+                        tags: ["挑战重重", "增长放缓", "资源限制", "市场萎缩"],
+                        probability: 30,
+                        impact: 4.2,
+                        adaptability: 5.5
+                    },
+                    balanced: {
+                        name: "平衡场景",
+                        description: "各因素发展相对均衡，既有增长机遇也面临一定挑战。市场稳步发展，技术创新渐进推进，社会逐步适应变化。",
+                        factors: [65, 60, 70, 65, 60],
+                        tags: ["稳健发展", "渐进创新", "市场稳定", "平衡增长"],
+                        probability: 60,
+                        impact: 6.8,
+                        adaptability: 7.2
+                    },
+                    disruptive: {
+                        name: "颠覆性场景",
+                        description: "关键技术突破引发行业颠覆性变革，传统模式受到挑战。政策快速调整以适应新技术，市场格局重塑，高风险高回报。",
+                        factors: [90, 65, 85, 60, 50],
+                        tags: ["颠覆性创新", "格局重塑", "高风险高回报", "快速变革"],
+                        probability: 45,
+                        impact: 9.2,
+                        adaptability: 6.5
+                    }
+                };
+                
+                this.currentScenario = "balanced";
+                this.timelineYears = 10;
+                this.chart = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.renderFactors();
+                this.setupEventListeners();
+                this.setupChart();
+                this.updateScenarioDescription();
+                this.updateTimelineYears();
+            }
+            
+            renderFactors() {
+                const container = document.getElementById("factors-container");
+                container.innerHTML = "";
+                
+                this.factors.forEach((factor, index) => {
+                    const factorElement = document.createElement("div");
+                    factorElement.className = "factor-item";
+                    factorElement.innerHTML = `
+                        <div class="factor-header">
+                            <span class="factor-name">${factor.name}</span>
+                            <span class="factor-value">${factor.value}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span style="min-width: 100px;">影响权重: ${factor.weight.toFixed(1)}</span>
+                            <input type="range" class="factor-slider" data-index="${index}" min="0" max="100" value="${factor.value}">
+                            <button class="btn" style="padding: 8px 12px; font-size: 0.9rem;" data-action="adjust-weight" data-index="${index}">
+                                <i class="fas fa-weight-hanging"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    container.appendChild(factorElement);
+                });
+                
+                // 更新滑块事件
+                document.querySelectorAll(".factor-slider").forEach(slider => {
+                    slider.addEventListener("input", (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        const value = parseInt(e.target.value);
+                        this.factors[index].value = value;
+                        this.updateFactorValue(index, value);
+                        this.updateScenarioDescription();
+                    });
+                });
+                
+                // 更新权重按钮事件
+                document.querySelectorAll("[data-action='adjust-weight']").forEach(btn => {
+                    btn.addEventListener("click", (e) => {
+                        const index = parseInt(e.target.closest("button").dataset.index);
+                        this.adjustWeight(index);
+                    });
+                });
+            }
+            
+            updateFactorValue(index, value) {
+                const factorValueElements = document.querySelectorAll(".factor-value");
+                if (factorValueElements[index]) {
+                    factorValueElements[index].textContent = value;
+                    
+                    // 根据值改变颜色
+                    let color = "#00ffff"; // 默认
+                    if (value < 30) color = "#ff6b6b";
+                    else if (value < 60) color = "#feca57";
+                    else if (value < 80) color = "#48dbfb";
+                    else color = "#1dd1a1";
+                    
+                    factorValueElements[index].style.color = color;
+                }
+            }
+            
+            adjustWeight(index) {
+                const currentWeight = this.factors[index].weight;
+                const newWeight = parseFloat(prompt(`调整"${this.factors[index].name}"的权重系数 (当前: ${currentWeight}):`, currentWeight));
+                
+                if (!isNaN(newWeight) && newWeight >= 0.1 && newWeight <= 2.0) {
+                    this.factors[index].weight = newWeight;
+                    this.renderFactors();
+                    this.updateScenarioDescription();
+                } else if (newWeight !== null) {
+                    alert("请输入0.1到2.0之间的有效权重值");
+                }
+            }
+            
+            setupEventListeners() {
+                // 添加因素按钮
+                document.getElementById("add-factor-btn").addEventListener("click", () => {
+                    this.addNewFactor();
+                });
+                
+                // 重置按钮
+                document.getElementById("reset-btn").addEventListener("click", () => {
+                    if (confirm("确定要重置所有因素到默认值吗？")) {
+                        this.resetFactors();
+                    }
+                });
+                
+                // 模拟按钮
+                document.getElementById("simulate-btn").addEventListener("click", () => {
+                    this.runSimulation();
+                });
+                
+                // 导出按钮
+                document.getElementById("export-btn").addEventListener("click", () => {
+                    this.exportResults();
+                });
+                
+                // 预设场景按钮
+                document.querySelectorAll(".preset-btn").forEach(btn => {
+                    btn.addEventListener("click", (e) => {
+                        const preset = e.currentTarget.dataset.preset;
+                        this.loadScenarioPreset(preset);
+                    });
+                });
+                
+                // 时间线滑块
+                document.getElementById("timeline-slider").addEventListener("input", (e) => {
+                    this.timelineYears = parseInt(e.target.value);
+                    document.getElementById("timeline-value").textContent = this.timelineYears;
+                    this.updateTimelineYears();
+                    this.updateScenarioDescription();
+                });
+            }
+            
+            addNewFactor() {
+                const factorName = prompt("请输入新因素名称:", "新影响因素");
+                if (factorName && factorName.trim() !== "") {
+                    const newFactor = {
+                        id: this.factors.length + 1,
+                        name: factorName,
+                        value: 50,
+                        weight: 1.0,
+                        color: this.getRandomColor()
+                    };
+                    
+                    this.factors.push(newFactor);
+                    this.renderFactors();
+                    this.updateScenarioDescription();
+                }
+            }
+            
+            resetFactors() {
+                this.factors = [
+                    { id: 1, name: "技术发展速度", value: 70, weight: 1.2, color: "#1e90ff" },
+                    { id: 2, name: "政策支持力度", value: 60, weight: 1.0, color: "#20b2aa" },
+                    { id: 3, name: "市场需求增长", value: 75, weight: 1.1, color: "#ff7f50" },
+                    { id: 4, name: "资源可获性", value: 65, weight: 0.9, color: "#9370db" },
+                    { id: 5, name: "社会接受度", value: 55, weight: 0.8, color: "#32cd32" }
+                ];
+                
+                this.renderFactors();
+                this.updateScenarioDescription();
+                this.updateChart();
+            }
+            
+            loadScenarioPreset(presetKey) {
+                if (!this.scenarios[presetKey]) return;
+                
+                const scenario = this.scenarios[presetKey];
+                this.currentScenario = presetKey;
+                
+                // 更新因素值
+                scenario.factors.forEach((value, index) => {
+                    if (this.factors[index]) {
+                        this.factors[index].value = value;
+                    }
+                });
+                
+                // 重新渲染因素
+                this.renderFactors();
+                
+                // 更新场景描述
+                this.updateScenarioDescription();
+                
+                // 更新图表
+                this.updateChart();
+            }
+            
+            runSimulation() {
+                // 计算模拟结果
+                const weightedSum = this.factors.reduce((sum, factor) => sum + (factor.value * factor.weight), 0);
+                const totalWeight = this.factors.reduce((sum, factor) => sum + factor.weight, 0);
+                const averageScore = weightedSum / totalWeight;
+                
+                // 根据平均分确定场景类型
+                let scenarioType;
+                if (averageScore >= 80) scenarioType = "optimistic";
+                else if (averageScore >= 60) scenarioType = "balanced";
+                else if (averageScore >= 40) scenarioType = "disruptive";
+                else scenarioType = "pessimistic";
+                
+                // 加载对应场景
+                this.loadScenarioPreset(scenarioType);
+                
+                // 添加动画效果
+                const simulateBtn = document.getElementById("simulate-btn");
+                simulateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 模拟中...';
+                simulateBtn.disabled = true;
+                
+                setTimeout(() => {
+                    simulateBtn.innerHTML = '<i class="fas fa-play-circle"></i> 运行模拟';
+                    simulateBtn.disabled = false;
+                    
+                    // 显示模拟完成消息
+                    this.showNotification(`模拟完成！当前场景: ${this.scenarios[scenarioType].name}`);
+                }, 1000);
+            }
+            
+            updateScenarioDescription() {
+                // 计算场景指标
+                const weightedSum = this.factors.reduce((sum, factor) => sum + (factor.value * factor.weight), 0);
+                const totalWeight = this.factors.reduce((sum, factor) => sum + factor.weight, 0);
+                const averageScore = weightedSum / totalWeight;
+                
+                // 确定场景类型
+                let scenarioType, scenarioName, scenarioDesc, scenarioTags;
+                let probability, impact, adaptability;
+                
+                if (averageScore >= 80) {
+                    scenarioType = "optimistic";
+                } else if (averageScore >= 60) {
+                    scenarioType = "balanced";
+                } else if (averageScore >= 40) {
+                    scenarioType = "disruptive";
+                } else {
+                    scenarioType = "pessimistic";
+                }
+                
+                const scenario = this.scenarios[scenarioType];
+                scenarioName = scenario.name;
+                scenarioDesc = scenario.description;
+                scenarioTags = scenario.tags;
+                probability = scenario.probability;
+                impact = scenario.impact;
+                adaptability = scenario.adaptability;
+                
+                // 根据时间线调整概率
+                const timeFactor = this.timelineYears / 10;
+                probability = Math.min(95, Math.round(probability * timeFactor));
+                
+                // 更新描述
+                const descriptionElement = document.getElementById("scenario-description");
+                descriptionElement.innerHTML = `
+                    <p><strong>${scenarioName}</strong></p>
+                    <p>${scenarioDesc}</p>
+                    <p>基于当前因素设置，未来${this.timelineYears}年内该场景的实现概率为<strong>${probability}%</strong>。主要影响因素包括：${this.factors.map(f => f.name).join("、")}。</p>
+                    <p>模拟时间范围：${new Date().getFullYear()}年 - ${new Date().getFullYear() + this.timelineYears}年</p>
+                `;
+                
+                // 更新统计值
+                document.getElementById("probability-value").textContent = `${probability}%`;
+                document.getElementById("impact-value").textContent = impact.toFixed(1);
+                document.getElementById("adaptability-value").textContent = adaptability.toFixed(1);
+                
+                // 更新标签
+                const tagsContainer = document.getElementById("scenario-tags");
+                tagsContainer.innerHTML = "";
+                scenarioTags.forEach(tag => {
+                    const tagElement = document.createElement("span");
+                    tagElement.className = "tag";
+                    tagElement.textContent = tag;
+                    tagsContainer.appendChild(tagElement);
+                });
+                
+                // 添加时间范围标签
+                const timeTag = document.createElement("span");
+                timeTag.className = "tag";
+                timeTag.textContent = `${this.timelineYears}年模拟`;
+                tagsContainer.appendChild(timeTag);
+                
+                // 更新图表
+                this.updateChart();
+            }
+            
+            updateTimelineYears() {
+                const currentYear = new Date().getFullYear();
+                const midYear = currentYear + Math.floor(this.timelineYears / 2);
+                const endYear = currentYear + this.timelineYears;
+                
+                document.getElementById("year-current").textContent = currentYear;
+                document.getElementById("year-mid").textContent = midYear;
+                document.getElementById("year-end").textContent = endYear;
+            }
+            
+            setupChart() {
+                const ctx = document.getElementById('scenario-chart').getContext('2d');
+                
+                // 准备数据
+                const labels = this.factors.map(factor => factor.name);
+                const data = this.factors.map(factor => factor.value);
+                const colors = this.factors.map(factor => factor.color);
+                
+                // 创建图表
+                this.chart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '因素评分',
+                            data: data,
+                            backgroundColor: 'rgba(30, 144, 255, 0.2)',
+                            borderColor: 'rgba(30, 144, 255, 0.8)',
+                            pointBackgroundColor: colors,
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(30, 144, 255, 0.8)',
+                            borderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                pointLabels: {
+                                    color: '#e0f7fa',
+                                    font: {
+                                        size: 13
+                                    }
+                                },
+                                ticks: {
+                                    display: false,
+                                    maxTicksLimit: 5
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 100
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#e0f7fa',
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(10, 25, 47, 0.9)',
+                                titleColor: '#40e0d0',
+                                bodyColor: '#e0f7fa',
+                                borderColor: '#40e0d0',
+                                borderWidth: 1
+                            }
+                        }
+                    }
+                });
+            }
+            
+            updateChart() {
+                if (!this.chart) return;
+                
+                // 更新标签和数据
+                this.chart.data.labels = this.factors.map(factor => factor.name);
+                this.chart.data.datasets[0].data = this.factors.map(factor => factor.value);
+                this.chart.data.datasets[0].pointBackgroundColor = this.factors.map(factor => factor.color);
+                
+                this.chart.update();
+            }
+            
+            exportResults() {
+                // 收集数据
+                const scenarioData = {
+                    factors: this.factors,
+                    scenario: this.scenarios[this.currentScenario],
+                    timeline: this.timelineYears,
+                    simulationDate: new Date().toISOString(),
+                    metrics: {
+                        probability: document.getElementById("probability-value").textContent,
+                        impact: document.getElementById("impact-value").textContent,
+                        adaptability: document.getElementById("adaptability-value").textContent
+                    }
+                };
+                
+                // 创建数据字符串
+                const dataStr = JSON.stringify(scenarioData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                // 创建下载链接
+                const exportFileDefaultName = `未来场景模拟_${new Date().toISOString().slice(0,10)}.json`;
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                this.showNotification("结果已导出为JSON文件");
+            }
+            
+            getRandomColor() {
+                const colors = ["#FF6B6B", "#4ECDC4", "#FFD166", "#06D6A0", "#118AB2", "#EF476F", "#073B4C", "#7209B7", "#3A86FF"];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            showNotification(message) {
+                // 创建通知元素
+                const notification = document.createElement("div");
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(20, 40, 60, 0.95);
+                    color: #00ffff;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    border-left: 5px solid #40e0d0;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                    z-index: 1000;
+                    font-weight: 500;
+                    animation: slideIn 0.3s ease;
+                `;
+                
+                // 添加CSS动画
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                // 3秒后移除通知
+                setTimeout(() => {
+                    notification.style.animation = "slideOut 0.3s ease";
+                    notification.style.transform = "translateX(100%)";
+                    notification.style.opacity = "0";
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                        document.head.removeChild(style);
+                    }, 300);
+                }, 3000);
+            }
+        }
+        
+        // 初始化模拟工具
+        document.addEventListener("DOMContentLoaded", () => {
+            window.scenarioSimulator = new FutureScenarioSimulator();
+        });
+    </script>
+</body>
+</html>
