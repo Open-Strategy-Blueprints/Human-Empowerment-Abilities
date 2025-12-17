@@ -351,7 +351,7 @@ T = 理解难度 (Time to understand)
    - 适应性：跨媒介迁移能力
 
 #### 验证工具：
-- [可扩展性验证表格](../tables/expansion-verification.md)
+- [可扩展性验证表格](tables/expansion-verification.md)
 - 未来场景模拟工具
 - 组合创新矩阵
 
