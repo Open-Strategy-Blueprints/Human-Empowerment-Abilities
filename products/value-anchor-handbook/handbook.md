@@ -289,8 +289,8 @@ T = 理解难度 (Time to understand)
    - 记忆留存度：短期和长期记忆测试表现
 
 #### 自动化工具：
-- [锚点稳定性计算器](../tools/anchor-calculator.py)
-- [稳定性评估表格](../tables/stability-assessment.md)
+- [锚点稳定性计算器](tools/anchor-calculator.py)
+- [稳定性评估表格](tables/stability-assessment.md)
 
 ### 3.4 步骤3：连接性映射
 
