@@ -265,8 +265,8 @@ T = 理解难度 (Time to understand)
 
 #### 工具支持：
 - [来源扫描表格](../tables/exercise-forms.md#来源扫描表)
-- [时间线分析工具](timeline-analyzer.md)
-- 视觉特征提取工具
+- [时间线分析工具](../tools1/timeline-analyzer.md)
+- [视觉特征提取工具](../tools1/visual-feature-extractor.md)
 
 ### 3.3 步骤2：稳定性评估
 
