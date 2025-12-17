@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组合创新矩阵</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e6f7ff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            background: rgba(15, 25, 45, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(64, 224, 208, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #b3e0ff;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background: rgba(20, 30, 60, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(64, 224, 208, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .control-panel {
+            flex: 1;
+            min-width: 350px;
+        }
+
+        .matrix-panel {
+            flex: 2;
+            min-width: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #6a11cb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #e6f7ff;
+        }
+
+        .panel-title i {
+            color: #2575fc;
+        }
+
+        .matrix-container {
+            flex: 1;
+            min-height: 400px;
+            background: rgba(25, 35, 70, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #innovation-matrix {
+            width: 100%;
+            height: 100%;
+        }
+
+        .quadrant-label {
+            position: absolute;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .quadrant-1 {
+            top: 20px;
+            left: 20px;
+            background: rgba(106, 17, 203, 0.2);
+            color: #c792ea;
+            border: 2px solid #6a11cb;
+        }
+
+        .quadrant-2 {
+            top: 20px;
+            right: 20px;
+            background: rgba(37, 117, 252, 0.2);
+            color: #82aaff;
+            border: 2px solid #2575fc;
+        }
+
+        .quadrant-3 {
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff8a8a;
+            border: 2px solid #ff6b6b;
+        }
+
+        .quadrant-4 {
+            bottom: 20px;
+            right: 20px;
+            background: rgba(32, 191, 107, 0.2);
+            color: #7afac2;
+            border: 2px solid #20bf6b;
+        }
+
+        .innovation-list {
+            margin-top: 25px;
+        }
+
+        .innovation-item {
+            background: rgba(30, 40, 80, 0.6);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 5px solid #6a11cb;
+        }
+
+        .innovation-item:hover {
+            background: rgba(40, 50, 100, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #bbdefb;
+        }
+
+        .item-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: #90caf9;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-edit {
+            background: rgba(37, 117, 252, 0.3);
+        }
+
+        .btn-delete {
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #bbdefb;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 40, 80, 0.6);
+            color: white;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #6a11cb;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #20bf6b, #01baef);
+        }
+
+        .quadrant-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .quadrant-card {
+            background: rgba(30, 40, 80, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            border-top: 5px solid;
+        }
+
+        .quadrant-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quadrant-card p {
+            color: #c5d5f0;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .quadrant-card ul {
+            padding-left: 20px;
+            color: #a8c2f0;
+        }
+
+        .quadrant-card li {
+            margin-bottom: 8px;
+        }
+
+        .q1-card {
+            border-color: #6a11cb;
+        }
+
+        .q2-card {
+            border-color: #2575fc;
+        }
+
+        .q3-card {
+            border-color: #ff6b6b;
+        }
+
+        .q4-card {
+            border-color: #20bf6b;
+        }
+
+        .matrix-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .legend-text {
+            font-size: 0.9rem;
+            color: #bbdefb;
+        }
+
+        .priority-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .priority-high {
+            background: rgba(255, 107, 107, 0.3);
+            color: #ff8a8a;
+        }
+
+        .priority-medium {
+            background: rgba(255, 206, 86, 0.3);
+            color: #ffd166;
+        }
+
+        .priority-low {
+            background: rgba(32, 191, 107, 0.3);
+            color: #7afac2;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #1a1a2e, #6a11cb, #2575fc);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #6a11cb;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(106, 17, 203, 0.7);
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #90caf9;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #6a11cb;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .control-panel, .matrix-panel {
+                min-width: 100%;
+            }
+            
+            .quadrant-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-th-large"></i> 组合创新矩阵</h1>
+        <p>分析创新组合的潜力和优先级，基于影响力和可行性评估战略定位，优化资源分配与创新策略</p>
+    </div>
+
+    <div class="container">
+        <div class="panel control-panel">
+            <h2 class="panel-title"><i class="fas fa-cogs"></i> 创新项目管理</h2>
+            
+            <div class="form-group">
+                <label for="innovation-name"><i class="fas fa-lightbulb"></i> 创新项目名称</label>
+                <input type="text" id="innovation-name" placeholder="输入创新项目名称">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="impact-score"><i class="fas fa-bullseye"></i> 影响力评分</label>
+                    <div class="slider-container">
+                        <input type="range" id="impact-slider" min="1" max="10" value="5">
+                        <span class="slider-value" id="impact-value">5</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feasibility-score"><i class="fas fa-cogs"></i> 可行性评分</label>
+                    <div class="slider-container">
+                        <input type="range" id="feasibility-slider" min="1" max="10" value="5">
+                        <span class="slider-value" id="feasibility-value">5</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="innovation-category"><i class="fas fa-tag"></i> 创新类型</label>
+                <select id="innovation-category">
+                    <option value="product">产品创新</option>
+                    <option value="process">流程创新</option>
+                    <option value="business-model">商业模式创新</option>
+                    <option value="technology">技术创新</option>
+                    <option value="service">服务创新</option>
+                    <option value="marketing">营销创新</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="innovation-description"><i class="fas fa-align-left"></i> 项目描述</label>
+                <textarea id="innovation-description" rows="3" placeholder="简要描述创新项目..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="resource-required"><i class="fas fa-coins"></i> 所需资源</label>
+                <select id="resource-required">
+                    <option value="low">低资源需求</option>
+                    <option value="medium" selected>中等资源需求</option>
+                    <option value="high">高资源需求</option>
+                </select>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn" id="add-innovation-btn">
+                    <i class="fas fa-plus-circle"></i> 添加创新项目
+                </button>
+                <button class="btn btn-secondary" id="clear-all-btn">
+                    <i class="fas fa-trash-alt"></i> 清空所有项目
+                </button>
+            </div>
+            
+            <div class="innovation-list" id="innovation-list">
+                <!-- 创新项目将通过JavaScript动态生成 -->
+                <div class="empty-state" id="empty-state">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>暂无创新项目</h3>
+                    <p>添加您的第一个创新项目开始分析</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel matrix-panel">
+            <h2 class="panel-title"><i class="fas fa-chart-line"></i> 创新矩阵分析</h2>
+            
+            <div class="matrix-container">
+                <div class="quadrant-label quadrant-1">明星项目<br>高影响力 · 高可行性</div>
+                <div class="quadrant-label quadrant-2">战略项目<br>高影响力 · 低可行性</div>
+                <div class="quadrant-label quadrant-3">维持项目<br>低影响力 · 高可行性</div>
+                <div class="quadrant-label quadrant-4">观察项目<br>低影响力 · 低可行性</div>
+                
+                <canvas id="innovation-matrix"></canvas>
+            </div>
+            
+            <div class="matrix-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #6a11cb;"></div>
+                    <span class="legend-text">明星项目</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2575fc;"></div>
+                    <span class="legend-text">战略项目</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #ff6b6b;"></div>
+                    <span class="legend-text">维持项目</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #20bf6b;"></div>
+                    <span class="legend-text">观察项目</span>
+                </div>
+            </div>
+            
+            <div class="quadrant-details">
+                <div class="quadrant-card q1-card">
+                    <h4><i class="fas fa-star"></i> 明星项目</h4>
+                    <p>高影响力且高可行性的创新机会，应优先投入资源并快速推进。</p>
+                    <ul>
+                        <li>立即启动并分配充足资源</li>
+                        <li>设立明确的时间表和目标</li>
+                        <li>定期评估进展并调整策略</li>
+                    </ul>
+                </div>
+                
+                <div class="quadrant-card q2-card">
+                    <h4><i class="fas fa-chess-queen"></i> 战略项目</h4>
+                    <p>高影响力但可行性较低的创新，需长期投入和战略规划。</p>
+                    <ul>
+                        <li>制定长期研发计划</li>
+                        <li>分阶段投入资源</li>
+                        <li>探索合作伙伴关系降低风险</li>
+                    </ul>
+                </div>
+                
+                <div class="quadrant-card q3-card">
+                    <h4><i class="fas fa-cog"></i> 维持项目</h4>
+                    <p>可行性高但影响力有限的改进型创新，适合维持现状。</p>
+                    <ul>
+                        <li>分配有限资源进行优化</li>
+                        <li>关注效率和成本控制</li>
+                        <li>可考虑外包或简化实施</li>
+                    </ul>
+                </div>
+                
+                <div class="quadrant-card q4-card">
+                    <h4><i class="fas fa-binoculars"></i> 观察项目</h4>
+                    <p>影响力和可行性都较低，保持观察但暂不投入大量资源。</p>
+                    <ul>
+                        <li>监控相关趋势和变化</li>
+                        <li>小规模实验验证假设</li>
+                        <li>定期重新评估项目潜力</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="btn-group" style="margin-top: 25px;">
+                <button class="btn btn-success" id="export-btn">
+                    <i class="fas fa-download"></i> 导出矩阵分析
+                </button>
+                <button class="btn btn-secondary" id="generate-report-btn">
+                    <i class="fas fa-file-alt"></i> 生成策略报告
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 组合创新矩阵主类
+        class InnovationMatrix {
+            constructor() {
+                this.innovations = [
+                    { id: 1, name: "AI驱动的客户服务", impact: 8, feasibility: 7, category: "technology", description: "使用AI技术提升客户服务体验和效率", resource: "high" },
+                    { id: 2, name: "可持续包装设计", impact: 6, feasibility: 9, category: "product", description: "环保包装材料与设计", resource: "medium" },
+                    { id: 3, name: "订阅制商业模式", impact: 9, feasibility: 5, category: "business-model", description: "从一次性销售转向订阅服务", resource: "high" },
+                    { id: 4, name: "自动化生产流程", impact: 7, feasibility: 8, category: "process", description: "引入自动化设备提升生产效率", resource: "medium" },
+                    { id: 5, name: "社交媒体营销创新", impact: 5, feasibility: 9, category: "marketing", description: "利用新社交媒体平台进行营销", resource: "low" }
+                ];
+                
+                this.nextId = 6;
+                this.chart = null;
+                this.selectedInnovation = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.renderInnovationList();
+                this.renderMatrix();
+                this.updateSliderValues();
+            }
+            
+            setupEventListeners() {
+                // 影响力滑块
+                document.getElementById("impact-slider").addEventListener("input", (e) => {
+                    document.getElementById("impact-value").textContent = e.target.value;
+                });
+                
+                // 可行性滑块
+                document.getElementById("feasibility-slider").addEventListener("input", (e) => {
+                    document.getElementById("feasibility-value").textContent = e.target.value;
+                });
+                
+                // 添加创新项目按钮
+                document.getElementById("add-innovation-btn").addEventListener("click", () => {
+                    this.addInnovation();
+                });
+                
+                // 清空所有项目按钮
+                document.getElementById("clear-all-btn").addEventListener("click", () => {
+                    if (confirm("确定要清空所有创新项目吗？此操作不可撤销。")) {
+                        this.clearAllInnovations();
+                    }
+                });
+                
+                // 导出按钮
+                document.getElementById("export-btn").addEventListener("click", () => {
+                    this.exportMatrix();
+                });
+                
+                // 生成报告按钮
+                document.getElementById("generate-report-btn").addEventListener("click", () => {
+                    this.generateReport();
+                });
+                
+                // 按Enter键添加项目
+                document.getElementById("innovation-name").addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") {
+                        this.addInnovation();
+                    }
+                });
+            }
+            
+            updateSliderValues() {
+                document.getElementById("impact-value").textContent = document.getElementById("impact-slider").value;
+                document.getElementById("feasibility-value").textContent = document.getElementById("feasibility-slider").value;
+            }
+            
+            addInnovation() {
+                const name = document.getElementById("innovation-name").value.trim();
+                const impact = parseInt(document.getElementById("impact-slider").value);
+                const feasibility = parseInt(document.getElementById("feasibility-slider").value);
+                const category = document.getElementById("innovation-category").value;
+                const description = document.getElementById("innovation-description").value.trim();
+                const resource = document.getElementById("resource-required").value;
+                
+                if (!name) {
+                    this.showNotification("请输入创新项目名称", "error");
+                    return;
+                }
+                
+                const innovation = {
+                    id: this.nextId++,
+                    name,
+                    impact,
+                    feasibility,
+                    category,
+                    description: description || "暂无描述",
+                    resource
+                };
+                
+                this.innovations.push(innovation);
+                
+                // 重置表单
+                document.getElementById("innovation-name").value = "";
+                document.getElementById("impact-slider").value = 5;
+                document.getElementById("feasibility-slider").value = 5;
+                document.getElementById("innovation-description").value = "";
+                document.getElementById("resource-required").value = "medium";
+                
+                this.updateSliderValues();
+                this.renderInnovationList();
+                this.renderMatrix();
+                
+                this.showNotification(`已添加创新项目: ${name}`, "success");
+            }
+            
+            editInnovation(id) {
+                const innovation = this.innovations.find(item => item.id === id);
+                if (!innovation) return;
+                
+                // 填充表单
+                document.getElementById("innovation-name").value = innovation.name;
+                document.getElementById("impact-slider").value = innovation.impact;
+                document.getElementById("feasibility-slider").value = innovation.feasibility;
+                document.getElementById("innovation-category").value = innovation.category;
+                document.getElementById("innovation-description").value = innovation.description;
+                document.getElementById("resource-required").value = innovation.resource;
+                
+                this.updateSliderValues();
+                this.selectedInnovation = innovation;
+                
+                // 更改按钮文本
+                const addButton = document.getElementById("add-innovation-btn");
+                addButton.innerHTML = '<i class="fas fa-save"></i> 保存修改';
+                addButton.onclick = () => this.saveInnovationEdit(id);
+                
+                this.showNotification(`正在编辑: ${innovation.name}`, "info");
+            }
+            
+            saveInnovationEdit(id) {
+                const innovationIndex = this.innovations.findIndex(item => item.id === id);
+                if (innovationIndex === -1) return;
+                
+                this.innovations[innovationIndex] = {
+                    id,
+                    name: document.getElementById("innovation-name").value.trim(),
+                    impact: parseInt(document.getElementById("impact-slider").value),
+                    feasibility: parseInt(document.getElementById("feasibility-slider").value),
+                    category: document.getElementById("innovation-category").value,
+                    description: document.getElementById("innovation-description").value.trim(),
+                    resource: document.getElementById("resource-required").value
+                };
+                
+                // 重置表单
+                document.getElementById("innovation-name").value = "";
+                document.getElementById("impact-slider").value = 5;
+                document.getElementById("feasibility-slider").value = 5;
+                document.getElementById("innovation-description").value = "";
+                document.getElementById("resource-required").value = "medium";
+                
+                this.updateSliderValues();
+                
+                // 恢复按钮
+                const addButton = document.getElementById("add-innovation-btn");
+                addButton.innerHTML = '<i class="fas fa-plus-circle"></i> 添加创新项目';
+                addButton.onclick = () => this.addInnovation();
+                
+                this.selectedInnovation = null;
+                this.renderInnovationList();
+                this.renderMatrix();
+                
+                this.showNotification("项目已更新", "success");
+            }
+            
+            deleteInnovation(id) {
+                if (!confirm("确定要删除此创新项目吗？")) return;
+                
+                this.innovations = this.innovations.filter(item => item.id !== id);
+                this.renderInnovationList();
+                this.renderMatrix();
+                
+                this.showNotification("项目已删除", "success");
+            }
+            
+            clearAllInnovations() {
+                this.innovations = [];
+                this.renderInnovationList();
+                this.renderMatrix();
+                
+                this.showNotification("所有项目已清空", "success");
+            }
+            
+            renderInnovationList() {
+                const listContainer = document.getElementById("innovation-list");
+                const emptyState = document.getElementById("empty-state");
+                
+                if (this.innovations.length === 0) {
+                    emptyState.style.display = "block";
+                    listContainer.innerHTML = "";
+                    listContainer.appendChild(emptyState);
+                    return;
+                }
+                
+                emptyState.style.display = "none";
+                
+                let listHTML = "";
+                
+                this.innovations.forEach(innovation => {
+                    const quadrant = this.getQuadrant(innovation.impact, innovation.feasibility);
+                    const quadrantClass = this.getQuadrantClass(quadrant);
+                    const quadrantName = this.getQuadrantName(quadrant);
+                    const priority = this.getPriority(quadrant);
+                    
+                    listHTML += `
+                        <div class="innovation-item">
+                            <div class="item-info">
+                                <h4>${innovation.name} <span class="priority-badge ${priority.class}">${priority.text}</span></h4>
+                                <div class="item-meta">
+                                    <span><i class="fas fa-bullseye"></i> 影响力: ${innovation.impact}/10</span>
+                                    <span><i class="fas fa-cogs"></i> 可行性: ${innovation.feasibility}/10</span>
+                                    <span><i class="fas fa-tag"></i> ${this.getCategoryName(innovation.category)}</span>
+                                    <span><i class="fas fa-th-large"></i> ${quadrantName}</span>
+                                </div>
+                                <p style="color: #90caf9; margin-top: 8px; font-size: 0.9rem;">${innovation.description}</p>
+                            </div>
+                            <div class="item-actions">
+                                <button class="action-btn btn-edit" onclick="innovationMatrix.editInnovation(${innovation.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn btn-delete" onclick="innovationMatrix.deleteInnovation(${innovation.id})">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                listContainer.innerHTML = listHTML;
+            }
+            
+            renderMatrix() {
+                const ctx = document.getElementById('innovation-matrix').getContext('2d');
+                
+                // 如果已存在图表，销毁它
+                if (this.chart) {
+                    this.chart.destroy();
+                }
+                
+                // 准备数据
+                const datasets = [];
+                
+                // 按象限分组数据点
+                const quadrants = {
+                    q1: { label: '明星项目', data: [], color: '#6a11cb' },
+                    q2: { label: '战略项目', data: [], color: '#2575fc' },
+                    q3: { label: '维持项目', data: [], color: '#ff6b6b' },
+                    q4: { label: '观察项目', data: [], color: '#20bf6b' }
+                };
+                
+                this.innovations.forEach(innovation => {
+                    const quadrant = this.getQuadrant(innovation.impact, innovation.feasibility);
+                    const quadrantKey = `q${quadrant}`;
+                    
+                    quadrants[quadrantKey].data.push({
+                        x: innovation.feasibility,
+                        y: innovation.impact,
+                        name: innovation.name,
+                        category: innovation.category,
+                        id: innovation.id
+                    });
+                });
+                
+                // 为每个象限创建数据集
+                Object.values(quadrants).forEach(quadrant => {
+                    if (quadrant.data.length > 0) {
+                        datasets.push({
+                            label: quadrant.label,
+                            data: quadrant.data,
+                            backgroundColor: quadrant.color + '80', // 添加透明度
+                            borderColor: quadrant.color,
+                            borderWidth: 2,
+                            pointRadius: 8,
+                            pointHoverRadius: 12
+                        });
+                    }
+                });
+                
+                // 创建散点图
+                this.chart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                min: 0,
+                                max: 10,
+                                title: {
+                                    display: true,
+                                    text: '可行性',
+                                    color: '#bbdefb',
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#90caf9',
+                                    stepSize: 1
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                max: 10,
+                                title: {
+                                    display: true,
+                                    text: '影响力',
+                                    color: '#bbdefb',
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#90caf9',
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false // 我们已经在顶部有了图例
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const point = context.raw;
+                                        return [
+                                            `项目: ${point.name}`,
+                                            `影响力: ${point.y}/10`,
+                                            `可行性: ${point.x}/10`
+                                        ];
+                                    }
+                                },
+                                backgroundColor: 'rgba(20, 30, 60, 0.9)',
+                                titleColor: '#6a11cb',
+                                bodyColor: '#e6f7ff',
+                                borderColor: '#6a11cb',
+                                borderWidth: 1
+                            }
+                        },
+                        onClick: (evt, elements) => {
+                            if (elements.length > 0) {
+                                const elementIndex = elements[0].index;
+                                const datasetIndex = elements[0].datasetIndex;
+                                const point = this.chart.data.datasets[datasetIndex].data[elementIndex];
+                                this.editInnovation(point.id);
+                            }
+                        }
+                    }
+                });
+                
+                // 添加矩阵网格线（中轴线）
+                this.drawMatrixGrid(ctx);
+            }
+            
+            drawMatrixGrid(ctx) {
+                const chartArea = this.chart.chartArea;
+                if (!chartArea) return;
+                
+                // 保存当前状态
+                ctx.save();
+                
+                // 绘制垂直中线
+                ctx.beginPath();
+                ctx.moveTo(chartArea.left + (chartArea.right - chartArea.left) / 2, chartArea.top);
+                ctx.lineTo(chartArea.left + (chartArea.right - chartArea.left) / 2, chartArea.bottom);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 绘制水平中线
+                ctx.beginPath();
+                ctx.moveTo(chartArea.left, chartArea.top + (chartArea.bottom - chartArea.top) / 2);
+                ctx.lineTo(chartArea.right, chartArea.top + (chartArea.bottom - chartArea.top) / 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 恢复状态
+                ctx.restore();
+            }
+            
+            getQuadrant(impact, feasibility) {
+                if (impact >= 5 && feasibility >= 5) return 1; // 明星项目
+                if (impact >= 5 && feasibility < 5) return 2; // 战略项目
+                if (impact < 5 && feasibility >= 5) return 3; // 维持项目
+                return 4; // 观察项目
+            }
+            
+            getQuadrantClass(quadrant) {
+                switch(quadrant) {
+                    case 1: return "q1-card";
+                    case 2: return "q2-card";
+                    case 3: return "q3-card";
+                    case 4: return "q4-card";
+                    default: return "";
+                }
+            }
+            
+            getQuadrantName(quadrant) {
+                switch(quadrant) {
+                    case 1: return "明星项目";
+                    case 2: return "战略项目";
+                    case 3: return "维持项目";
+                    case 4: return "观察项目";
+                    default: return "";
+                }
+            }
+            
+            getCategoryName(category) {
+                const categories = {
+                    "product": "产品创新",
+                    "process": "流程创新",
+                    "business-model": "商业模式创新",
+                    "technology": "技术创新",
+                    "service": "服务创新",
+                    "marketing": "营销创新"
+                };
+                
+                return categories[category] || category;
+            }
+            
+            getPriority(quadrant) {
+                switch(quadrant) {
+                    case 1: return { text: "高优先级", class: "priority-high" };
+                    case 2: return { text: "中优先级", class: "priority-medium" };
+                    case 3: return { text: "低优先级", class: "priority-low" };
+                    case 4: return { text: "观察", class: "priority-low" };
+                    default: return { text: "", class: "" };
+                }
+            }
+            
+            exportMatrix() {
+                // 创建数据对象
+                const exportData = {
+                    innovations: this.innovations,
+                    summary: {
+                        total: this.innovations.length,
+                        byQuadrant: {
+                            q1: this.innovations.filter(i => this.getQuadrant(i.impact, i.feasibility) === 1).length,
+                            q2: this.innovations.filter(i => this.getQuadrant(i.impact, i.feasibility) === 2).length,
+                            q3: this.innovations.filter(i => this.getQuadrant(i.impact, i.feasibility) === 3).length,
+                            q4: this.innovations.filter(i => this.getQuadrant(i.impact, i.feasibility) === 4).length
+                        },
+                        byCategory: {}
+                    },
+                    exportDate: new Date().toISOString()
+                };
+                
+                // 按类别统计
+                this.innovations.forEach(innovation => {
+                    const categoryName = this.getCategoryName(innovation.category);
+                    if (!exportData.summary.byCategory[categoryName]) {
+                        exportData.summary.byCategory[categoryName] = 0;
+                    }
+                    exportData.summary.byCategory[categoryName]++;
+                });
+                
+                // 转换为JSON字符串
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                // 创建下载链接
+                const exportFileDefaultName = `创新矩阵分析_${new Date().toISOString().slice(0,10)}.json`;
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                this.showNotification("分析数据已导出为JSON文件", "success");
+            }
+            
+            generateReport() {
+                // 计算统计信息
+                const total = this.innovations.length;
+                const q1Count = this.innovations.filter(i => this.getQuadrant(i.impact, i.feasibility) === 1).length;
+                const q2Count = this.innovations.filter(i => this.getQuadrant(i.impact, i.feasibility) === 2).length;
+                const q3Count = this.innovations.filter(i => this.getQuadrant(i.impact, i.feasibility) === 3).length;
+                const q4Count = this.innovations.filter(i => this.getQuadrant(i.impact, i.feasibility) === 4).length;
+                
+                // 生成报告文本
+                let reportText = `组合创新矩阵分析报告\n`;
+                reportText += `生成时间: ${new Date().toLocaleString()}\n\n`;
+                reportText += `总项目数: ${total}\n`;
+                reportText += `明星项目 (高影响力/高可行性): ${q1Count}个\n`;
+                reportText += `战略项目 (高影响力/低可行性): ${q2Count}个\n`;
+                reportText += `维持项目 (低影响力/高可行性): ${q3Count}个\n`;
+                reportText += `观察项目 (低影响力/低可行性): ${q4Count}个\n\n`;
+                
+                reportText += `策略建议:\n`;
+                
+                if (q1Count > 0) {
+                    reportText += `1. 明星项目 (${q1Count}个): 立即启动并分配充足资源，快速推进以获取最大回报。\n`;
+                }
+                
+                if (q2Count > 0) {
+                    reportText += `2. 战略项目 (${q2Count}个): 制定长期研发计划，分阶段投入资源，探索合作伙伴关系。\n`;
+                }
+                
+                if (q3Count > 0) {
+                    reportText += `3. 维持项目 (${q3Count}个): 分配有限资源进行优化，关注效率和成本控制。\n`;
+                }
+                
+                if (q4Count > 0) {
+                    reportText += `4. 观察项目 (${q4Count}个): 保持观察但暂不投入大量资源，小规模实验验证假设。\n`;
+                }
+                
+                reportText += `\n详细项目列表:\n`;
+                
+                this.innovations.forEach((innovation, index) => {
+                    const quadrant = this.getQuadrant(innovation.impact, innovation.feasibility);
+                    const quadrantName = this.getQuadrantName(quadrant);
+                    
+                    reportText += `${index + 1}. ${innovation.name} (${quadrantName})\n`;
+                    reportText += `   影响力: ${innovation.impact}/10, 可行性: ${innovation.feasibility}/10\n`;
+                    reportText += `   类型: ${this.getCategoryName(innovation.category)}\n`;
+                    reportText += `   描述: ${innovation.description}\n\n`;
+                });
+                
+                // 创建报告窗口
+                const reportWindow = window.open();
+                reportWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>创新矩阵分析报告</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 30px; background: #f5f5f5; color: #333; }
+                            h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+                            pre { background: white; padding: 20px; border-radius: 10px; border: 1px solid #ddd; white-space: pre-wrap; }
+                            .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0; }
+                            .stat-box { background: white; padding: 15px; border-radius: 8px; text-align: center; border-top: 5px solid; }
+                            .q1 { border-color: #6a11cb; }
+                            .q2 { border-color: #2575fc; }
+                            .q3 { border-color: #ff6b6b; }
+                            .q4 { border-color: #20bf6b; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>组合创新矩阵分析报告</h1>
+                        <div class="stats">
+                            <div class="stat-box q1">
+                                <h3>明星项目</h3>
+                                <p style="font-size: 2rem; font-weight: bold;">${q1Count}</p>
+                            </div>
+                            <div class="stat-box q2">
+                                <h3>战略项目</h3>
+                                <p style="font-size: 2rem; font-weight: bold;">${q2Count}</p>
+                            </div>
+                            <div class="stat-box q3">
+                                <h3>维持项目</h3>
+                                <p style="font-size: 2rem; font-weight: bold;">${q3Count}</p>
+                            </div>
+                            <div class="stat-box q4">
+                                <h3>观察项目</h3>
+                                <p style="font-size: 2rem; font-weight: bold;">${q4Count}</p>
+                            </div>
+                        </div>
+                        <pre>${reportText}</pre>
+                        <button onclick="window.print()" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">打印报告</button>
+                    </body>
+                    </html>
+                `);
+                reportWindow.document.close();
+            }
+            
+            showNotification(message, type = "info") {
+                // 创建通知元素
+                const notification = document.createElement("div");
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === "error" ? "rgba(231, 76, 60, 0.95)" : 
+                                 type === "success" ? "rgba(46, 204, 113, 0.95)" : 
+                                 "rgba(52, 152, 219, 0.95)"};
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                    z-index: 1000;
+                    font-weight: 500;
+                    animation: slideIn 0.3s ease;
+                    max-width: 400px;
+                `;
+                
+                // 添加CSS动画
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                // 3秒后移除通知
+                setTimeout(() => {
+                    notification.style.animation = "slideOut 0.3s ease";
+                    notification.style.transform = "translateX(100%)";
+                    notification.style.opacity = "0";
+                    
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            document.body.removeChild(notification);
+                        }
+                        document.head.removeChild(style);
+                    }, 300);
+                }, 3000);
+            }
+        }
+        
+        // 初始化创新矩阵
+        document.addEventListener("DOMContentLoaded", () => {
+            window.innovationMatrix = new InnovationMatrix();
+        });
+    </script>
+</body>
+</html>
