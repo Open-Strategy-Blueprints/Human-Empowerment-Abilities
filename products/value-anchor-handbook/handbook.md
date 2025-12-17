@@ -264,7 +264,7 @@ T = 理解难度 (Time to understand)
 3. **初步筛选**：使用三问法快速过滤
 
 #### 工具支持：
-- [来源扫描表格](../tables/exercise-forms.md#来源扫描表)
+- [来源扫描表格](tables/exercise-forms.md#来源扫描练习表)
 - [时间线分析工具](tools1/timeline-analyzer.md)
 - [视觉特征提取工具](tools1/visual-feature-extractor.md)
 
