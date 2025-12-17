@@ -353,7 +353,7 @@ T = 理解难度 (Time to understand)
 #### 验证工具：
 - [可扩展性验证表格](tables/expansion-verification.md)
 - [未来场景模拟工具](https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/products/value-anchor-handbook/tools1/future-scenario-simulator.html)
-- 组合创新矩阵
+- [组合创新矩阵](https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/products/value-anchor-handbook/tools1/innovation-matrix-tool.html)
 
 ### 3.6 专项识别技术
 
