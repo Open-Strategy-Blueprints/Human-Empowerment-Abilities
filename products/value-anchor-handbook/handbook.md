@@ -321,7 +321,7 @@ T = 理解难度 (Time to understand)
 #### 可视化工具：
 - [连接性映射表格](tables/connectivity-mapping.md)
 - [思维导图软件](tools1/mind-map-tool.html)
-- 网络可视化工具
+- [网络可视化工具](tools1/network-visualization-tool.html)
 
 ### 3.5 步骤4：可扩展性验证
 
