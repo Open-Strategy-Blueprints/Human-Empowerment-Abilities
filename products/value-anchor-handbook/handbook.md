@@ -319,7 +319,7 @@ T = 理解难度 (Time to understand)
 - 密度 < 1.0：连接性较弱
 
 #### 可视化工具：
-- [连接性映射表格](../tables/connectivity-mapping.md)
+- [连接性映射表格](tables/connectivity-mapping.md)
 - 思维导图软件
 - 网络可视化工具
 
