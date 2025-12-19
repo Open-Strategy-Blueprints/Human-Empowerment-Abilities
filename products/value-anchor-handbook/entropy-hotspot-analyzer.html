@@ -45,6 +45,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 25px;
             margin-bottom: 30px;
+            align-items: start; /* 顶部对齐，防止拉伸 */
         }
         
         @media (max-width: 1024px) {
@@ -59,6 +60,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             padding: 25px;
             overflow: hidden;
+            min-height: 550px; /* 添加最小高度保持布局稳定 */
         }
         
         .panel-title {
@@ -399,10 +401,12 @@
             display: none;
         }
         
+        /* 关键修复：选项卡容器样式 */
         .tabs {
-            display: flex;
+            display: inline-flex; /* 改为行内弹性盒，宽度由内容决定 */
             border-bottom: 1px solid #eaeaea;
             margin-bottom: 20px;
+            width: max-content; /* 宽度根据内容自适应 */
         }
         
         .tab {
@@ -411,6 +415,7 @@
             border-bottom: 3px solid transparent;
             font-weight: 600;
             color: #7f8c8d;
+            white-space: nowrap; /* 防止文字换行 */
         }
         
         .tab.active {
@@ -424,6 +429,21 @@
         
         .tab-content.active {
             display: block;
+        }
+        
+        /* 上传预览区域固定高度 */
+        #imageInfo {
+            display: none;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            height: 90px; /* 固定高度，避免布局跳动 */
+        }
+        
+        #imageInfo > div {
+            height: 60px; /* 固定内容高度 */
+            align-items: center;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -690,10 +710,33 @@
         const hotspotsContainer = document.getElementById('hotspotsContainer');
         const hotspotsList = document.getElementById('hotspotsList');
         
+        // 修复布局函数 - 解决选项卡空白问题
+        function fixTabLayout() {
+            // 获取所有选项卡容器
+            const tabs = document.querySelectorAll('.tabs');
+            
+            tabs.forEach(tab => {
+                // 强制浏览器重新计算布局
+                void tab.offsetWidth;
+                
+                // 临时切换display属性以触发重排
+                const originalDisplay = tab.style.display || 'inline-flex';
+                tab.style.display = 'none';
+                
+                // 微延迟后恢复，确保重排完成
+                setTimeout(() => {
+                    tab.style.display = originalDisplay;
+                    
+                    // 再次强制重排确保布局正确
+                    void tab.offsetWidth;
+                }, 0);
+            });
+        }
+        
         // 标签切换
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
+            tab.addEventListener('click', function() {
                 const tabId = tab.getAttribute('data-tab');
                 
                 // 更新标签状态
@@ -705,6 +748,9 @@
                     content.classList.remove('active');
                 });
                 document.getElementById(tabId + 'Tab').classList.add('active');
+                
+                // 修复布局
+                setTimeout(fixTabLayout, 10);
             });
         });
         
@@ -795,6 +841,9 @@
                     
                     // 绘制原始图像到画布
                     drawOriginalImage();
+                    
+                    // 修复选项卡布局
+                    setTimeout(fixTabLayout, 50);
                 };
                 img.src = e.target.result;
             };
@@ -1363,6 +1412,9 @@
             originalImage = null;
             resetAnalysis();
             hideError();
+            
+            // 修复布局
+            setTimeout(fixTabLayout, 50);
         }
         
         // 显示错误信息
@@ -1390,6 +1442,9 @@
             percentileValue.textContent = percentileSlider.value;
             opacityValue.textContent = opacitySlider.value;
             binsValue.textContent = binsSlider.value;
+            
+            // 初始修复布局
+            setTimeout(fixTabLayout, 100);
             
             // 显示使用说明
             console.log('信息熵热点分析工具已加载。');
