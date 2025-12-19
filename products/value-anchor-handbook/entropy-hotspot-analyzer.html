@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>价值锚点识别 - 信息熵热点分析工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1e5eb;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.4rem;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            font-weight: normal;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .panel {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            overflow: hidden;
+        }
+        
+        .panel-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            align-items: center;
+        }
+        
+        .panel-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .upload-area {
+            border: 3px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .upload-area:hover {
+            border-color: #3498db;
+            background-color: #f0f7ff;
+        }
+        
+        .upload-area.drag-over {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .upload-note {
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .button:hover {
+            background-color: #2980b9;
+        }
+        
+        .button i {
+            margin-right: 8px;
+        }
+        
+        .button.secondary {
+            background-color: #95a5a6;
+        }
+        
+        .button.secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .button.success {
+            background-color: #2ecc71;
+        }
+        
+        .button.success:hover {
+            background-color: #27ae60;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+        }
+        
+        .range-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: 600;
+            color: #3498db;
+            min-width: 40px;
+        }
+        
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        canvas {
+            display: block;
+            max-width: 100%;
+            background-color: #f8f9fa;
+        }
+        
+        .canvas-label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+        
+        .results-container {
+            margin-top: 25px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .result-card.highlight {
+            border-left-color: #e74c3c;
+            background-color: #fff5f5;
+        }
+        
+        .result-title {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .result-unit {
+            font-size: 0.9rem;
+            color: #95a5a6;
+            margin-left: 3px;
+        }
+        
+        .hotspots-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .hotspot-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eaeaea;
+            font-size: 0.9rem;
+        }
+        
+        .hotspot-item:last-child {
+            border-bottom: none;
+        }
+        
+        .hotspot-coords {
+            color: #7f8c8d;
+        }
+        
+        .hotspot-value {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .instructions h3 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        
+        .color-legend {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eaeaea;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+        
+        .legend-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5eb;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+        
+        .error {
+            background-color: #ffeaea;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eaeaea;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-vector-square"></i> 图像信息熵热点分析工具</h1>
+        <p class="subtitle">价值锚点识别手册 · 自动化工具支持 · 识别图像信息密集区</p>
+    </header>
+    
+    <main class="container">
+        <div class="panel">
+            <div class="panel-title">
+                <i class="fas fa-upload"></i> 图像上传与参数设置
+            </div>
+            
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">点击或拖拽图像文件到此区域</div>
+                <div class="upload-note">支持 JPG, PNG, BMP 格式，最大尺寸 10MB</div>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+            
+            <div id="imageInfo" style="display: none; margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 60px; height: 60px; overflow: hidden; border-radius: 6px; margin-right: 15px;">
+                        <img id="previewImage" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: #2c3e50;" id="fileName"></div>
+                        <div style="color: #7f8c8d; font-size: 0.9rem;" id="fileSize"></div>
+                        <div style="color: #7f8c8d; font-size: 0.9rem;" id="imageDimensions"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="settings">分析设置</div>
+                <div class="tab" data-tab="advanced">高级参数</div>
+            </div>
+            
+            <div class="tab-content active" id="settingsTab">
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="windowSize">分析窗口大小 <span class="range-value" id="windowSizeValue">15</span></label>
+                        <input type="range" id="windowSize" min="5" max="51" step="2" value="15">
+                        <div style="font-size: 0.85rem; color: #95a5a6; margin-top: 5px;">控制局部熵计算的区域大小，值越大分析越平滑</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="percentile">热点阈值 <span class="range-value" id="percentileValue">95</span>%</label>
+                        <input type="range" id="percentile" min="80" max="99" step="1" value="95">
+                        <div style="font-size: 0.85rem; color: #95a5a6; margin-top: 5px;">值越高，识别的热点区域越少、越显著</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="button" id="analyzeBtn">
+                        <i class="fas fa-play-circle"></i> 开始分析
+                    </button>
+                    <button class="button secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i> 重置
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="advancedTab">
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="colormap">热力图颜色映射</label>
+                        <select id="colormap" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 1rem;">
+                            <option value="jet">Jet (默认)</option>
+                            <option value="hot">Hot</option>
+                            <option value="cool">Cool</option>
+                            <option value="spring">Spring</option>
+                            <option value="rainbow">Rainbow</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="overlayOpacity">热力图透明度 <span class="range-value" id="opacityValue">40</span>%</label>
+                        <input type="range" id="overlayOpacity" min="10" max="80" step="5" value="40">
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="entropyBins">熵计算分箱数 <span class="range-value" id="binsValue">8</span></label>
+                        <input type="range" id="entropyBins" min="4" max="16" step="2" value="8">
+                        <div style="font-size: 0.85rem; color: #95a5a6; margin-top: 5px;">分箱数越多，熵计算越精细，但计算时间越长</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="error" id="errorMessage"></div>
+        </div>
+        
+        <div class="panel">
+            <div class="panel-title">
+                <i class="fas fa-chart-heat"></i> 分析结果与可视化
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="loading-spinner"></div>
+                <div>正在计算图像信息熵...</div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="overlay">热力图叠加</div>
+                <div class="tab" data-tab="original">原始图像</div>
+                <div class="tab" data-tab="entropy">熵值图</div>
+                <div class="tab" data-tab="heatmap">纯热力图</div>
+            </div>
+            
+            <div class="tab-content active" id="overlayTab">
+                <div class="canvas-container">
+                    <div class="canvas-label">热力图叠加</div>
+                    <canvas id="overlayCanvas"></canvas>
+                </div>
+                <div class="color-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #0000ff;"></div>
+                        <div class="legend-label">低信息熵 (简单区域)</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #00ff00;"></div>
+                        <div class="legend-label">中信息熵</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #ff0000;"></div>
+                        <div class="legend-label">高信息熵 (复杂区域)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="originalTab">
+                <div class="canvas-container">
+                    <div class="canvas-label">原始图像</div>
+                    <canvas id="originalCanvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="entropyTab">
+                <div class="canvas-container">
+                    <div class="canvas-label">局部熵值图 (灰度)</div>
+                    <canvas id="entropyCanvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="heatmapTab">
+                <div class="canvas-container">
+                    <div class="canvas-label">热力图</div>
+                    <canvas id="heatmapCanvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="results-container">
+                <div class="panel-title" style="border-bottom: none; margin-bottom: 15px;">
+                    <i class="fas fa-chart-bar"></i> 分析数据
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card highlight">
+                        <div class="result-title">检测到的热点区域</div>
+                        <div class="result-value" id="hotspotCount">0</div>
+                        <div class="result-unit">个</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-title">最高熵值</div>
+                        <div class="result-value" id="maxEntropy">0.00</div>
+                        <div class="result-unit">bits</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-title">平均熵值</div>
+                        <div class="result-value" id="avgEntropy">0.00</div>
+                        <div class="result-unit">bits</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-title">热点面积占比</div>
+                        <div class="result-value" id="hotspotArea">0.00</div>
+                        <div class="result-unit">%</div>
+                    </div>
+                </div>
+                
+                <div id="hotspotsContainer" style="display: none;">
+                    <div class="panel-title" style="font-size: 1.1rem; margin-top: 20px;">
+                        <i class="fas fa-map-marker-alt"></i> 热点区域列表
+                    </div>
+                    <div class="hotspots-list" id="hotspotsList"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div class="instructions">
+        <h3><i class="fas fa-info-circle"></i> 工具使用说明</h3>
+        <ol>
+            <li><strong>上传图像</strong>：点击上传区域或拖拽图像文件到指定区域。</li>
+            <li><strong>调整参数</strong>：设置分析窗口大小和热点阈值，窗口越大分析越平滑，阈值越高热点越少。</li>
+            <li><strong>开始分析</strong>：点击"开始分析"按钮，工具将计算图像的局部信息熵并识别热点区域。</li>
+            <li><strong>查看结果</strong>：在右侧面板查看热力图叠加效果，切换标签查看不同可视化结果。</li>
+            <li><strong>解读热点</strong>：红色/黄色区域表示信息密集区（纹理复杂、细节丰富），可能是潜在的价值锚点所在。</li>
+        </ol>
+        <p><strong>应用提示</strong>：在价值锚点识别中，信息熵热点区域往往对应图像中的关键细节、独特符号或异常纹理，这些是潜在的锚点候选区域。</p>
+    </div>
+    
+    <footer>
+        <p>价值锚点识别手册 - 信息熵热点分析工具 | 基于Human Empowerment Abilities框架</p>
+        <p>© 2025 文明免疫工程师 | 本工具完全在浏览器中运行，不上传任何数据到服务器</p>
+    </footer>
+
+    <script>
+        // 全局变量
+        let originalImage = null;
+        let imageData = null;
+        let entropyMap = null;
+        let hotspotMask = null;
+        let analysisResults = null;
+        
+        // DOM元素
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewImage = document.getElementById('previewImage');
+        const imageInfo = document.getElementById('imageInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const imageDimensions = document.getElementById('imageDimensions');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // 画布元素
+        const originalCanvas = document.getElementById('originalCanvas');
+        const originalCtx = originalCanvas.getContext('2d');
+        const entropyCanvas = document.getElementById('entropyCanvas');
+        const entropyCtx = entropyCanvas.getContext('2d');
+        const heatmapCanvas = document.getElementById('heatmapCanvas');
+        const heatmapCtx = heatmapCanvas.getContext('2d');
+        const overlayCanvas = document.getElementById('overlayCanvas');
+        const overlayCtx = overlayCanvas.getContext('2d');
+        
+        // 参数控制元素
+        const windowSizeSlider = document.getElementById('windowSize');
+        const windowSizeValue = document.getElementById('windowSizeValue');
+        const percentileSlider = document.getElementById('percentile');
+        const percentileValue = document.getElementById('percentileValue');
+        const colormapSelect = document.getElementById('colormap');
+        const opacitySlider = document.getElementById('overlayOpacity');
+        const opacityValue = document.getElementById('opacityValue');
+        const binsSlider = document.getElementById('entropyBins');
+        const binsValue = document.getElementById('binsValue');
+        
+        // 结果元素
+        const hotspotCount = document.getElementById('hotspotCount');
+        const maxEntropy = document.getElementById('maxEntropy');
+        const avgEntropy = document.getElementById('avgEntropy');
+        const hotspotArea = document.getElementById('hotspotArea');
+        const hotspotsContainer = document.getElementById('hotspotsContainer');
+        const hotspotsList = document.getElementById('hotspotsList');
+        
+        // 标签切换
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // 更新标签状态
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // 显示对应内容
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId + 'Tab').classList.add('active');
+            });
+        });
+        
+        // 事件监听器
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleImageUpload();
+            }
+        });
+        
+        fileInput.addEventListener('change', handleImageUpload);
+        
+        // 参数更新显示
+        windowSizeSlider.addEventListener('input', () => {
+            windowSizeValue.textContent = windowSizeSlider.value;
+        });
+        
+        percentileSlider.addEventListener('input', () => {
+            percentileValue.textContent = percentileSlider.value;
+        });
+        
+        opacitySlider.addEventListener('input', () => {
+            opacityValue.textContent = opacitySlider.value;
+        });
+        
+        binsSlider.addEventListener('input', () => {
+            binsValue.textContent = binsSlider.value;
+        });
+        
+        analyzeBtn.addEventListener('click', analyzeImage);
+        resetBtn.addEventListener('click', resetTool);
+        
+        // 处理图像上传
+        function handleImageUpload() {
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            // 验证文件类型
+            if (!file.type.match('image.*')) {
+                showError('请选择图像文件 (JPG, PNG, BMP等)');
+                return;
+            }
+            
+            // 验证文件大小 (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showError('图像文件大小不能超过10MB');
+                return;
+            }
+            
+            // 隐藏错误信息
+            hideError();
+            
+            // 显示文件信息
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            
+            // 创建图像预览
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                
+                // 加载图像并获取尺寸
+                const img = new Image();
+                img.onload = function() {
+                    imageDimensions.textContent = `${img.width} × ${img.height} 像素`;
+                    imageInfo.style.display = 'block';
+                    
+                    // 保存原始图像
+                    originalImage = img;
+                    
+                    // 重置分析状态
+                    resetAnalysis();
+                    
+                    // 绘制原始图像到画布
+                    drawOriginalImage();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // 绘制原始图像
+        function drawOriginalImage() {
+            if (!originalImage) return;
+            
+            // 设置画布尺寸
+            const maxWidth = 500;
+            const scale = Math.min(1, maxWidth / originalImage.width);
+            const canvasWidth = originalImage.width * scale;
+            const canvasHeight = originalImage.height * scale;
+            
+            originalCanvas.width = canvasWidth;
+            originalCanvas.height = canvasHeight;
+            originalCtx.drawImage(originalImage, 0, 0, canvasWidth, canvasHeight);
+            
+            // 设置其他画布尺寸
+            entropyCanvas.width = canvasWidth;
+            entropyCanvas.height = canvasHeight;
+            heatmapCanvas.width = canvasWidth;
+            heatmapCanvas.height = canvasHeight;
+            overlayCanvas.width = canvasWidth;
+            overlayCanvas.height = canvasHeight;
+        }
+        
+        // 分析图像
+        async function analyzeImage() {
+            if (!originalImage) {
+                showError('请先上传图像');
+                return;
+            }
+            
+            // 显示加载指示器
+            loadingIndicator.style.display = 'block';
+            analyzeBtn.disabled = true;
+            
+            // 获取参数
+            const windowSize = parseInt(windowSizeSlider.value);
+            const percentile = parseInt(percentileSlider.value);
+            const bins = parseInt(binsSlider.value);
+            
+            try {
+                // 将图像转换为灰度并计算局部熵
+                const grayData = convertToGrayscale(originalCanvas, originalCtx);
+                entropyMap = calculateLocalEntropy(grayData, originalCanvas.width, originalCanvas.height, windowSize, bins);
+                
+                // 检测热点区域
+                const threshold = getPercentileValue(entropyMap, percentile);
+                hotspotMask = createHotspotMask(entropyMap, threshold);
+                
+                // 分析热点
+                analysisResults = analyzeHotspots(hotspotMask, entropyMap);
+                
+                // 生成可视化
+                generateVisualizations();
+                
+                // 显示结果
+                displayResults(analysisResults);
+                
+            } catch (error) {
+                showError('分析过程中发生错误: ' + error.message);
+                console.error(error);
+            } finally {
+                // 隐藏加载指示器
+                loadingIndicator.style.display = 'none';
+                analyzeBtn.disabled = false;
+            }
+        }
+        
+        // 将图像转换为灰度数据
+        function convertToGrayscale(canvas, ctx) {
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // 获取图像数据
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+            const grayData = new Float32Array(width * height);
+            
+            // 转换为灰度 (使用标准加权平均)
+            for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                grayData[j] = 0.299 * r + 0.587 * g + 0.114 * b;
+            }
+            
+            return grayData;
+        }
+        
+        // 计算局部熵
+        function calculateLocalEntropy(grayData, width, height, windowSize, bins) {
+            const halfWindow = Math.floor(windowSize / 2);
+            const entropyMap = new Float32Array(width * height);
+            
+            // 创建直方图数组
+            const histogram = new Array(bins).fill(0);
+            
+            // 遍历每个像素
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    // 重置直方图
+                    histogram.fill(0);
+                    
+                    // 统计窗口内的灰度分布
+                    let pixelCount = 0;
+                    
+                    for (let wy = -halfWindow; wy <= halfWindow; wy++) {
+                        const ny = y + wy;
+                        if (ny < 0 || ny >= height) continue;
+                        
+                        for (let wx = -halfWindow; wx <= halfWindow; wx++) {
+                            const nx = x + wx;
+                            if (nx < 0 || nx >= width) continue;
+                            
+                            const grayValue = grayData[ny * width + nx];
+                            const binIndex = Math.floor((grayValue / 255) * bins);
+                            histogram[binIndex]++;
+                            pixelCount++;
+                        }
+                    }
+                    
+                    // 计算熵
+                    let entropy = 0;
+                    for (let i = 0; i < bins; i++) {
+                        if (histogram[i] > 0) {
+                            const probability = histogram[i] / pixelCount;
+                            entropy -= probability * Math.log2(probability);
+                        }
+                    }
+                    
+                    entropyMap[y * width + x] = entropy;
+                }
+            }
+            
+            return entropyMap;
+        }
+        
+        // 获取百分位数值
+        function getPercentileValue(data, percentile) {
+            const sorted = [...data].sort((a, b) => a - b);
+            const index = Math.floor((percentile / 100) * sorted.length);
+            return sorted[Math.min(index, sorted.length - 1)];
+        }
+        
+        // 创建热点掩码
+        function createHotspotMask(entropyMap, threshold) {
+            const mask = new Uint8Array(entropyMap.length);
+            for (let i = 0; i < entropyMap.length; i++) {
+                mask[i] = entropyMap[i] > threshold ? 1 : 0;
+            }
+            return mask;
+        }
+        
+        // 分析热点区域
+        function analyzeHotspots(mask, entropyMap) {
+            const width = originalCanvas.width;
+            const height = originalCanvas.height;
+            
+            // 使用泛洪填充算法识别连通区域
+            const visited = new Uint8Array(width * height);
+            const hotspots = [];
+            
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const index = y * width + x;
+                    
+                    if (mask[index] === 1 && visited[index] === 0) {
+                        // 发现新的热点区域
+                        const region = floodFill(mask, visited, x, y, width, height);
+                        
+                        if (region.pixels.length > 10) { // 忽略太小的区域
+                            // 计算区域统计信息
+                            let totalEntropy = 0;
+                            let maxEntropyInRegion = 0;
+                            let centerX = 0;
+                            let centerY = 0;
+                            
+                            for (const pixel of region.pixels) {
+                                const pixelIndex = pixel.y * width + pixel.x;
+                                const entropy = entropyMap[pixelIndex];
+                                totalEntropy += entropy;
+                                maxEntropyInRegion = Math.max(maxEntropyInRegion, entropy);
+                                
+                                centerX += pixel.x;
+                                centerY += pixel.y;
+                            }
+                            
+                            const avgEntropyInRegion = totalEntropy / region.pixels.length;
+                            centerX = Math.round(centerX / region.pixels.length);
+                            centerY = Math.round(centerY / region.pixels.length);
+                            
+                            hotspots.push({
+                                id: hotspots.length + 1,
+                                pixelCount: region.pixels.length,
+                                areaPercent: (region.pixels.length / (width * height)) * 100,
+                                maxEntropy: maxEntropyInRegion,
+                                avgEntropy: avgEntropyInRegion,
+                                center: { x: centerX, y: centerY },
+                                bounds: region.bounds
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // 按熵值排序
+            hotspots.sort((a, b) => b.maxEntropy - a.maxEntropy);
+            
+            // 计算全局统计
+            let totalEntropy = 0;
+            let maxEntropy = 0;
+            
+            for (let i = 0; i < entropyMap.length; i++) {
+                totalEntropy += entropyMap[i];
+                maxEntropy = Math.max(maxEntropy, entropyMap[i]);
+            }
+            
+            const avgEntropy = totalEntropy / entropyMap.length;
+            const hotspotAreaPercent = (mask.reduce((sum, val) => sum + val, 0) / mask.length) * 100;
+            
+            return {
+                hotspots,
+                globalStats: {
+                    maxEntropy,
+                    avgEntropy,
+                    hotspotCount: hotspots.length,
+                    hotspotAreaPercent
+                }
+            };
+        }
+        
+        // 泛洪填充算法
+        function floodFill(mask, visited, startX, startY, width, height) {
+            const stack = [{ x: startX, y: startY }];
+            const pixels = [];
+            
+            let minX = startX, maxX = startX;
+            let minY = startY, maxY = startY;
+            
+            while (stack.length > 0) {
+                const { x, y } = stack.pop();
+                const index = y * width + x;
+                
+                if (x < 0 || x >= width || y < 0 || y >= height) continue;
+                if (visited[index] === 1 || mask[index] === 0) continue;
+                
+                // 标记为已访问
+                visited[index] = 1;
+                pixels.push({ x, y });
+                
+                // 更新边界
+                minX = Math.min(minX, x);
+                maxX = Math.max(maxX, x);
+                minY = Math.min(minY, y);
+                maxY = Math.max(maxY, y);
+                
+                // 检查四个方向的邻居
+                stack.push({ x: x + 1, y });
+                stack.push({ x: x - 1, y });
+                stack.push({ x, y: y + 1 });
+                stack.push({ x, y: y - 1 });
+            }
+            
+            return {
+                pixels,
+                bounds: { minX, maxX, minY, maxY }
+            };
+        }
+        
+        // 生成可视化
+        function generateVisualizations() {
+            if (!entropyMap || !hotspotMask) return;
+            
+            const width = originalCanvas.width;
+            const height = originalCanvas.height;
+            const colormap = colormapSelect.value;
+            const opacity = parseInt(opacitySlider.value) / 100;
+            
+            // 1. 生成熵值图 (灰度)
+            generateEntropyMap(entropyMap, width, height);
+            
+            // 2. 生成热力图
+            generateHeatmap(entropyMap, width, height, colormap);
+            
+            // 3. 生成叠加图
+            generateOverlay(originalCanvas, heatmapCanvas, width, height, opacity);
+        }
+        
+        // 生成熵值图
+        function generateEntropyMap(entropyMap, width, height) {
+            // 创建图像数据
+            const imageData = entropyCtx.createImageData(width, height);
+            const data = imageData.data;
+            
+            // 找到最大熵值用于归一化
+            let maxEntropyValue = 0;
+            for (let i = 0; i < entropyMap.length; i++) {
+                maxEntropyValue = Math.max(maxEntropyValue, entropyMap[i]);
+            }
+            
+            // 填充像素数据
+            for (let i = 0; i < entropyMap.length; i++) {
+                const intensity = Math.floor((entropyMap[i] / maxEntropyValue) * 255);
+                const idx = i * 4;
+                
+                data[idx] = intensity;     // R
+                data[idx + 1] = intensity; // G
+                data[idx + 2] = intensity; // B
+                data[idx + 3] = 255;       // A
+            }
+            
+            entropyCtx.putImageData(imageData, 0, 0);
+        }
+        
+        // 生成热力图
+        function generateHeatmap(entropyMap, width, height, colormap) {
+            // 创建图像数据
+            const imageData = heatmapCtx.createImageData(width, height);
+            const data = imageData.data;
+            
+            // 找到最大熵值用于归一化
+            let maxEntropyValue = 0;
+            for (let i = 0; i < entropyMap.length; i++) {
+                maxEntropyValue = Math.max(maxEntropyValue, entropyMap[i]);
+            }
+            
+            // 填充像素数据
+            for (let i = 0; i < entropyMap.length; i++) {
+                const normalizedValue = entropyMap[i] / maxEntropyValue;
+                const color = getColormapColor(normalizedValue, colormap);
+                const idx = i * 4;
+                
+                data[idx] = color.r;     // R
+                data[idx + 1] = color.g; // G
+                data[idx + 2] = color.b; // B
+                data[idx + 3] = 255;     // A
+            }
+            
+            heatmapCtx.putImageData(imageData, 0, 0);
+        }
+        
+        // 获取颜色映射颜色
+        function getColormapColor(value, colormap) {
+            // 限制值在0-1之间
+            value = Math.max(0, Math.min(1, value));
+            
+            switch (colormap) {
+                case 'jet':
+                    // Jet颜色映射 (蓝-青-黄-红)
+                    if (value < 0.125) {
+                        return { r: 0, g: 0, b: Math.floor(128 + 127 * value / 0.125) };
+                    } else if (value < 0.375) {
+                        return { r: 0, g: Math.floor(255 * (value - 0.125) / 0.25), b: 255 };
+                    } else if (value < 0.625) {
+                        const t = (value - 0.375) / 0.25;
+                        return { r: Math.floor(255 * t), g: 255, b: Math.floor(255 * (1 - t)) };
+                    } else if (value < 0.875) {
+                        const t = (value - 0.625) / 0.25;
+                        return { r: 255, g: Math.floor(255 * (1 - t)), b: 0 };
+                    } else {
+                        const t = (value - 0.875) / 0.125;
+                        return { r: Math.floor(255 - 127 * t), g: 0, b: 0 };
+                    }
+                    
+                case 'hot':
+                    // Hot颜色映射 (黑-红-黄-白)
+                    if (value < 0.333) {
+                        const t = value / 0.333;
+                        return { r: Math.floor(255 * t), g: 0, b: 0 };
+                    } else if (value < 0.667) {
+                        const t = (value - 0.333) / 0.334;
+                        return { r: 255, g: Math.floor(255 * t), b: 0 };
+                    } else {
+                        const t = (value - 0.667) / 0.333;
+                        return { r: 255, g: 255, b: Math.floor(255 * t) };
+                    }
+                    
+                case 'cool':
+                    // Cool颜色映射 (青-品红)
+                    return {
+                        r: Math.floor(255 * value),
+                        g: Math.floor(255 * (1 - value)),
+                        b: 255
+                    };
+                    
+                case 'spring':
+                    // Spring颜色映射 (品红-黄)
+                    return {
+                        r: 255,
+                        g: Math.floor(255 * value),
+                        b: Math.floor(255 * (1 - value))
+                    };
+                    
+                case 'rainbow':
+                    // 彩虹颜色映射
+                    const hue = value * 300; // 0-300度 (红-绿-蓝)
+                    return hslToRgb(hue, 100, 50);
+                    
+                default:
+                    return { r: 0, g: 0, b: 255 };
+            }
+        }
+        
+        // HSL转RGB
+        function hslToRgb(h, s, l) {
+            h /= 360;
+            s /= 100;
+            l /= 100;
+            
+            let r, g, b;
+            
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            
+            return {
+                r: Math.round(r * 255),
+                g: Math.round(g * 255),
+                b: Math.round(b * 255)
+            };
+        }
+        
+        // 生成叠加图
+        function generateOverlay(originalCanvas, heatmapCanvas, width, height, opacity) {
+            // 清空画布
+            overlayCtx.clearRect(0, 0, width, height);
+            
+            // 绘制原始图像
+            overlayCtx.drawImage(originalCanvas, 0, 0);
+            
+            // 设置混合模式
+            overlayCtx.globalAlpha = opacity;
+            overlayCtx.globalCompositeOperation = 'screen';
+            
+            // 绘制热力图
+            overlayCtx.drawImage(heatmapCanvas, 0, 0);
+            
+            // 重置混合模式
+            overlayCtx.globalAlpha = 1.0;
+            overlayCtx.globalCompositeOperation = 'source-over';
+            
+            // 绘制热点轮廓
+            drawHotspotContours(overlayCtx, width, height);
+        }
+        
+        // 绘制热点轮廓
+        function drawHotspotContours(ctx, width, height) {
+            if (!analysisResults || !analysisResults.hotspots || analysisResults.hotspots.length === 0) return;
+            
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 2;
+            
+            // 只绘制前10个热点区域的轮廓
+            const hotspotsToDraw = analysisResults.hotspots.slice(0, 10);
+            
+            for (const hotspot of hotspotsToDraw) {
+                const { minX, maxX, minY, maxY } = hotspot.bounds;
+                
+                // 绘制矩形轮廓
+                ctx.strokeRect(minX, minY, maxX - minX, maxY - minY);
+                
+                // 绘制中心点
+                ctx.fillStyle = '#ff0000';
+                ctx.beginPath();
+                ctx.arc(hotspot.center.x, hotspot.center.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 添加标签
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(hotspot.center.x - 15, hotspot.center.y - 25, 30, 20);
+                ctx.fillStyle = '#000000';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`#${hotspot.id}`, hotspot.center.x, hotspot.center.y - 10);
+            }
+        }
+        
+        // 显示结果
+        function displayResults(results) {
+            const { globalStats, hotspots } = results;
+            
+            // 更新全局统计
+            hotspotCount.textContent = globalStats.hotspotCount;
+            maxEntropy.textContent = globalStats.maxEntropy.toFixed(2);
+            avgEntropy.textContent = globalStats.avgEntropy.toFixed(2);
+            hotspotArea.textContent = globalStats.hotspotAreaPercent.toFixed(2);
+            
+            // 更新热点列表
+            if (hotspots.length > 0) {
+                hotspotsList.innerHTML = '';
+                
+                hotspots.slice(0, 10).forEach(hotspot => {
+                    const item = document.createElement('div');
+                    item.className = 'hotspot-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong>热点 #${hotspot.id}</strong>
+                            <div class="hotspot-coords">中心: (${hotspot.center.x}, ${hotspot.center.y})</div>
+                        </div>
+                        <div>
+                            <div class="hotspot-value">${hotspot.maxEntropy.toFixed(2)} bits</div>
+                            <div style="font-size: 0.8rem; color: #95a5a6;">${hotspot.areaPercent.toFixed(2)}% 面积</div>
+                        </div>
+                    `;
+                    hotspotsList.appendChild(item);
+                });
+                
+                hotspotsContainer.style.display = 'block';
+            }
+        }
+        
+        // 重置分析
+        function resetAnalysis() {
+            entropyMap = null;
+            hotspotMask = null;
+            analysisResults = null;
+            
+            // 清空画布
+            entropyCtx.clearRect(0, 0, entropyCanvas.width, entropyCanvas.height);
+            heatmapCtx.clearRect(0, 0, heatmapCanvas.width, heatmapCanvas.height);
+            overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+            
+            // 重置结果显示
+            hotspotCount.textContent = '0';
+            maxEntropy.textContent = '0.00';
+            avgEntropy.textContent = '0.00';
+            hotspotArea.textContent = '0.00';
+            hotspotsContainer.style.display = 'none';
+            hotspotsList.innerHTML = '';
+            
+            // 切换到原始图像标签
+            tabs.forEach(t => t.classList.remove('active'));
+            document.querySelector('.tab[data-tab="overlay"]').classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('overlayTab').classList.add('active');
+        }
+        
+        // 重置工具
+        function resetTool() {
+            fileInput.value = '';
+            imageInfo.style.display = 'none';
+            originalImage = null;
+            resetAnalysis();
+            hideError();
+        }
+        
+        // 显示错误信息
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+        
+        // 隐藏错误信息
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 设置默认参数显示
+            windowSizeValue.textContent = windowSizeSlider.value;
+            percentileValue.textContent = percentileSlider.value;
+            opacityValue.textContent = opacitySlider.value;
+            binsValue.textContent = binsSlider.value;
+            
+            // 显示使用说明
+            console.log('信息熵热点分析工具已加载。');
+            console.log('使用方法：上传图像，调整参数，点击"开始分析"按钮。');
+        });
+    </script>
+</body>
+</html>
