@@ -482,7 +482,7 @@ C = min(连接密度 × 3.33, 10)  # 标准化到0-10分
    - [连接性映射表](tables/connectivity-mapping.md)
    - [可扩展性验证表](tables/expansion-verification.md)
 
-2. **整合表格**：用于项目级管理
+2. [**整合表格**：用于项目级管理](tables/project-integration-tables.md)
    - 锚点发现日志
    - 评估跟踪表
    - 项目进展看板
