@@ -478,7 +478,7 @@ C = min(连接密度 × 3.33, 10)  # 标准化到0-10分
 
 1. **基础表格**：用于单次识别任务
    - [来源扫描表格](tables/exercise-forms.md#-练习一来源扫描练习表)
-   - [稳定性评估表](../tables/stability-assessment.md)
+   - [稳定性评估表](tables/exercise-forms.md#-练习二稳定性评估表)
    - [连接性映射表](../tables/connectivity-mapping.md)
    - [可扩展性验证表](../tables/expansion-verification.md)
 
