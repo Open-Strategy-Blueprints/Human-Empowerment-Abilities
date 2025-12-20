@@ -259,7 +259,7 @@ VD = (I × S × C) / (T + ε)
 3. **初步筛选**：使用三问法快速过滤
 
 #### 工具支持：
-- [来源扫描表格](tables/exercise-forms.md#-练习一来源扫描练习表)
+- [来源扫描表格](tables/source-scanning-table.md)
 - [时间线分析工具](tools1/timeline-analyzer.md)
 - [视觉特征提取工具](tools1/visual-feature-extractor.md)
 
