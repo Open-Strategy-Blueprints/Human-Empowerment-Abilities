@@ -371,7 +371,7 @@ T = 理解难度 (Time to understand)
 2. **信息熵热点图**
    - 使用图像分析识别信息密集区
    - 异常区域往往是价值所在
-   - 自动化工具支持
+   - [图像信息熵热点分析工具](https://open-strategy-blueprints.github.io/Human-Empowerment-Abilities/products/value-anchor-handbook/entropy-hotspot-analyzer.html)
 
 3. **上下文重建法**
    - 收集同期多源材料
