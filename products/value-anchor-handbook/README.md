@@ -26,10 +26,15 @@
 
 products/value-anchor-handbook/
 ├── 📘 handbook.md # 主手册：完整理论与方法论
+
 ├── 📊 tables/ # 所有可编辑的评估表格模板
+
 ├── 🛠️ tools/ # 自动化工具（如Python计算器）
+
 ├── 📝 exercises/ # 从易到难的实践练习
+
 ├── 🔄 CHANGELOG.md # 记录每一次社区贡献
+
 └── 📑 TOC.md # 详细目录
 
 
