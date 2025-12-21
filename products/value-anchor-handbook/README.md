@@ -25,6 +25,7 @@
 ## 🏗️ 项目结构概览
 
 products/value-anchor-handbook/
+
 ├── 📘 handbook.md # 主手册：完整理论与方法论
 
 ├── 📊 tables/ # 所有可编辑的评估表格模板
